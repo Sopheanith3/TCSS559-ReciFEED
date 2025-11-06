@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
+import logo from '../assets/ReciFEED-logo.png';
 
-const Sidebar = () => {
+const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
   const location = useLocation();
+  const [internalIsCollapsed, setInternalIsCollapsed] = useState(false);
+  
+  // Use external state if provided, otherwise use internal state
+  const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;
+
+  const toggleSidebar = () => {
+    if (onToggleCollapse) {
+      onToggleCollapse(!isCollapsed);
+    } else {
+      setInternalIsCollapsed(!internalIsCollapsed);
+    }
+  };
 
   const navItems = [
     {
@@ -34,42 +47,74 @@ const Sidebar = () => {
         </svg>
       ),
       label: 'Feed'
-    },
-    {
-      path: '/profile',
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
-        </svg>
-      ),
-      label: 'Profile'
     }
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="sidebar">
-      <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`sidebar-link ${isActive(item.path) ? 'sidebar-link--active' : ''}`}
-          >
-            <span className="sidebar-icon">{item.icon}</span>
-            <span className="sidebar-label">{item.label}</span>
-          </Link>
-        ))}
+    <aside className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : ''}`}>
+      {/* Logo Section */}
+      <div className="sidebar__logo-container">
+        <img src={logo} alt="ReciFEED Logo" className="sidebar__logo-image" />
+      </div>
+
+      {/* Navigation Items */}
+      <nav className="sidebar__navigation">
+        <ul className="sidebar__nav-list">
+          {navItems.map((item) => (
+            <li key={item.path} className="sidebar__nav-item">
+              <Link
+                to={item.path}
+                className={`sidebar__nav-link ${isActive(item.path) ? 'sidebar__nav-link--active' : ''}`}
+                title={isCollapsed ? item.label : ''}
+              >
+                <span className="sidebar__nav-icon">{item.icon}</span>
+                <span className="sidebar__nav-label">{item.label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </nav>
 
-      <div className="sidebar-footer">
-        <button className="create-post-btn">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      {/* Profile Section at Bottom with Menu Button */}
+      <div className="sidebar__footer">
+        <Link
+          to="/profile"
+          className={`sidebar__profile-link ${isActive('/profile') ? 'sidebar__profile-link--active' : ''}`}
+          title={isCollapsed ? 'Profile' : ''}
+        >
+          <span className="sidebar__profile-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
+            </svg>
+          </span>
+          <span className="sidebar__profile-label">Profile</span>
+        </Link>
+
+        {/* Hamburger Menu Button */}
+        <button 
+          className="sidebar__toggle-button" 
+          onClick={toggleSidebar}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <svg 
+            className="sidebar__toggle-icon" 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none"
+          >
+            <path 
+              d="M3 12h18M3 6h18M3 18h18" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
           </svg>
-          <span>Create Post</span>
         </button>
       </div>
     </aside>

@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = ({ currentUser }) => {
+const Navbar = ({ currentUser, isSidebarCollapsed }) => {
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isSidebarCollapsed ? 'navbar--sidebar-collapsed' : ''}`}>
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <div className="logo-icon">

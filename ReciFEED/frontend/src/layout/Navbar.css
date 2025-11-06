@@ -2,9 +2,28 @@
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 15px 0;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 250px;
+  right: 0;
+  z-index: 999;
+  transition: left 0.3s ease-in-out;
+}
+
+/* Adjust navbar when sidebar is collapsed */
+.navbar.navbar--sidebar-collapsed {
+  left: 70px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    left: 0;
+    right: 0;
+  }
+  
+  .navbar.navbar--sidebar-collapsed {
+    left: 0;
+  }
 }
 
 .navbar-container {
