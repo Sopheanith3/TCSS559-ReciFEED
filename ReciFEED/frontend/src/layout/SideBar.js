@@ -3,12 +3,19 @@ import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 import logo from '../assets/ReciFEED-logo.png';
 
-const Sidebar = () => {
+const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [internalIsCollapsed, setInternalIsCollapsed] = useState(false);
+  
+  // Use external state if provided, otherwise use internal state
+  const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+    if (onToggleCollapse) {
+      onToggleCollapse(!isCollapsed);
+    } else {
+      setInternalIsCollapsed(!internalIsCollapsed);
+    }
   };
 
   const navItems = [

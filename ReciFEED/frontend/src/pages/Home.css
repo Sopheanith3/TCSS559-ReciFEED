@@ -1,8 +1,15 @@
 .home-page {
-  padding: var(--spacing-xl);
+  padding: 30px;
   max-width: 1400px;
   margin: 0 auto;
   background-color: #f8f9fa;
+  min-height: calc(100vh - 73px);
+}
+
+@media (max-width: 768px) {
+  .home-page {
+    padding: 20px;
+  }
 }
 
 .home-header {

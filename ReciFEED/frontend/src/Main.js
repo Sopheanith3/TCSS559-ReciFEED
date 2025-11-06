@@ -11,6 +11,7 @@ function Main() {
   // TODO: Replace with actual auth state management
   const [currentUser, setCurrentUser] = React.useState(null);
   const [showSidebar, setShowSidebar] = React.useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
   // Check if current route is auth page
   const isAuthPage = () => {
@@ -21,12 +22,22 @@ function Main() {
   return (
     <Router>
       <div className="app">
-        {!isAuthPage() && <Navbar currentUser={currentUser} />}
+        {!isAuthPage() && (
+          <Navbar 
+            currentUser={currentUser} 
+            isSidebarCollapsed={isSidebarCollapsed}
+          />
+        )}
         
         <div className="app-content">
-          {!isAuthPage() && showSidebar && <Sidebar />}
+          {!isAuthPage() && showSidebar && (
+            <Sidebar 
+              onToggleCollapse={setIsSidebarCollapsed}
+              isCollapsed={isSidebarCollapsed}
+            />
+          )}
           
-          <main className={`main-content ${!isAuthPage() && showSidebar ? 'with-sidebar' : ''}`}>
+          <main className={`main-content ${!isAuthPage() && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''}`}>
             <Routes>
               {/* Public Routes */}
               {/* <Route path="/login" element={<Login />} /> */}
