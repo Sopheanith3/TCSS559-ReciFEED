@@ -6,16 +6,6 @@ const Navbar = ({ currentUser, isSidebarCollapsed }) => {
   return (
     <nav className={`navbar ${isSidebarCollapsed ? 'navbar--sidebar-collapsed' : ''}`}>
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">
-          <div className="logo-icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" fill="#ff6b35"/>
-              <path d="M16 8C13.79 8 12 9.79 12 12V14H10V22C10 23.1 10.9 24 12 24H20C21.1 24 22 23.1 22 22V14H20V12C20 9.79 18.21 8 16 8ZM16 10C17.1 10 18 10.9 18 12V14H14V12C14 10.9 14.9 10 16 10ZM12 16H20V22H12V16Z" fill="white"/>
-            </svg>
-          </div>
-          <span className="logo-text">ReciFEED</span>
-        </Link>
-
         <div className="navbar-search">
           <div className="search-icon">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

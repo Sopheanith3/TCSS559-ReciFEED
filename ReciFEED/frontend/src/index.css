@@ -1,0 +1,13 @@
+/* Make the full app fill the viewport and default to a dark fallback */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #1f2225; /* dark fallback so no white peeks through */
+  color: #fff;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
