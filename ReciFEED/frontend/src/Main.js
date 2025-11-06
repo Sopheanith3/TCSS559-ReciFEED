@@ -1,6 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import Navbar from './layout/Navbar';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, useEffect } from 'react-router-dom';
 import Sidebar from './layout/SideBar';
 import Home from './pages/Home';
 import Login from './auth/Login';
@@ -9,9 +8,17 @@ import './Main.css';
 
 function AppContent() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = React.useState(null);
   const [showSidebar, setShowSidebar] = React.useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+
+  // Redirect to home page on refresh (except for home page itself)
+  React.useEffect(() => {
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true });
+    }
+  }, []); // Empty dependency array means this runs only on mount (refresh)
 
   // Check if current route is home page (landing page)
   const isHomePage = location.pathname === '/';
