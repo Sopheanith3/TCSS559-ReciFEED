@@ -1,8 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleCreateAccount = () => {
+    navigate('/register');
+  };
+
+  const handleSignIn = () => {
+    navigate('/login');
+  };
+
   return (
     <div className="home-page">
       <div className="landing-container">
@@ -19,12 +29,12 @@ const Home = () => {
             Share your favorite recipes, connect with food lovers, and find your next meal idea.
           </p>
           <div className="landing-actions">
-            <Link to="/register" className="landing-btn landing-btn--primary">
+            <button className="landing-btn landing-btn--primary" onClick={handleCreateAccount}>
               Create Account
-            </Link>
-            <Link to="/login" className="landing-btn landing-btn--secondary">
+            </button>
+            <button className="landing-btn landing-btn--secondary" onClick={handleSignIn}>
               Sign In
-            </Link>
+            </button>
           </div>
           <div className="landing-features">
             <div className="feature-item">

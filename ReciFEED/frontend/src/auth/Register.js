@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import './Register.css';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -84,10 +85,7 @@ const Register = () => {
         <div className="register-card">
           <div className="register-header">
             <div className="register-logo">
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <rect width="48" height="48" rx="12" fill="#ff6b35"/>
-                <path d="M24 12C19.59 12 16 15.59 16 20V22H14V34C14 35.1 14.9 36 16 36H32C33.1 36 34 35.1 34 34V22H32V20C32 15.59 28.41 12 24 12ZM24 14C27.31 14 30 16.69 30 20V22H18V20C18 16.69 20.69 14 24 14Z" fill="white"/>
-              </svg>
+              <img src={require('../assets/ReciFEED-logo.png')} alt="ReciFEED Logo" style={{ width: '200px', height: '80px', objectFit: 'contain'}} />
             </div>
             <h1 className="register-title">Create Your Account</h1>
             <p className="register-subtitle">Join ReciFEED community</p>
@@ -103,6 +101,7 @@ const Register = () => {
                 placeholder="Choose a username"
                 value={formData.username}
                 onChange={handleChange}
+                className={errors.username ? 'error' : ''}
                 required
               />
               {errors.username && <div className="error-message">{errors.username}</div>}
@@ -117,6 +116,7 @@ const Register = () => {
                 placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
+                className={errors.email ? 'error' : ''}
                 required
               />
               {errors.email && <div className="error-message">{errors.email}</div>}
@@ -131,6 +131,7 @@ const Register = () => {
                 placeholder="Create a password"
                 value={formData.password}
                 onChange={handleChange}
+                className={errors.password ? 'error' : ''}
                 required
               />
               {errors.password && <div className="error-message">{errors.password}</div>}
@@ -145,6 +146,7 @@ const Register = () => {
                 placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                className={errors.confirmPassword ? 'error' : ''}
                 required
               />
               {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}

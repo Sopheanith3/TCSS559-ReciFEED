@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import Navbar from './layout/Navbar';
 import Sidebar from './layout/SideBar';
 import Home from './pages/Home';
-// import Login from './auth/Login';
-// import Register from './auth/Register';
+import Login from './auth/Login';
+import Register from './auth/Register';
 import './Main.css';
 
 function AppContent() {
@@ -21,13 +21,6 @@ function AppContent() {
 
   return (
     <div className="app">
-      {!isHomePage && !isAuthPage && (
-        <Navbar 
-          currentUser={currentUser} 
-          isSidebarCollapsed={isSidebarCollapsed}
-        />
-      )}
-      
       <div className="app-content">
         {!isAuthPage && showSidebar && (
           <Sidebar 
@@ -36,12 +29,11 @@ function AppContent() {
           />
         )}
         
-        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''}`}>
+        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
           <Routes>
             {/* Public Routes */}
-            {/* <Route path="/login" element={<Login />} /> */}
-            {/* <Route path="/register" element={<Register />} /> */}
-            
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             {/* Landing/Home Page */}
             <Route path="/" element={<Home />} />
             {/* Fallback Route */}

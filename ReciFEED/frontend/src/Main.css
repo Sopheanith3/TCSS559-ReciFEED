@@ -34,6 +34,15 @@
   margin-left: 70px;
 }
 
+/* Auth pages (Login/Register) - Full screen with no sidebar/navbar */
+.main-content.auth-page {
+  margin-left: 0 !important;
+  padding-top: 0 !important;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .main-content {
@@ -48,5 +57,9 @@
   .main-content.home-landing {
     margin-left: 0;
     padding-bottom: 70px;
+  }
+  
+  .main-content.auth-page {
+    padding-bottom: 0 !important;
   }
 }

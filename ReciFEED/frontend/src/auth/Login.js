@@ -74,10 +74,7 @@ const Login = () => {
         <div className="login-card">
           <div className="login-header">
             <div className="login-logo">
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <rect width="48" height="48" rx="12" fill="#ff6b35"/>
-                <path d="M24 12C19.59 12 16 15.59 16 20V22H14V34C14 35.1 14.9 36 16 36H32C33.1 36 34 35.1 34 34V22H32V20C32 15.59 28.41 12 24 12ZM24 14C27.31 14 30 16.69 30 20V22H18V20C18 16.69 20.69 14 24 14Z" fill="white"/>
-              </svg>
+              <img src={require('../assets/ReciFEED-logo.png')} alt="ReciFEED Logo" style={{ width: '160px', height: '60px', objectFit: 'contain' }} />
             </div>
             <h1 className="login-title">Welcome to ReciFEED</h1>
             <p className="login-subtitle">Log in to your account</p>
@@ -113,10 +110,6 @@ const Login = () => {
             </div>
 
             <div className="login-options">
-              <label className="remember-me">
-                <input type="checkbox" />
-                <span>Remember me</span>
-              </label>
               <Link to="/forgot-password" className="forgot-password">
                 Forgot password?
               </Link>
