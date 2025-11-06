@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, useEffect } from 'react-router-dom';
 import Sidebar from './layout/SideBar';
 import Home from './pages/Home';
-import Login from './auth/Login';
-import Register from './auth/Register';
-import './Main.css';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import './components/Main.css';
 
 function AppContent() {
   const location = useLocation();
