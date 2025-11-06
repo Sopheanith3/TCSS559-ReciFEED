@@ -13,13 +13,6 @@ function AppContent() {
   const [showSidebar, setShowSidebar] = React.useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
-  // Redirect to home page on refresh (except for home page itself)
-  React.useEffect(() => {
-    if (location.pathname !== '/') {
-      navigate('/', { replace: true });
-    }
-  }, []); // Empty dependency array means this runs only on mount (refresh)
-
   // Check if current route is home page (landing page)
   const isHomePage = location.pathname === '/';
   
