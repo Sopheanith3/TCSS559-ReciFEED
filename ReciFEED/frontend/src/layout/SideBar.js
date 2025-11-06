@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 import logo from '../assets/ReciFEED-logo.png';
+import icon from '../assets/ReciFEED-icon.png';
 
 const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
   const location = useLocation();
@@ -56,7 +57,11 @@ const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
     <aside className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : ''}`}>
       {/* Logo Section */}
       <div className="sidebar__logo-container">
-        <img src={logo} alt="ReciFEED Logo" className="sidebar__logo-image" />
+        {isCollapsed ? (
+          <img src={icon} alt="ReciFEED Icon" className="sidebar__logo-image" />
+        ) : (
+          <img src={logo} alt="ReciFEED Logo" className="sidebar__logo-image" />
+        )}
       </div>
 
       {/* Navigation Items */}

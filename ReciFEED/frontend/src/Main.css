@@ -24,6 +24,16 @@
   margin-left: 70px;
 }
 
+/* Landing page specific styles */
+.main-content.home-landing {
+  padding-top: 0;
+  margin-left: 250px;
+}
+
+.main-content.home-landing.with-sidebar--collapsed {
+  margin-left: 70px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .main-content {
@@ -33,5 +43,10 @@
   
   .main-content.with-sidebar--collapsed {
     margin-left: 0;
+  }
+  
+  .main-content.home-landing {
+    margin-left: 0;
+    padding-bottom: 70px;
   }
 }
