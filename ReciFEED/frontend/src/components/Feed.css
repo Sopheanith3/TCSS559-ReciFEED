@@ -1,0 +1,425 @@
+/* ===================================
+   FEED CONTAINER
+   =================================== */
+.feed {
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 20px;
+  padding-top: 20px;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+}
+
+/* ===================================
+   SEARCH BAR
+   =================================== */
+.feed__search-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  background-color: #1a1a1a;
+  z-index: 100;
+}
+
+.feed__search-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.feed__search-icon {
+  position: absolute;
+  left: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.feed__search-input {
+  width: 100%;
+  background-color: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px 12px 48px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.feed__search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.feed__search-input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: #333333;
+}
+
+.feed__filter-button {
+  background-color: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feed__filter-button:hover {
+  background-color: #333333;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* ===================================
+   FILTER PILLS
+   =================================== */
+.feed__filters {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.feed__filters-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.feed__filters-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.feed__filters-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feed__filters-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.feed__filter-pill {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.feed__filter-pill:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.feed__filter-pill--active {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+/* ===================================
+   CATEGORY ICONS
+   =================================== */
+.feed__categories {
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.feed__categories-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.feed__categories-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.feed__categories-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feed__categories-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.feed__category-item {
+  flex-shrink: 0;
+}
+
+.feed__category-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.feed__category-image:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* ===================================
+   RECIPE GRID (MASONRY LAYOUT)
+   =================================== */
+.feed__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  grid-auto-flow: dense;
+}
+
+.feed__card {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative;
+  background-color: #2a2a2a;
+}
+
+.feed__card:hover {
+  transform: translateY(-4px);
+}
+
+.feed__card--large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.feed__card--medium {
+  grid-row: span 1;
+}
+
+.feed__card--small {
+  grid-row: span 1;
+}
+
+.feed__card-image {
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+.feed__card--large .feed__card-image {
+  min-height: 500px;
+}
+
+.feed__card--medium .feed__card-image {
+  min-height: 300px;
+}
+
+.feed__card--small .feed__card-image {
+  min-height: 250px;
+}
+
+/* Gradient overlay */
+.feed__card-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 1;
+}
+
+.feed__card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+.feed__card-content {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 40px; /* Add this line or increase the value if needed */
+}
+
+.feed__card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.feed__card--small .feed__card-title {
+  font-size: 1.05rem;
+}
+
+.feed__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.feed__card-level {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  backdrop-filter: blur(10px);
+}
+
+.feed__card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feed__card-label {
+  font-size: 0.7rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: capitalize;
+}
+
+.feed__card-time {
+  font-weight: 600;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  color: #ffffff;
+}
+
+.feed__card-rating {
+  color: #ffd700;
+  font-size: 0.9rem;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 1200px) {
+  .feed__grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .feed__card--large {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .feed {
+    padding: 16px;
+    padding-bottom: 90px; /* Account for bottom navigation */
+  }
+
+  .feed__search-container {
+    padding: 16px 0;
+  }
+
+  .feed__grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  
+  .feed__card--large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  
+  .feed__card--large .feed__card-image {
+    min-height: 350px;
+  }
+
+  .feed__card-image {
+    min-height: 200px;
+    padding: 16px;
+  }
+
+  .feed__card-title {
+    font-size: 1.05rem;
+  }
+
+  .feed__card--small .feed__card-title {
+    font-size: 0.9rem;
+  }
+
+  .feed__category-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .feed__filter-pill {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .feed__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .feed__card--large {
+    grid-column: span 2;
+  }
+  
+  .feed__card-title {
+    font-size: 0.95rem;
+  }
+
+  .feed__card--small .feed__card-title {
+    font-size: 0.85rem;
+  }
+
+  .feed__category-image {
+    width: 55px;
+    height: 55px;
+  }
+}

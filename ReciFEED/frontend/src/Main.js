@@ -1,20 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, useEffect } from 'react-router-dom';
-import Sidebar from './layout/SideBar';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import Sidebar from './layout/Sidebar';
 import Home from './pages/Home';
+import Feed from './pages/Feed';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import './components/Main.css';
 
 function AppContent() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = React.useState(null);
   const [showSidebar, setShowSidebar] = React.useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
   // Check if current route is home page (landing page)
   const isHomePage = location.pathname === '/';
+  
+  // Check if current route is feed page
+  const isFeedPage = location.pathname === '/feed';
   
   // Check if current route is auth page
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
@@ -29,13 +32,18 @@ function AppContent() {
           />
         )}
         
-        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
+        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isFeedPage ? 'feed-page' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            
             {/* Landing/Home Page */}
             <Route path="/" element={<Home />} />
+            
+            {/* Feed Page */}
+            <Route path="/feed" element={<Feed />} />
+            
             {/* Fallback Route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
