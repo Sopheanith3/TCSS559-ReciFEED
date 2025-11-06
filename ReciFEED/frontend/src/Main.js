@@ -33,11 +33,7 @@ function Main() {
               {/* <Route path="/register" element={<Register />} /> */}
               
               {/* Protected Routes */}
-              <Route 
-                path="/" 
-                element={<Home />} 
-              />
-              
+              <Route path="/" element={<Home />} />
               {/* Fallback Route */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
