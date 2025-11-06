@@ -1,0 +1,38 @@
+.app {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.app-content {
+  display: flex;
+  position: relative;
+  min-height: calc(100vh - 73px); /* Subtract navbar height */
+}
+
+.main-content {
+  flex: 1;
+  transition: margin-left var(--transition-base);
+}
+
+.main-content.with-sidebar {
+  margin-left: 240px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main-content.with-sidebar {
+    margin-left: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content.with-sidebar {
+    margin-left: 0;
+    padding-bottom: 70px; /* Space for bottom nav */
+  }
+
+  .app-content {
+    min-height: calc(100vh - 73px - 70px); /* Subtract navbar and bottom nav */
+  }
+}
