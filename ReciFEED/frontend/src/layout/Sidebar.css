@@ -1,6 +1,4 @@
-/* ===================================
-   SIDEBAR CONTAINER
-   =================================== */
+/* SIDEBAR CONTAINER */
 .sidebar {
   position: fixed;
   left: 0;
@@ -22,9 +20,7 @@
   width: 70px;
 }
 
-/* ===================================
-   LOGO SECTION
-   =================================== */
+/* LOGO SECTION */
 .sidebar__logo-container {
   padding: 10px 5px;
   display: flex;
@@ -55,9 +51,7 @@
   opacity: 1;
 }
 
-/* ===================================
-   NAVIGATION SECTION
-   =================================== */
+/* NAVIGATION SECTION */
 .sidebar__navigation {
   flex: 1;
   padding: 20px 0;
@@ -167,9 +161,7 @@
   overflow: hidden;
 }
 
-/* ===================================
-   PROFILE FOOTER SECTION
-   =================================== */
+/* PROFILE FOOTER SECTION */
 .sidebar__footer {
   padding: 16px 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -275,9 +267,7 @@
   overflow: hidden;
 }
 
-/* ===================================
-   HAMBURGER MENU BUTTON (IN FOOTER)
-   =================================== */
+/* HAMBURGER MENU BUTTON (IN FOOTER) */
 .sidebar__toggle-button {
   background: transparent;
   border: none;
@@ -321,9 +311,7 @@
   height: 20px;
 }
 
-/* ===================================
-   SCROLLBAR STYLING
-   =================================== */
+/* SCROLLBAR STYLING */
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
@@ -354,9 +342,7 @@
   border-radius: 3px;
 }
 
-/* ===================================
-   RESPONSIVE DESIGN
-   =================================== */
+/* RESPONSIVE DESIGN */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
