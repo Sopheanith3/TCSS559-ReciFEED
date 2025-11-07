@@ -1,0 +1,425 @@
+/* ===================================
+   RECIPE CONTAINER
+   =================================== */
+.recipe {
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 20px;
+  padding-top: 20px;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+}
+
+/* ===================================
+   SEARCH BAR
+   =================================== */
+.recipe__search-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  background-color: #1a1a1a;
+  z-index: 100;
+}
+
+.recipe__search-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.recipe__search-icon {
+  position: absolute;
+  left: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.recipe__search-input {
+  width: 100%;
+  background-color: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px 12px 48px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.recipe__search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.recipe__search-input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: #333333;
+}
+
+.recipe__filter-button {
+  background-color: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recipe__filter-button:hover {
+  background-color: #333333;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* ===================================
+   FILTER PILLS
+   =================================== */
+.recipe__filters {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.recipe__filters-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.recipe__filters-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.recipe__filters-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recipe__filters-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.recipe__filter-pill {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recipe__filter-pill:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.recipe__filter-pill--active {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+/* ===================================
+   CATEGORY ICONS
+   =================================== */
+.recipe__categories {
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.recipe__categories-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.recipe__categories-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.recipe__categories-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recipe__categories-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.recipe__category-item {
+  flex-shrink: 0;
+}
+
+.recipe__category-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recipe__category-image:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* ===================================
+   RECIPE GRID (MASONRY LAYOUT)
+   =================================== */
+.recipe__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  grid-auto-flow: dense;
+}
+
+.recipe__card {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative;
+  background-color: #2a2a2a;
+}
+
+.recipe__card:hover {
+  transform: translateY(-4px);
+}
+
+.recipe__card--large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.recipe__card--medium {
+  grid-row: span 1;
+}
+
+.recipe__card--small {
+  grid-row: span 1;
+}
+
+.recipe__card-image {
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+.recipe__card--large .recipe__card-image {
+  min-height: 500px;
+}
+
+.recipe__card--medium .recipe__card-image {
+  min-height: 300px;
+}
+
+.recipe__card--small .recipe__card-image {
+  min-height: 250px;
+}
+
+/* Gradient overlay */
+.recipe__card-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 1;
+}
+
+.recipe__card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+.recipe__card-content {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 40px; /* Add this line or increase the value if needed */
+}
+
+.recipe__card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.recipe__card--small .recipe__card-title {
+  font-size: 1.05rem;
+}
+
+.recipe__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.recipe__card-level {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  backdrop-filter: blur(10px);
+}
+
+.recipe__card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.recipe__card-label {
+  font-size: 0.7rem;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: capitalize;
+}
+
+.recipe__card-time {
+  font-weight: 600;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  color: #ffffff;
+}
+
+.recipe__card-rating {
+  color: #ffd700;
+  font-size: 0.9rem;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 1200px) {
+  .recipe__grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .recipe__card--large {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .recipe {
+    padding: 16px;
+    padding-bottom: 90px; /* Account for bottom navigation */
+  }
+
+  .recipe__search-container {
+    padding: 16px 0;
+  }
+
+  .recipe__grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  
+  .recipe__card--large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  
+  .recipe__card--large .recipe__card-image {
+    min-height: 350px;
+  }
+
+  .recipe__card-image {
+    min-height: 200px;
+    padding: 16px;
+  }
+
+  .recipe__card-title {
+    font-size: 1.05rem;
+  }
+
+  .recipe__card--small .recipe__card-title {
+    font-size: 0.9rem;
+  }
+
+  .recipe__category-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .recipe__filter-pill {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recipe__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .recipe__card--large {
+    grid-column: span 2;
+  }
+  
+  .recipe__card-title {
+    font-size: 0.95rem;
+  }
+
+  .recipe__card--small .recipe__card-title {
+    font-size: 0.85rem;
+  }
+
+  .recipe__category-image {
+    width: 55px;
+    height: 55px;
+  }
+}
