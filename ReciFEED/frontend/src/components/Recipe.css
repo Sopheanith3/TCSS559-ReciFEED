@@ -1,7 +1,7 @@
 /* ===================================
-   FEED CONTAINER
+   RECIPE CONTAINER
    =================================== */
-.feed {
+.recipe {
   min-height: 100vh;
   background-color: #1a1a1a;
   color: #ffffff;
@@ -13,7 +13,7 @@
 /* ===================================
    SEARCH BAR
    =================================== */
-.feed__search-container {
+.recipe__search-container {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -24,21 +24,21 @@
   z-index: 100;
 }
 
-.feed__search-wrapper {
+.recipe__search-wrapper {
   flex: 1;
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.feed__search-icon {
+.recipe__search-icon {
   position: absolute;
   left: 16px;
   color: rgba(255, 255, 255, 0.5);
   pointer-events: none;
 }
 
-.feed__search-input {
+.recipe__search-input {
   width: 100%;
   background-color: #2a2a2a;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -51,16 +51,16 @@
   transition: all 0.2s ease;
 }
 
-.feed__search-input::placeholder {
+.recipe__search-input::placeholder {
   color: rgba(255, 255, 255, 0.4);
 }
 
-.feed__search-input:focus {
+.recipe__search-input:focus {
   border-color: rgba(255, 255, 255, 0.3);
   background-color: #333333;
 }
 
-.feed__filter-button {
+.recipe__filter-button {
   background-color: #2a2a2a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -73,7 +73,7 @@
   justify-content: center;
 }
 
-.feed__filter-button:hover {
+.recipe__filter-button:hover {
   background-color: #333333;
   border-color: rgba(255, 255, 255, 0.2);
   color: #ffffff;
@@ -82,12 +82,12 @@
 /* ===================================
    FILTER PILLS
    =================================== */
-.feed__filters {
+.recipe__filters {
   margin-bottom: 20px;
   overflow: hidden;
 }
 
-.feed__filters-scroll {
+.recipe__filters-scroll {
   display: flex;
   gap: 8px;
   overflow-x: auto;
@@ -96,20 +96,20 @@
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
-.feed__filters-scroll::-webkit-scrollbar {
+.recipe__filters-scroll::-webkit-scrollbar {
   height: 6px;
 }
 
-.feed__filters-scroll::-webkit-scrollbar-track {
+.recipe__filters-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.feed__filters-scroll::-webkit-scrollbar-thumb {
+.recipe__filters-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
 
-.feed__filter-pill {
+.recipe__filter-pill {
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.7);
@@ -122,13 +122,13 @@
   transition: all 0.2s ease;
 }
 
-.feed__filter-pill:hover {
+.recipe__filter-pill:hover {
   background-color: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.3);
   color: #ffffff;
 }
 
-.feed__filter-pill--active {
+.recipe__filter-pill--active {
   background-color: #ffffff;
   color: #000000;
   border-color: #ffffff;
@@ -137,12 +137,12 @@
 /* ===================================
    CATEGORY ICONS
    =================================== */
-.feed__categories {
+.recipe__categories {
   margin-bottom: 24px;
   overflow: hidden;
 }
 
-.feed__categories-scroll {
+.recipe__categories-scroll {
   display: flex;
   gap: 12px;
   overflow-x: auto;
@@ -151,24 +151,24 @@
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
-.feed__categories-scroll::-webkit-scrollbar {
+.recipe__categories-scroll::-webkit-scrollbar {
   height: 6px;
 }
 
-.feed__categories-scroll::-webkit-scrollbar-track {
+.recipe__categories-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.feed__categories-scroll::-webkit-scrollbar-thumb {
+.recipe__categories-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
 
-.feed__category-item {
+.recipe__category-item {
   flex-shrink: 0;
 }
 
-.feed__category-image {
+.recipe__category-image {
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -179,7 +179,7 @@
   transition: all 0.2s ease;
 }
 
-.feed__category-image:hover {
+.recipe__category-image:hover {
   border-color: rgba(255, 255, 255, 0.5);
   transform: scale(1.05);
 }
@@ -187,14 +187,14 @@
 /* ===================================
    RECIPE GRID (MASONRY LAYOUT)
    =================================== */
-.feed__grid {
+.recipe__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
   grid-auto-flow: dense;
 }
 
-.feed__card {
+.recipe__card {
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
@@ -203,24 +203,24 @@
   background-color: #2a2a2a;
 }
 
-.feed__card:hover {
+.recipe__card:hover {
   transform: translateY(-4px);
 }
 
-.feed__card--large {
+.recipe__card--large {
   grid-column: span 2;
   grid-row: span 2;
 }
 
-.feed__card--medium {
+.recipe__card--medium {
   grid-row: span 1;
 }
 
-.feed__card--small {
+.recipe__card--small {
   grid-row: span 1;
 }
 
-.feed__card-image {
+.recipe__card-image {
   width: 100%;
   height: 100%;
   min-height: 250px;
@@ -233,20 +233,20 @@
   padding: 20px;
 }
 
-.feed__card--large .feed__card-image {
+.recipe__card--large .recipe__card-image {
   min-height: 500px;
 }
 
-.feed__card--medium .feed__card-image {
+.recipe__card--medium .recipe__card-image {
   min-height: 300px;
 }
 
-.feed__card--small .feed__card-image {
+.recipe__card--small .recipe__card-image {
   min-height: 250px;
 }
 
 /* Gradient overlay */
-.feed__card-image::before {
+.recipe__card-image::before {
   content: '';
   position: absolute;
   top: 0;
@@ -257,7 +257,7 @@
   z-index: 1;
 }
 
-.feed__card-badge {
+.recipe__card-badge {
   position: absolute;
   top: 16px;
   left: 16px;
@@ -274,13 +274,13 @@
   backdrop-filter: blur(10px);
 }
 
-.feed__card-content {
+.recipe__card-content {
   position: relative;
   z-index: 2;
   margin-bottom: 40px; /* Add this line or increase the value if needed */
 }
 
-.feed__card-title {
+.recipe__card-title {
   font-size: 1.3rem;
   font-weight: 600;
   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
@@ -293,11 +293,11 @@
   hyphens: auto;
 }
 
-.feed__card--small .feed__card-title {
+.recipe__card--small .recipe__card-title {
   font-size: 1.05rem;
 }
 
-.feed__card-meta {
+.recipe__card-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -307,7 +307,7 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-.feed__card-level {
+.recipe__card-level {
   background-color: rgba(255, 255, 255, 0.15);
   padding: 4px 10px;
   border-radius: 6px;
@@ -316,26 +316,26 @@
   backdrop-filter: blur(10px);
 }
 
-.feed__card-info {
+.recipe__card-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.feed__card-label {
+.recipe__card-label {
   font-size: 0.7rem;
   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
   color: rgba(255, 255, 255, 0.6);
   text-transform: capitalize;
 }
 
-.feed__card-time {
+.recipe__card-time {
   font-weight: 600;
   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
   color: #ffffff;
 }
 
-.feed__card-rating {
+.recipe__card-rating {
   color: #ffd700;
   font-size: 0.9rem;
 }
@@ -344,81 +344,81 @@
    RESPONSIVE DESIGN
    =================================== */
 @media (max-width: 1200px) {
-  .feed__grid {
+  .recipe__grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
   
-  .feed__card--large {
+  .recipe__card--large {
     grid-column: span 2;
   }
 }
 
 @media (max-width: 768px) {
-  .feed {
+  .recipe {
     padding: 16px;
     padding-bottom: 90px; /* Account for bottom navigation */
   }
 
-  .feed__search-container {
+  .recipe__search-container {
     padding: 16px 0;
   }
 
-  .feed__grid {
+  .recipe__grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 12px;
   }
   
-  .feed__card--large {
+  .recipe__card--large {
     grid-column: span 2;
     grid-row: span 2;
   }
   
-  .feed__card--large .feed__card-image {
+  .recipe__card--large .recipe__card-image {
     min-height: 350px;
   }
 
-  .feed__card-image {
+  .recipe__card-image {
     min-height: 200px;
     padding: 16px;
   }
 
-  .feed__card-title {
+  .recipe__card-title {
     font-size: 1.05rem;
   }
 
-  .feed__card--small .feed__card-title {
+  .recipe__card--small .recipe__card-title {
     font-size: 0.9rem;
   }
 
-  .feed__category-image {
+  .recipe__category-image {
     width: 60px;
     height: 60px;
   }
 
-  .feed__filter-pill {
+  .recipe__filter-pill {
     font-size: 0.85rem;
     padding: 6px 14px;
   }
 }
 
 @media (max-width: 480px) {
-  .feed__grid {
+  .recipe__grid {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .feed__card--large {
+  .recipe__card--large {
     grid-column: span 2;
   }
   
-  .feed__card-title {
+  .recipe__card-title {
     font-size: 0.95rem;
   }
 
-  .feed__card--small .feed__card-title {
+  .recipe__card--small .recipe__card-title {
     font-size: 0.85rem;
   }
 
-  .feed__category-image {
+  .recipe__category-image {
     width: 55px;
     height: 55px;
   }

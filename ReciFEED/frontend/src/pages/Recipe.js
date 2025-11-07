@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import '../components/Feed.css';
+import '../components/Recipe.css';
 
-const Feed = () => {
+const Recipe = () => {
   const [activeFilter, setActiveFilter] = useState('For you');
 
   // Sample recipe data - you would fetch this from your API
@@ -100,21 +100,21 @@ const Feed = () => {
   ];
   
   return (
-    <div className="feed">
+    <div className="recipe">
       {/* Search Bar */}
-      <div className="feed__search-container">
-        <div className="feed__search-wrapper">
-          <svg className="feed__search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <div className="recipe__search-container">
+        <div className="recipe__search-wrapper">
+          <svg className="recipe__search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
             <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>
             <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
           <input 
             type="text" 
-            className="feed__search-input" 
+            className="recipe__search-input" 
             placeholder="What's cooking?"
           />
         </div>
-        <button className="feed__filter-button">
+        <button className="recipe__filter-button">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M3 6h18M7 12h10M10 18h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
@@ -122,12 +122,12 @@ const Feed = () => {
       </div>
 
       {/* Filter Pills */}
-      <div className="feed__filters">
-        <div className="feed__filters-scroll">
+      <div className="recipe__filters">
+        <div className="recipe__filters-scroll">
           {filters.map((filter, index) => (
             <button
               key={index}
-              className={`feed__filter-pill ${activeFilter === filter ? 'feed__filter-pill--active' : ''}`}
+              className={`recipe__filter-pill ${activeFilter === filter ? 'recipe__filter-pill--active' : ''}`}
               onClick={() => setActiveFilter(filter)}
             >
               {filter}
@@ -137,39 +137,39 @@ const Feed = () => {
       </div>
 
       {/* Recipe Grid */}
-      <div className="feed__grid">
+      <div className="recipe__grid">
         {recipes.map((recipe) => (
-          <div key={recipe.id} className={`feed__card feed__card--${recipe.size}`}>
-            <div className="feed__card-image" style={{backgroundImage: `url(${recipe.image})`}}>
+          <div key={recipe.id} className={`recipe__card recipe__card--${recipe.size}`}>
+            <div className="recipe__card-image" style={{backgroundImage: `url(${recipe.image})`}}>
               {recipe.difficulty && (
-                <span className="feed__card-badge">{recipe.difficulty}</span>
+                <span className="recipe__card-badge">{recipe.difficulty}</span>
               )}
-              <div className="feed__card-content">
-                <h3 className="feed__card-title">{recipe.title}</h3>
-                <div className="feed__card-meta">
-                  {recipe.level && <span className="feed__card-level">{recipe.level}</span>}
+              <div className="recipe__card-content">
+                <h3 className="recipe__card-title">{recipe.title}</h3>
+                <div className="recipe__card-meta">
+                  {recipe.level && <span className="recipe__card-level">{recipe.level}</span>}
                   {recipe.cookingTime && (
-                    <div className="feed__card-info">
-                      <span className="feed__card-label">Cooking</span>
-                      <span className="feed__card-time">{recipe.cookingTime}</span>
+                    <div className="recipe__card-info">
+                      <span className="recipe__card-label">Cooking</span>
+                      <span className="recipe__card-time">{recipe.cookingTime}</span>
                     </div>
                   )}
                   {recipe.overallTime && (
-                    <div className="feed__card-info">
-                      <span className="feed__card-label">Overall</span>
-                      <span className="feed__card-time">{recipe.overallTime}</span>
+                    <div className="recipe__card-info">
+                      <span className="recipe__card-label">Overall</span>
+                      <span className="recipe__card-time">{recipe.overallTime}</span>
                     </div>
                   )}
                   {recipe.servings && (
-                    <div className="feed__card-info">
-                      <span className="feed__card-label">Ready</span>
-                      <span className="feed__card-time">{recipe.servings}</span>
+                    <div className="recipe__card-info">
+                      <span className="recipe__card-label">Ready</span>
+                      <span className="recipe__card-time">{recipe.servings}</span>
                     </div>
                   )}
                   {!recipe.level && recipe.cookingTime && (
                     <>
-                      <span className="feed__card-rating">★★★★</span>
-                      <span className="feed__card-time">{recipe.cookingTime}</span>
+                      <span className="recipe__card-rating">★★★★</span>
+                      <span className="recipe__card-time">{recipe.cookingTime}</span>
                     </>
                   )}
                 </div>
@@ -182,4 +182,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default Recipe;
