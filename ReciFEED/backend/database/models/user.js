@@ -7,16 +7,14 @@
 
 const mongoose = require('mongoose');
 
-// Create schema for population
+// Create schema for user
 const userSchema = new mongoose.Schema({
-  city: { type: String, required: true },
-  population: { type: Number, default: 0, min: 0 },
-  populationDensity: { type: Number, default: 0, min: 0 },
-  populationRank: { type: Number, default: 0, min: 0 },
-  populationDensityRank: { type: Number, default: 0, min: 0 },
-  landArea: { type: Number, default: 0, min: 0 },
-}, { collection: 'population'});
+  created_at: { type: Date, required: true },
+  email: { type: String, required: true },
+  password_hash: { type: String, required: true },
+  username: { type: String, required: true },
+}, { collection: 'users'});
 
-const Population = mongoose.model('Population', populationSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports = Population;
+module.exports = User;
