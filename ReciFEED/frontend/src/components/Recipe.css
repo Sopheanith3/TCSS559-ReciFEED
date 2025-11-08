@@ -1,6 +1,4 @@
-/* ===================================
-   RECIPE CONTAINER
-   =================================== */
+/* RECIPE CONTAINER */
 .recipe {
   min-height: 100vh;
   background-color: #1a1a1a;
@@ -10,9 +8,7 @@
   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
 }
 
-/* ===================================
-   SEARCH BAR
-   =================================== */
+/* SEARCH BAR */
 .recipe__search-container {
   display: flex;
   gap: 12px;
@@ -79,9 +75,7 @@
   color: #ffffff;
 }
 
-/* ===================================
-   FILTER PILLS
-   =================================== */
+/* FILTER PILLS */
 .recipe__filters {
   margin-bottom: 20px;
   overflow: hidden;
@@ -134,9 +128,7 @@
   border-color: #ffffff;
 }
 
-/* ===================================
-   CATEGORY ICONS
-   =================================== */
+/* CATEGORY ICONS */
 .recipe__categories {
   margin-bottom: 24px;
   overflow: hidden;
@@ -184,9 +176,7 @@
   transform: scale(1.05);
 }
 
-/* ===================================
-   RECIPE GRID (MASONRY LAYOUT)
-   =================================== */
+/* RECIPE GRID (MASONRY LAYOUT) */
 .recipe__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -340,9 +330,7 @@
   font-size: 0.9rem;
 }
 
-/* ===================================
-   RESPONSIVE DESIGN
-   =================================== */
+/* RESPONSIVE DESIGN */
 @media (max-width: 1200px) {
   .recipe__grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
