@@ -34,27 +34,27 @@ async function main() {
 
     // User collection indexes
     const userCollection = database.collection('users');
-    userCollection.createIndex({ email: 1 }, { unique: true })
-    userCollection.createIndex({ username: 1 }, { unique: true })
+    await userCollection.createIndex({ email: 1 }, { unique: true })
+    await userCollection.createIndex({ username: 1 }, { unique: true })
     console.log('Created user indexes.');
 
     // Post collection indexes
     const postCollection = database.collection('posts');
-    postCollection.createIndex({ user_id: 1, created_at: -1 })
-    postCollection.createIndex({ recipe_id: 1 })
-    postCollection.createIndex({ "likes.user_id": 1 })
+    await postCollection.createIndex({ user_id: 1, created_at: -1 })
+    await postCollection.createIndex({ recipe_id: 1 })
+    await postCollection.createIndex({ "likes.user_id": 1 })
     console.log('Created post indexes.');
 
     // Recipe collection indexes
     const recipeCollection = database.collection('recipes');
-    recipeCollection.createIndex({ user_id: 1, created_at: -1 })
-    recipeCollection.createIndex({ title: 1 })
-    recipeCollection.createIndex({ tags: 1 })
+    await recipeCollection.createIndex({ user_id: 1, created_at: -1 })
+    await recipeCollection.createIndex({ title: 1 })
+    await recipeCollection.createIndex({ tags: 1 })
     console.log('Created recipe indexes.');
 
     // Search collection indexes
     const searchCollection = database.collection('recipes');
-    searchCollection.createIndex({ created_at: -1 })
+    await searchCollection.createIndex({ created_at: -1 })
     console.log('Created search indexes.');
   } catch (error) {
     console.error('There has been an error:', error);

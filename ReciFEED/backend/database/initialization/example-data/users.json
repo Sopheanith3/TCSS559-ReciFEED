@@ -3,60 +3,70 @@
     "created_at": "2025-11-07T12:00:00Z",
     "email": "alice@example.com",
     "password_hash": "hash_1a2b3c",
-    "username": "alice"
+    "username": "alice",
+    "is_admin": false
   },
   {
     "created_at": "2025-11-06T15:30:00Z",
     "email": "bob@example.com",
     "password_hash": "hash_4d5e6f",
-    "username": "bob"
+    "username": "bob",
+    "is_admin": false
   },
   {
     "created_at": "2025-11-05T08:45:00Z",
     "email": "carol@example.com",
     "password_hash": "hash_7g8h9i",
-    "username": "carol"
+    "username": "carol",
+    "is_admin": false
   },
   {
     "created_at": "2025-11-04T20:10:00Z",
     "email": "dave@example.com",
     "password_hash": "hash_j1k2l3",
-    "username": "dave"
+    "username": "dave",
+    "is_admin": false
   },
   {
     "created_at": "2025-11-03T11:25:00Z",
     "email": "eve@example.com",
     "password_hash": "hash_m4n5o6",
-    "username": "eve"
+    "username": "eve",
+    "is_admin": false
   },
   {
     "created_at": "2025-11-02T17:50:00Z",
     "email": "frank@example.com",
     "password_hash": "hash_p7q8r9",
-    "username": "frank"
+    "username": "frank",
+    "is_admin": false
   },
   {
     "created_at": "2025-11-01T09:15:00Z",
     "email": "grace@example.com",
     "password_hash": "hash_s1t2u3",
-    "username": "grace"
+    "username": "grace",
+    "is_admin": false
   },
   {
     "created_at": "2025-10-31T22:40:00Z",
     "email": "heidi@example.com",
     "password_hash": "hash_v4w5x6",
-    "username": "heidi"
+    "username": "heidi",
+    "is_admin": false
   },
   {
     "created_at": "2025-10-30T14:05:00Z",
     "email": "ivan@example.com",
     "password_hash": "hash_y7z8a9",
-    "username": "ivan"
+    "username": "ivan",
+    "is_admin": false
   },
   {
     "created_at": "2025-10-29T06:30:00Z",
     "email": "judy@example.com",
     "password_hash": "hash_b1c2d3",
-    "username": "judy"
+    "username": "judy",
+    "is_admin": false
   }
 ]
