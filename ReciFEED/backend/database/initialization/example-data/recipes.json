@@ -1,0 +1,158 @@
+[
+  {
+    "created_at": "2025-11-07T10:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c972",
+    "username": "alice",
+    "title": "Chocolate Cake",
+    "tags": ["Dessert", "Pastry"],
+    "ingredients": ["2 cups flour", "1 cup sugar", "1/2 cup cocoa powder", "1 cup milk", "2 eggs"],
+    "instructions": ["Mix dry ingredients.", "Add wet ingredients and stir.", "Bake at 350°F for 30 mins."],
+    "image_urls": ["https://example.com/images/chocolate_cake1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-07T11:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "created_at": "2025-11-07T12:00:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "created_at": "2025-11-07T12:30:00Z", "text": "Delicious!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-06T09:30:00Z",
+    "user_id": "690f704d3fe0dd94aba6c973",
+    "username": "bob",
+    "title": "Spaghetti Aglio e Olio",
+    "tags": ["Lunch"],
+    "ingredients": ["200g spaghetti", "2 tbsp olive oil", "2 garlic cloves", "Parmesan to taste"],
+    "instructions": ["Cook spaghetti.", "Sauté garlic in oil.", "Toss spaghetti with garlic and top with Parmesan."],
+    "image_urls": ["https://example.com/images/spaghetti1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-11-06T10:00:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "created_at": "2025-11-06T11:00:00Z", "text": "Quick and easy!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-05T14:15:00Z",
+    "user_id": "690f704d3fe0dd94aba6c974",
+    "username": "carol",
+    "title": "Greek Salad",
+    "tags": ["Lunch", "Vegan"],
+    "ingredients": ["3 cups salad greens", "1/2 cup cherry tomatoes", "1/4 cup feta cheese"],
+    "instructions": ["Combine vegetables.", "Add dressing.", "Top with feta."],
+    "image_urls": ["https://example.com/images/salad1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-11-05T15:00:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "created_at": "2025-11-05T15:30:00Z", "text": "Fresh and tasty!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-04T16:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c975",
+    "username": "dave",
+    "title": "Pan-Seared Chicken",
+    "tags": ["Dinner"],
+    "ingredients": ["2 chicken breasts", "1 tsp paprika", "2 tbsp olive oil"],
+    "instructions": ["Season chicken.", "Cook in pan until done."],
+    "image_urls": ["https://example.com/images/chicken1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "created_at": "2025-11-04T16:30:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "created_at": "2025-11-04T17:00:00Z", "text": "Perfectly cooked!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-03T11:45:00Z",
+    "user_id": "690f704d3fe0dd94aba6c976",
+    "username": "eve",
+    "title": "Oatmeal with Honey",
+    "tags": ["Breakfast", "Vegan"],
+    "ingredients": ["1 cup oats", "1/2 cup almond milk", "1 tbsp honey"],
+    "instructions": ["Mix oats and milk.", "Add honey and enjoy."],
+    "image_urls": ["https://example.com/images/oatmeal1.jpg"],
+    "likes": [
+      { "user_id": "690f704e3fe0dd94aba6c97b", "username": "judy", "created_at": "2025-11-03T12:15:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "650000000000000000000001", "username": "alice", "created_at": "2025-11-03T12:30:00Z", "text": "Healthy and delicious!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-02T09:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c977",
+    "username": "frank",
+    "title": "Peanut Butter Banana Sandwich",
+    "tags": ["Breakfast", "Snack"],
+    "ingredients": ["2 slices bread", "2 tbsp peanut butter", "1 banana"],
+    "instructions": ["Spread peanut butter.", "Add banana slices."],
+    "image_urls": ["https://example.com/images/sandwich1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-02T09:30:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "created_at": "2025-11-02T10:00:00Z", "text": "Quick snack!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-01T18:20:00Z",
+    "user_id": "690f704d3fe0dd94aba6c978",
+    "username": "grace",
+    "title": "Butter Rice",
+    "tags": ["Lunch", "Dinner"],
+    "ingredients": ["1 cup rice", "2 cups water", "1 tbsp butter"],
+    "instructions": ["Boil water.", "Add rice and butter.", "Simmer until done."],
+    "image_urls": ["https://example.com/images/rice1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "created_at": "2025-11-01T18:45:00Z" }
+    ],
+    "comments": []
+  },
+  {
+    "created_at": "2025-10-31T14:50:00Z",
+    "user_id": "690f704d3fe0dd94aba6c979",
+    "username": "heidi",
+    "title": "Simple Omelette",
+    "tags": ["Breakfast"],
+    "ingredients": ["4 eggs", "1/4 cup milk", "Salt and pepper"],
+    "instructions": ["Beat eggs and milk.", "Cook in pan."],
+    "image_urls": ["https://example.com/images/omelette1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-10-31T15:20:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "created_at": "2025-10-31T15:45:00Z", "text": "Fluffy!" }
+    ]
+  },
+  {
+    "created_at": "2025-10-30T08:10:00Z",
+    "user_id": "690f704e3fe0dd94aba6c97a",
+    "username": "ivan",
+    "title": "Yogurt Parfait",
+    "tags": ["Breakfast", "Snack"],
+    "ingredients": ["1 cup yogurt", "1/2 cup granola", "1/4 cup strawberries"],
+    "instructions": ["Layer yogurt, granola, and strawberries."],
+    "image_urls": ["https://example.com/images/parfait1.jpg"],
+    "likes": [],
+    "comments": []
+  },
+  {
+    "created_at": "2025-10-29T20:25:00Z",
+    "user_id": "690f704e3fe0dd94aba6c97b",
+    "username": "judy",
+    "title": "Avocado Toast",
+    "tags": ["Breakfast", "Vegan", "Snack"],
+    "ingredients": ["1 avocado", "2 slices bread", "Salt and pepper"],
+    "instructions": ["Mash avocado with seasoning.", "Spread on toasted bread."],
+    "image_urls": ["https://example.com/images/avocado_toast1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-10-29T21:00:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-10-29T21:30:00Z", "text": "Simple and delicious!" },
+      { "_id": "000000000000000000000002", "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-10-29T21:40:00Z", "text": "Again, great recipe!" }
+    ]
+  }
+]

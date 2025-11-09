@@ -1,0 +1,52 @@
+[
+  {
+    "created_at": "2025-11-07T09:00:00Z",
+    "query": "chocolate cake",
+    "filters": ["Recipe", "Dessert", "Pastry"]
+  },
+  {
+    "created_at": "2025-11-07T09:15:00Z",
+    "query": "alice",
+    "filters": ["User"]
+  },
+  {
+    "created_at": "2025-11-06T10:30:00Z",
+    "query": "spaghetti",
+    "filters": ["Recipe", "Lunch"]
+  },
+  {
+    "created_at": "2025-11-06T11:00:00Z",
+    "query": "vegan salad",
+    "filters": ["Recipe", "Lunch", "Vegan"]
+  },
+  {
+    "created_at": "2025-11-05T14:20:00Z",
+    "query": "nonexistent user",
+    "filters": ["User"]
+  },
+  {
+    "created_at": "2025-11-05T15:00:00Z",
+    "query": "random dessert",
+    "filters": ["Recipe", "Dessert"]
+  },
+  {
+    "created_at": "2025-11-04T08:50:00Z",
+    "query": "avocado toast",
+    "filters": ["Recipe", "Breakfast", "Vegan", "Snack"]
+  },
+  {
+    "created_at": "2025-11-03T12:10:00Z",
+    "query": "judy",
+    "filters": ["User"]
+  },
+  {
+    "created_at": "2025-11-02T16:45:00Z",
+    "query": "",
+    "filters": ["Recipe", "Dinner"]
+  },
+  {
+    "created_at": "2025-11-01T18:30:00Z",
+    "query": "butter rice",
+    "filters": ["Recipe", "Lunch", "Dinner"]
+  }
+]

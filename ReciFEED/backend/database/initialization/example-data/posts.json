@@ -1,0 +1,129 @@
+[
+  {
+    "created_at": "2025-11-08T09:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c972",
+    "username": "alice",
+    "recipe_id": "690f75259ab0b1f1b6423396",
+    "body": "Tried this chocolate cake today! Turned out amazing.",
+    "image_urls": ["https://example.com/images/post_choc_cake1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-08T09:30:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "created_at": "2025-11-08T10:00:00Z", "text": "Looks delicious!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-08T10:15:00Z",
+    "user_id": "690f704d3fe0dd94aba6c975",
+    "username": "dave",
+    "recipe_id": "690f75259ab0b1f1b6423397",
+    "body": "My lunch today: simple spaghetti recipe.",
+    "image_urls": ["https://example.com/images/post_spaghetti1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "created_at": "2025-11-08T10:45:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-11-08T11:00:00Z" }
+    ],
+    "comments": []
+  },
+  {
+    "created_at": "2025-11-07T14:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c978",
+    "username": "grace",
+    "recipe_id": "690f75259ab0b1f1b6423398",
+    "body": "Fresh Greek salad for lunch. Loved it!",
+    "image_urls": ["https://example.com/images/post_salad1.jpg", "https://example.com/images/post_salad2.jpg"],
+    "likes": [],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-11-07T14:30:00Z", "text": "Interesting!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-07T18:20:00Z",
+    "user_id": "690f704d3fe0dd94aba6c979",
+    "username": "heidi",
+    "recipe_id": "690f75259ab0b1f1b6423399",
+    "body": "Cooked chicken breasts tonight. Simple and tasty.",
+    "image_urls": ["https://example.com/images/post_chicken1.jpg"],
+    "likes": [
+      { "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "created_at": "2025-11-07T19:00:00Z" }
+    ],
+    "comments": []
+  },
+  {
+    "created_at": "2025-11-06T08:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c974",
+    "username": "carol",
+    "recipe_id": "690f75259ab0b1f1b6423396",
+    "body": "Chocolate cake for dessert! Couldn't resist sharing.",
+    "image_urls": ["https://example.com/images/post_choc_cake2.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-06T08:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "created_at": "2025-11-06T09:00:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "created_at": "2025-11-06T09:15:00Z", "text": "Yum!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-05T12:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c972",
+    "username": "alice",
+    "recipe_id": "690f75259ab0b1f1b642339a",
+    "body": "Healthy oatmeal breakfast to start the day.",
+    "image_urls": ["https://example.com/images/post_oatmeal1.jpg"],
+    "likes": [],
+    "comments": []
+  },
+  {
+    "created_at": "2025-11-05T13:45:00Z",
+    "user_id": "690f704d3fe0dd94aba6c977",
+    "username": "frank",
+    "recipe_id": "690f75259ab0b1f1b642339b",
+    "body": "Quick peanut butter banana snack!",
+    "image_urls": ["https://example.com/images/post_sandwich1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "created_at": "2025-11-05T14:15:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "created_at": "2025-11-05T14:30:00Z", "text": "Looks tasty!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-04T17:30:00Z",
+    "user_id": "690f704e3fe0dd94aba6c97a",
+    "username": "ivan",
+    "recipe_id": "690f75259ab0b1f1b642339c",
+    "body": "Butter rice for dinner tonight.",
+    "image_urls": ["https://example.com/images/post_rice1.jpg", "https://example.com/images/post_rice2.jpg"],
+    "likes": [],
+    "comments": []
+  },
+  {
+    "created_at": "2025-11-03T09:00:00Z",
+    "user_id": "690f704d3fe0dd94aba6c976",
+    "username": "eve",
+    "recipe_id": "690f75259ab0b1f1b642339f",
+    "body": "Avocado toast is my favorite breakfast snack.",
+    "image_urls": ["https://example.com/images/post_avocado1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-11-03T09:30:00Z" }
+    ],
+    "comments": [
+      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-03T10:00:00Z", "text": "Looks delicious!" },
+      { "_id": "000000000000000000000002", "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "created_at": "2025-11-03T10:10:00Z", "text": "Great!" }
+    ]
+  },
+  {
+    "created_at": "2025-11-02T15:20:00Z",
+    "user_id": "690f704d3fe0dd94aba6c975",
+    "username": "dave",
+    "recipe_id": "690f75259ab0b1f1b642339d",
+    "body": "Simple omelette for a quick breakfast.",
+    "image_urls": ["https://example.com/images/post_omelette1.jpg"],
+    "likes": [
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-11-02T15:45:00Z" }
+    ],
+    "comments": []
+  }
+]

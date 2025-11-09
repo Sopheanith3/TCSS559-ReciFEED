@@ -32,10 +32,30 @@ async function main() {
     // Access the database dbName
     const database = client.db(dbName);
 
-    // A
+    // User collection indexes
     const userCollection = database.collection('users');
+    await userCollection.createIndex({ email: 1 }, { unique: true })
+    await userCollection.createIndex({ username: 1 }, { unique: true })
+    console.log('Created user indexes.');
 
-    console.log('Data import completed.');
+    // Post collection indexes
+    const postCollection = database.collection('posts');
+    await postCollection.createIndex({ user_id: 1, created_at: -1 })
+    await postCollection.createIndex({ recipe_id: 1 })
+    await postCollection.createIndex({ "likes.user_id": 1 })
+    console.log('Created post indexes.');
+
+    // Recipe collection indexes
+    const recipeCollection = database.collection('recipes');
+    await recipeCollection.createIndex({ user_id: 1, created_at: -1 })
+    await recipeCollection.createIndex({ title: 1 })
+    await recipeCollection.createIndex({ tags: 1 })
+    console.log('Created recipe indexes.');
+
+    // Search collection indexes
+    const searchCollection = database.collection('recipes');
+    await searchCollection.createIndex({ created_at: -1 })
+    console.log('Created search indexes.');
   } catch (error) {
     console.error('There has been an error:', error);
   } finally {
