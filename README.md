@@ -31,7 +31,7 @@ npm install
 npm start
 ```
 
-## ⚙️ Environment Variables
+### ⚙️ Environment Variables
 
 This project requires environment variables to connect to MongoDB.
 
