@@ -55,25 +55,55 @@ Add to `backend/package.json`:
 
 ### Project Structure
 ```
-ReciFEED/
-├── backend/
-│   ├── src/
-│   │   ├── routes/
-│   │   ├── controllers/
-│   │   ├── models/
-│   │   ├── middleware/
-│   │   └── server.js
-│   ├── package.json
-│   └── .env
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── App.js
-│   ├── package.json
-│   └── .env
-└── package.json
+TCSS559-RECIFEED/
+├─ backend/
+│  ├─ controllers/
+│  │  ├─ postController.js
+│  │  ├─ recipeController.js
+│  │  ├─ searchController.js
+│  │  └─ userController.js
+│  ├─ database/
+│  │  ├─ initialization/
+│  │  │  ├─ createIndexes.js
+│  │  │  └─ importExampleData.js
+│  │  └─ connection.js
+│  ├─ models/
+│  │  ├─ post.js
+│  │  ├─ recipe.js
+│  │  ├─ search.js
+│  │  └─ user.js
+│  ├─ routes/
+│  │  ├─ postRoutes.js
+│  │  ├─ recipeRoutes.js
+│  │  ├─ searchRoutes.js
+│  │  └─ userRoutes.js
+│  ├─ service/            # shared business logic (e.g., error handling)
+│  ├─ utils/              # helpers (e.g., errorHandler.js)
+│  ├─ .env                # NOT committed – use .env.example
+│  └─ server.js           # Express app entry
+│
+└─ frontend/
+   ├─ public/
+   └─ src/
+      ├─ assets/          # icons & logos
+      ├─ components/
+      │  ├─ Feed.css
+      │  ├─ Home.css
+      │  ├─ Login.css
+      │  ├─ Recipe.css
+      │  └─ Register.css
+      ├─ layout/
+      │  ├─ Navbar.css
+      │  ├─ Navbar.js
+      │  ├─ Sidebar.css
+      │  └─ Sidebar.js
+      └─ pages/
+         ├─ Feed.js
+         ├─ Home.js
+         ├─ Login.js
+         ├─ Recipe.js
+         └─ Register.js
+
 ```
 
 ### Technologies Used
