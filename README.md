@@ -47,6 +47,7 @@ PORT=5000
 
 # MongoDB connection URI
 MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
+```
 
 ### Project Structure
 ```
