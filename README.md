@@ -31,6 +31,22 @@ npm install
 npm start
 ```
 
+## ⚙️ Environment Variables
+
+This project requires environment variables to connect to MongoDB.
+
+
+A sample file is provided:  
+`backend/.env.example or backend/.env `
+
+### 1) Create `backend/.env`
+
+```bash
+#Backend Port
+PORT=5000
+
+# MongoDB connection URI
+MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
 
 ### Project Structure
 ```
