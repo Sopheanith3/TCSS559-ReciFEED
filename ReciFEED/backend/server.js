@@ -5,7 +5,9 @@ const connectDB = require('./database/connection');
 
 // Import routes
 const userRoutes = require('./routes/userRoutes');
+const recipeRoutes = require('./routes/recipeRoutes');
 const postRoutes = require('./routes/postRoutes');
+const searchRoutes = require('./routes/searchRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -53,7 +55,9 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/users', userRoutes);
+app.use('/api/recipes', recipeRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/search', searchRoutes);
 
 // Global Error Handler (must be before 404)
 app.use((err, req, res, next) => {
