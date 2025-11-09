@@ -5,9 +5,7 @@ const connectDB = require('./database/connection');
 
 // Import routes
 const userRoutes = require('./routes/userRoutes');
-const recipeRoutes = require('./routes/recipeRoutes');
 const postRoutes = require('./routes/postRoutes');
-const searchRoutes = require('./routes/searchRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -29,21 +27,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// API Routes
-app.use('/api/users', userRoutes);
-app.use('/api/recipes', recipeRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/search', searchRoutes);
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'success',
-    message: 'ReciFEED API is running',
-    timestamp: new Date().toISOString()
-  });
-});
-
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
@@ -59,7 +42,20 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling middleware
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'success',
+    message: 'ReciFEED API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// API Routes
+app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
+
+// Global Error Handler (must be before 404)
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   console.error(err.stack);
@@ -75,8 +71,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Handle 404 routes
-app.use('*', (req, res) => {
+// 404 Handler - must be absolutely last
+app.use((req, res, next) => {
   res.status(404).json({
     status: 'error',
     message: `Route ${req.originalUrl} not found`

@@ -11,23 +11,22 @@ const {
   addComment,
   deleteComment
 } = require('../controllers/postController');
-const { protect, optionalAuth } = require('../middleware/authMiddleware');
 
-// Public routes (with optional auth for feed)
-router.get('/feed', optionalAuth, getFeed);
+// Public routes (no auth required for now)
+router.get('/feed', getFeed);
 router.get('/user/:userId', getPostsByUser);
-router.get('/:id', optionalAuth, getPostById);
+router.get('/:id', getPostById);
 
-// Protected routes
-router.post('/', protect, createPost);
-router.delete('/:id', protect, deletePost);
+// Post routes (no auth for now - add later)
+router.post('/', createPost);
+router.delete('/:id', deletePost);
 
 // Like/Unlike routes
-router.post('/:id/likes', protect, likePost);
-router.delete('/:id/likes', protect, unlikePost);
+router.post('/:id/likes', likePost);
+router.delete('/:id/likes', unlikePost);
 
 // Comment routes
-router.post('/:id/comments', protect, addComment);
-router.delete('/:id/comments/:commentId', protect, deleteComment);
+router.post('/:id/comments', addComment);
+router.delete('/:id/comments/:commentId', deleteComment);
 
 module.exports = router;

@@ -1,13 +1,14 @@
-const mongoose = require('mongoose')
-
-const mongoDBConnectString = "mongodb+srv://recifeed_dev_db_user:xyInl7KWe3vRzmQV@recifeed-cluster-0.yywkfdd.mongodb.net/?appName=recifeed-cluster-0"
+const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(mongoDBConnectString);
-    console.log('✅ Backend is now connected to MongoDB database')
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('✅ Backend is now connected to MongoDB database');
+    console.log(`📊 Database: ${mongoose.connection.db.databaseName}`);
+    console.log(`📁 Collections:`, await mongoose.connection.db.listCollections().toArray());
   } catch (error) {
-    console.error('❌ MongoDB connection failed:', error)
+    console.error('❌ MongoDB connection failed:', error);
+    process.exit(1);
   }
 };
 

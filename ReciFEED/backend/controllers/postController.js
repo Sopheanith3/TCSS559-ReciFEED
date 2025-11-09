@@ -1,37 +1,29 @@
-const Post = require('../models/Post');
-const User = require('../models/User');
-const Recipe = require('../models/Recipe');
+const Post = require('../database/models/post');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const createPost = asyncHandler(async (req, res, next) => {
-  const { content, images, recipeId } = req.body;
+  const { content, images, recipeId, userId, username } = req.body;
 
   if (!content) {
     return next(new ErrorResponse('Please provide post content', 400));
   }
 
+  if (!userId) {
+    return next(new ErrorResponse('Please provide userId', 400));
+  }
+
   const postData = {
-    authorId: req.user._id,
-    authorName: req.user.username,
-    authorImage: req.user.profileImage,
-    content,
-    images: images || []
+    user_id: userId,
+    body: content,
+    image_urls: images || [],
+    created_at: new Date()
   };
 
-  // If recipe is referenced, add recipe info
   if (recipeId) {
-    const recipe = await Recipe.findById(recipeId);
-    if (recipe) {
-      postData.recipeId = recipe._id;
-      postData.recipeTitle = recipe.title;
-      postData.recipeImage = recipe.images[0] || '';
-    }
+    postData.recipe_id = recipeId;
   }
 
   const post = await Post.create(postData);
-
-  // Update user's post count
-  await User.findByIdAndUpdate(req.user._id, { $inc: { postsCount: 1 } });
 
   res.status(201).json({
     status: 'success',
@@ -39,11 +31,10 @@ const createPost = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 const getFeed = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
-  const sortBy = req.query.sortBy || 'createdAt';
+  const sortBy = req.query.sortBy || 'created_at';
   const order = req.query.order === 'asc' ? 1 : -1;
   
   const skip = (page - 1) * limit;
@@ -56,30 +47,17 @@ const getFeed = asyncHandler(async (req, res, next) => {
     .limit(limit)
     .skip(skip);
 
-  // Add isLikedByUser field if user is authenticated
-  const postsWithLikeStatus = posts.map(post => {
-    const postObj = post.toObject();
-    postObj.isLikedByUser = req.user 
-      ? post.likes.some(like => like.userId.toString() === req.user._id.toString())
-      : false;
-    
-    // Remove full likes/comments arrays for feed view
-    postObj.likes = postObj.likesCount;
-    postObj.comments = postObj.commentsCount;
-    
-    return postObj;
-  });
-
   const total = await Post.countDocuments();
 
   res.status(200).json({
     status: 'success',
     data: {
-      posts: postsWithLikeStatus,
+      posts,
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total / limit),
-        totalPosts: total
+        totalPosts: total,
+        hasMore: page < Math.ceil(total / limit)
       }
     }
   });
@@ -92,14 +70,9 @@ const getPostById = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Post not found', 404));
   }
 
-  const postData = post.toObject();
-  postData.isLikedByUser = req.user
-    ? post.likes.some(like => like.userId.toString() === req.user._id.toString())
-    : false;
-
   res.status(200).json({
     status: 'success',
-    data: postData
+    data: post
   });
 });
 
@@ -108,12 +81,12 @@ const getPostsByUser = asyncHandler(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 20;
   const skip = (page - 1) * limit;
 
-  const posts = await Post.find({ authorId: req.params.userId })
-    .sort({ createdAt: -1 })
+  const posts = await Post.find({ user_id: req.params.userId })
+    .sort({ created_at: -1 })
     .limit(limit)
     .skip(skip);
 
-  const total = await Post.countDocuments({ authorId: req.params.userId });
+  const total = await Post.countDocuments({ user_id: req.params.userId });
 
   res.status(200).json({
     status: 'success',
@@ -135,15 +108,7 @@ const deletePost = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Post not found', 404));
   }
 
-  // Check if user owns the post
-  if (post.authorId.toString() !== req.user._id.toString()) {
-    return next(new ErrorResponse('Not authorized to delete this post', 403));
-  }
-
   await post.deleteOne();
-
-  // Update user's post count
-  await User.findByIdAndUpdate(req.user._id, { $inc: { postsCount: -1 } });
 
   res.status(200).json({
     status: 'success',
@@ -155,6 +120,12 @@ const deletePost = asyncHandler(async (req, res, next) => {
 });
 
 const likePost = asyncHandler(async (req, res, next) => {
+  const { userId, username } = req.body;
+
+  if (!userId) {
+    return next(new ErrorResponse('Please provide userId', 400));
+  }
+
   const post = await Post.findById(req.params.id);
 
   if (!post) {
@@ -163,7 +134,7 @@ const likePost = asyncHandler(async (req, res, next) => {
 
   // Check if already liked
   const alreadyLiked = post.likes.some(
-    like => like.userId.toString() === req.user._id.toString()
+    like => like.user_id.toString() === userId
   );
 
   if (alreadyLiked) {
@@ -172,9 +143,9 @@ const likePost = asyncHandler(async (req, res, next) => {
 
   // Add like
   post.likes.push({
-    userId: req.user._id,
-    username: req.user.username,
-    profileImage: req.user.profileImage
+    user_id: userId,
+    username: username || 'Anonymous',
+    created_at: new Date()
   });
 
   await post.save();
@@ -189,8 +160,13 @@ const likePost = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 const unlikePost = asyncHandler(async (req, res, next) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return next(new ErrorResponse('Please provide userId', 400));
+  }
+
   const post = await Post.findById(req.params.id);
 
   if (!post) {
@@ -198,9 +174,14 @@ const unlikePost = asyncHandler(async (req, res, next) => {
   }
 
   // Remove like
+  const initialLength = post.likes.length;
   post.likes = post.likes.filter(
-    like => like.userId.toString() !== req.user._id.toString()
+    like => like.user_id.toString() !== userId
   );
+
+  if (post.likes.length === initialLength) {
+    return next(new ErrorResponse('Post was not liked by this user', 400));
+  }
 
   await post.save();
 
@@ -214,12 +195,15 @@ const unlikePost = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 const addComment = asyncHandler(async (req, res, next) => {
-  const { content } = req.body;
+  const { content, userId, username } = req.body;
 
   if (!content) {
     return next(new ErrorResponse('Please provide comment content', 400));
+  }
+
+  if (!userId) {
+    return next(new ErrorResponse('Please provide userId', 400));
   }
 
   const post = await Post.findById(req.params.id);
@@ -229,16 +213,15 @@ const addComment = asyncHandler(async (req, res, next) => {
   }
 
   const comment = {
-    userId: req.user._id,
-    username: req.user.username,
-    userImage: req.user.profileImage,
-    content
+    user_id: userId,
+    username: username || 'Anonymous',
+    text: content,
+    created_at: new Date()
   };
 
   post.comments.push(comment);
   await post.save();
 
-  // Get the newly added comment
   const newComment = post.comments[post.comments.length - 1];
 
   res.status(201).json({
@@ -246,7 +229,6 @@ const addComment = asyncHandler(async (req, res, next) => {
     data: newComment
   });
 });
-
 
 const deleteComment = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
@@ -259,14 +241,6 @@ const deleteComment = asyncHandler(async (req, res, next) => {
 
   if (!comment) {
     return next(new ErrorResponse('Comment not found', 404));
-  }
-
-  // Check if user owns the comment or post
-  if (
-    comment.userId.toString() !== req.user._id.toString() &&
-    post.authorId.toString() !== req.user._id.toString()
-  ) {
-    return next(new ErrorResponse('Not authorized to delete this comment', 403));
   }
 
   comment.deleteOne();
