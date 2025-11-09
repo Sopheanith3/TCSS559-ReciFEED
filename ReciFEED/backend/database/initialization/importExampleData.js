@@ -20,8 +20,7 @@ const dbName = 'recifeed_db';
 // ***********************************************************
 // (C) specify the names of the collection
 // ***********************************************************
-const collectionNames = ['searches']; 
-// const collectionNames = ['users', 'recipes', 'posts', 'searches']; 
+const collectionNames = ['users', 'recipes', 'posts', 'searches']; 
 
 // Instantiate MongoClient with connection string
 const client = new MongoClient(uri);
