@@ -1,0 +1,43 @@
+Steps to Deploy to GCP using Google Cloud SDK
+
+1. Download and install Google Cloud SDK: https://cloud.google.com/sdk/docs/install-sdk
+
+2. Log in to GCP and create new project, remember the name
+
+3. Setup and authenticate SDK by running:
+
+    gcloud auth login
+
+4. Select project:
+
+    gcloud config set project [projectName]
+
+5. Enable APIs:
+
+    gcloud services enable artifactregistry.googleapis.com
+
+6. Create Dockerfile repo in AR:
+
+    gcloud artifacts repositories create docker `
+      --repository-format=docker `
+      --location=us-west1 `
+      --description="[ReciFEED description]"
+
+7. Configure Docker to use GCP credentials for AR:
+
+    gcloud auth configure-docker us-west1-docker.pkg.dev
+
+8. Create tag for Docker image:
+
+    docker tag recifeed-api `
+      us-west1-docker.pkg.dev/[projectName]/docker/recifeed-api:latest
+
+9. Upload Docker image to GCP container registry for project:
+
+    docker push us-west1-docker.pkg.dev/[projectName]/docker/recifeed-api:latest
+
+10. Deploy service:
+
+    gcloud run deploy recifeed-api --image us-central1-docker.pkg.dev/[projectName]/docker/recifeed-api:latest --region us-west1 --allow-unauthenticated --port 8080 --set-env-vars "[KEY_NAME]=your_key, [KEY_NAME]=your_key"
+
+11. Use the given deployment URL to acces the API
