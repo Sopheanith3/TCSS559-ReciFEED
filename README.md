@@ -31,7 +31,6 @@ npm install
 npm start
 ```
 
-```
 
 ### Project Structure
 ```
