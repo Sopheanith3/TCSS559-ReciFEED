@@ -61,7 +61,7 @@ npm start
 
 This project requires environment variables to connect to MongoDB and other external services.
 
-### 1) Create `backend/.env`
+### 1) Create `monolith/.env`
 
 ```bash
 # Monolith Port
@@ -79,10 +79,6 @@ PORT=3082
 
 # Mistral AI Key for querying LLM models
 MISTRAL_API_KEY=7QOauC1jWUCdIVZWstFclHuX058GwQIK
-```
-
-# MongoDB connection URI
-MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
 ```
 
 ### Project Structure
@@ -148,7 +144,6 @@ TCSS559-RECIFEED/
          ├─ Login.js
          ├─ Recipe.js
          └─ Register.js
-
 ```
 
 ### Technologies Used
