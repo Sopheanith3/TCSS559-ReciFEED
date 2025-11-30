@@ -15,7 +15,7 @@ git clone <your-repo-url>
 cd ReciFEED
 ```
 
-#### 2. Setup Frontend
+#### 2. Start Frontend Locally
 ```bash
 # Create and setup frontend
 cd frontend
@@ -23,27 +23,63 @@ npm install
 npm start
 ```
 
-#### 3. Setup Backend
+#### 3. Start Monolithic Core Locally
 ```bash
-# Setup backend
-cd backend
+# Setup monolith
+cd monolith
+npm install
+npm start
+```
+
+#### 4. Start Services Locally
+```bash
+# Setup analytics service
+cd services/analytics-service
+npm install
+npm start
+```
+```bash
+# Setup Bluesky service
+cd services/bsky-service
+npm install
+npm start
+```
+```bash
+# Setup recipe query service
+cd services/recipe-query-service
+npm install
+npm start
+```
+```bash
+# Setup Twitter service service
+cd services/twitter-service
 npm install
 npm start
 ```
 
 ### ⚙️ Environment Variables
 
-This project requires environment variables to connect to MongoDB.
-
-
-A sample file is provided:  
-`backend/.env.example or backend/.env `
+This project requires environment variables to connect to MongoDB and other external services.
 
 ### 1) Create `backend/.env`
 
 ```bash
-#Backend Port
+# Monolith Port
 PORT=5000
+
+# MongoDB connection URI
+MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
+```
+
+### 2) Create `services/recipe-query-service/.env`
+
+```bash
+# Recipe query service port
+PORT=3082
+
+# Mistral AI Key for querying LLM models
+MISTRAL_API_KEY=7QOauC1jWUCdIVZWstFclHuX058GwQIK
+```
 
 # MongoDB connection URI
 MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
@@ -52,7 +88,7 @@ MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongo
 ### Project Structure
 ```
 TCSS559-RECIFEED/
-├─ backend/
+├─ monolith/
 │  ├─ controllers/
 │  │  ├─ postController.js
 │  │  ├─ recipeController.js
@@ -73,10 +109,23 @@ TCSS559-RECIFEED/
 │  │  ├─ recipeRoutes.js
 │  │  ├─ searchRoutes.js
 │  │  └─ userRoutes.js
-│  ├─ service/            # shared business logic (e.g., error handling)
 │  ├─ utils/              # helpers (e.g., errorHandler.js)
-│  ├─ .env                # NOT committed – use .env.example
+│  ├─ .env                # NOT committed - use provided
 │  └─ server.js           # Express app entry
+│
+├─ microservices/
+│  ├─ analytics-service/
+|  |  |─ .env             # NOT committed - use provided
+│  │  └─ index.js
+│  ├─ recipe-query-service/
+|  |  |─ .env             # NOT committed - use provided
+│  │  └─ index.js
+│  ├─ twitter-service/
+|  |  |─ .env             # NOT committed - use provided
+│  │  └─ index.js
+│  └─ bsky-service/
+|     |─ .env             # NOT committed - use provided
+│     └─ index.js
 │
 └─ frontend/
    ├─ public/

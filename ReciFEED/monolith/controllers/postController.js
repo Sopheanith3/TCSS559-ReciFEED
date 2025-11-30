@@ -1,4 +1,4 @@
-const Post = require('../database/models/post');
+const Post = require('../models/post');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const createPost = asyncHandler(async (req, res, next) => {

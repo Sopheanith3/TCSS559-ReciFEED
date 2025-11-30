@@ -1,4 +1,4 @@
-const User = require('../database/models/user');
+const User = require('../models/user');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
