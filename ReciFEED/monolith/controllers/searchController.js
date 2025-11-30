@@ -1,7 +1,7 @@
-const Post = require('../database/models/post');
-const Recipe = require('../database/models/recipe');
-const User = require('../database/models/user');
-const Search = require('../database/models/search');
+const Post = require('../models/post');
+const Recipe = require('../models/recipe');
+const User = require('../models/user');
+const Search = require('../models/search');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const searchAll = asyncHandler(async (req, res, next) => {

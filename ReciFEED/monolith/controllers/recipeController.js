@@ -1,4 +1,4 @@
-const Recipe = require('../database/models/recipe');
+const Recipe = require('../models/recipe');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const getAllRecipes = asyncHandler(async (req, res, next) => {
