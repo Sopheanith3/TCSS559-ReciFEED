@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import '../components/Feed.css';
+import CreatePostModal from '../layout/CreatePostModal';
 
 const Feed = () => {
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -100,18 +102,34 @@ const Feed = () => {
 
   return (
     <div className="feed-page">
-      {/* Header (not sticky, not a nav, just a section) */}
-      <section className="feed-header" style={{ position: 'static', borderBottom: 'none', boxShadow: 'none' }}>
-        <div className="feed-header__content">
-          <h1 className="feed-header__title">ReciFEED Feed</h1>
-          <p className="feed-header__subtitle">Latest posts from the community</p>
+      <CreatePostModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} />
+      {/* Sticky Header */}
+      <section className="feed-header">
+        <div className="feed-header__content" style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between', position: 'relative' }}>
+          {/* Left: Title */}
+          <h1 className="feed-header__title" style={{ flex: 1, textAlign: 'left', margin: 0 }}>ReciFEED Feed</h1>
+          {/* Center: Home Icon (absolutely centered) */}
+          <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}>
+            <button 
+              className="feed-header__home-btn"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              aria-label="Go to top"
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path d="M3 12L12 4l9 8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5 10v10a1 1 0 0 0 1 1h4m4 0h4a1 1 0 0 0 1-1V10" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          {/* Right: Create Post */}
+          <button className="feed-header__create-btn" onClick={() => setShowCreateModal(true)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            Create Post
+          </button>
         </div>
-        <button className="feed-header__create-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-          Create Post
-        </button>
       </section>
       {/* Posts - single column, no container/grid */}
       <div className="feed-main" style={{ maxWidth: '700px', margin: '32px auto', padding: '0 16px' }}>
