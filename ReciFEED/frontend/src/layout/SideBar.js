@@ -6,7 +6,7 @@ import icon from '../assets/ReciFEED-icon.png';
 
 const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
   const location = useLocation();
-  const [internalIsCollapsed, setInternalIsCollapsed] = useState(false);
+  const [internalIsCollapsed, setInternalIsCollapsed] = useState(true);
   
   // Use external state if provided, otherwise use internal state
   const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;

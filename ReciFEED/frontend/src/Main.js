@@ -12,7 +12,7 @@ function AppContent() {
   const location = useLocation();
   const [currentUser, setCurrentUser] = React.useState(null);
   const [showSidebar, setShowSidebar] = React.useState(true);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(true);
 
   // Check if current route is home page (landing page)
   const isHomePage = location.pathname === '/';
