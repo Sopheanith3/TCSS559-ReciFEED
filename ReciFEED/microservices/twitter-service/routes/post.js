@@ -17,7 +17,7 @@ const oauth = new OAuth({
   },
 });
 
-router.post('/post', async (req, res) => {
+router.post('/', async (req, res) => {
   
 })
 

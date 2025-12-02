@@ -17,6 +17,7 @@ const oauth = new OAuth({
   },
 });
 
+// Get Twitter OAuth tokens associated with this app
 const getOAuthTokens = async () => {
   // Create request data for auth header generation
   const requestData = {
@@ -53,8 +54,15 @@ const getOAuthTokens = async () => {
   };
 }
 
-router.get('/:user', async (req, res) => {
-  // TODO check user param
+/**
+ * Retrieves if user is authenticated for Twitter, and if not gets an auth 
+ * redirect link to begin the authentication process for user
+ */
+router.get('/:userId', async (req, res) => {
+  const { userId } =  req.params.userId
+  if (!userId) {
+    return res.statusCode(400).json({ error: 'Must provide parameter userId.' })
+  }
 
   const request_data = {
     url: "https://api.twitter.com/1.1/account/verify_credentials.json",
@@ -76,36 +84,49 @@ router.get('/:user', async (req, res) => {
     return res.statusCode(200).json({ authorized: true })
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // User not authorized, start auth process with authorization link
-      try {
-        const { oauth_token, oauth_token_secret, oauth_callback_confirmed } = getOAuthTokens()
-        if (oauth_callback_confirmed !== 'true' || !oauth_token) {
-          throw new Error('Could not retrieve valid OAuth token.')
-        }
-
-        // TODO: Store auth tokens in DB
-
-        // Return auth flowId and redirect link
-        const redirect_link = `https://api.x.com/oauth/authenticate?oauth_token=${oauth_token}`
-        return res.statusCode(401).json({ authorized: false, redirect_link })
-      } catch (err) {
-        return res.statusCode(500).json({ error: 'Internal error, could not retrieve OAuth redirect link.' })
-      }
+        return res.statusCode(401).json({ authorized: false })
     }
-
     // Other server error
     return res.statusCode(500).json({ error: 'Internal error, could not verify authorization.' })
   }
 });
 
-router.post('/:user', async (req, res) => {
-  const url = "https://api.twitter.com/oauth/access_token";
+router.post('/:userId/start', async (req, res) => {
+  const { userId } =  req.params.userId
+  if (!userId) {
+    return res.statusCode(400).json({ error: 'Must provide parameter userId.' })
+  }
 
+  try {
+    const { oauth_token, oauth_token_secret, oauth_callback_confirmed } = getOAuthTokens()
+    if (oauth_callback_confirmed !== 'true') {
+      return res.statusCode(500).json({ error: 'Could not retrieve valid OAuth token.' });
+    }
+
+    // TODO: Store auth tokens in DB for user
+
+    // Return auth flowId and redirect link
+    const redirectLink = `https://api.x.com/oauth/authenticate?oauth_token=${oauth_token}`
+    return res.statusCode(200).json({ redirectLink })
+  } catch (error) {
+    return res.statusCode(500).json({ error: 'Internal error, could not verify authorization.' })
+  }
+});
+
+/**
+ * Authenticates a user using an authorization pin after redirect
+ */
+router.post('/:userId/complete', async (req, res) => {
+  const { userId } =  req.params.userId
+  if (!userId) {
+    return res.statusCode(400).json({ error: 'Must provide parameter userId.' })
+  }
   const { pin } = req.body
-
   if (!pin) {
     return res.statusCode(400).json({ error: 'Must provide auth pin.' })
   }
+
+  const url = "https://api.twitter.com/oauth/access_token";
 
   const requestData = {
     url,
@@ -140,9 +161,17 @@ router.post('/:user', async (req, res) => {
       }
     );
 
-    
-  } catch (error) {
+    // Twitter responds in URL-encoded format
+    const params = new URLSearchParams(response.data);
 
+    const access_token = params.get("oauth_token");
+    const access_secret = params.get("oauth_token_secret");
+
+    // TODO Store in DB under userId
+
+    return res.statusCode(200).json({ message: 'Successfully authenticated Twitter access for this user.' })
+  } catch (error) {
+    return res.statusCode(500).json({ error: 'Internal error, could not authenticate access.' })
   }
 })
 

@@ -17,8 +17,8 @@ const encryptedTokenSchema = new mongoose.Schema({
 // Create schema for user
 const twitterUserTokensSchema = new mongoose.Schema({
   userId: { type: String, required: true },
-  oauth_token_secret: { type: encryptedTokenSchema },
-  auth_secret_toke: { type: encryptedTokenSchema },
+  oauth_token: { type: encryptedTokenSchema },
+  oauth_secret: { type: encryptedTokenSchema },
   access_token: { type: encryptedTokenSchema },
   access_secret: { type: encryptedTokenSchema },
 }, { collection: 'twitterUserTokens'});
