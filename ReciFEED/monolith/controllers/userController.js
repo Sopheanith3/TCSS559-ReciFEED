@@ -123,7 +123,7 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 });
 
 const generateToken = (user) =>
-  jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
+  jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: "12h" });
 
 const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
