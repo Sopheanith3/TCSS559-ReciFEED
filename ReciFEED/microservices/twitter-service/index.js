@@ -1,22 +1,15 @@
 const express = require('express');
 const cors = require('cors');
-const axios = require("axios");
-const OAuth = require("oauth-1.0a");
-const crypto = require("crypto");
+const dotenv = require('dotenv')
+const authRouter = require('./routes/auth')
+const postRouter = require('./routes/post')
+const connectDB = require('./utils/database');
 
-const router = express.Router()
+// Load environment variables
+dotenv.config();
 
-const consumerKey = process.env.TWITTER_CONSUMER_KEY;
-const consumerSecret = process.env.TWITTER_CONSUMER_SECRET;
-
-// Create OAuth object to get auth headers
-const oauth = new OAuth({
-  consumer: { key: consumerKey, secret: consumerSecret },
-  signature_method: "HMAC-SHA1",
-  hash_function(base_string, key) {
-    return crypto.createHmac("sha1", key).update(base_string).digest("base64");
-  },
-});
+// Connect to database
+connectDB();
 
 // Initialize Express app
 const app = express();
@@ -25,9 +18,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const getAuthRedirect = () => {
+// JWT Token Validation Middleware
+// This middleware validates JSON Web Tokens (JWT) in incoming requests
+// to ensure that the user is authenticated.
+const validateToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: Missing or invalid token' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach user info
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid token.' });
+  }
+};
 
-}
+// Get routes
+app.use('/twitter/auth', validateToken, authRouter);
+app.use('/twitter/post', validateToken, postRouter);
 
 // Start server
 const PORT = process.env.PORT || 3084;
