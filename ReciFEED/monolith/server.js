@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./database/connection');
+const jwt = require('jsonwebtoken')
 
 // Import routes
 const userRoutes = require('./routes/userRoutes');
@@ -34,25 +35,26 @@ app.use((req, res, next) => {
 // This middleware validates JSON Web Tokens (JWT) in incoming requests
 // to ensure that the user is authenticated.
 const validateToken = (req, res, next) => {
-    // Public routes that don't require authentication
-    const publicRoutes = ["/api/users/", "api/users/login", "api/users/validate"];
-    const requestPath = req.originalUrl.toLowerCase(); // Normalize path
-    // Skip token validation for public routes
-    if (publicRoutes.some((route) => requestPath.startsWith(route))) {
-      return next();
-    }
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return next(new ErrorResponse('Unauthorized: Missing or invalid token.', 401));
-    }
-    const token = authHeader.split(' ')[1];
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded; // Attach user info
-      next();
-    } catch (error) {
-      return next(new ErrorResponse('Unauthorized: Invalid token.', 401));
-    }
+  // Public routes that don't require authentication
+  const publicRoutes = ["/api/users/", "/api/users/login", "api/users/validate"];
+  const requestPath = req.originalUrl.toLowerCase(); // Normalize path
+
+  // Skip token validation for public routes
+  if (publicRoutes.some((route) => requestPath.startsWith(route))) {
+    return next();
+  }
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return next(new ErrorResponse('Unauthorized: Missing or invalid token.', 401));
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach user info
+    next();
+  } catch (error) {
+    return next(new ErrorResponse('Unauthorized: Invalid token.', 401));
+  }
 };
 
 // Root endpoint
