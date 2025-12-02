@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv')
-const authRouter = require('./routes/auth')
-const postRouter = require('./routes/post')
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 const connectDB = require('./utils/database');
 
 // Load environment variables

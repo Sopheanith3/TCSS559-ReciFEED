@@ -2,8 +2,9 @@ const express = require('express')
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
-const multer = require('multer')
-const { TwitterUserTokens } = require('../models/twitterUserTokens')
+const multer = require('multer');
+const FormData = require('form-data')
+const TwitterUserTokens = require('../models/twitterUserTokens');
 
 const router = express.Router()
 
@@ -95,6 +96,7 @@ router.post('/', upload.array('images', 4), async (req, res) => {
 
     res.status(200).json({ message: 'Post successful.', post: response.data});
   } catch (error) {
+    return res.status(500).json({ error: error.message })
     return res.status(500).json({ error: 'Internal error, could not post to Twitter.' })
   }
 })

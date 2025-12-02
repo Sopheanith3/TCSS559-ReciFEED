@@ -2,7 +2,11 @@ const express = require("express")
 const axios = require("axios");
 const OAuth = require("oauth-1.0a");
 const crypto = require("crypto");
-const { TwitterUserTokens } = require('../models/twitterUserTokens')
+const dotenv = require('dotenv')
+const TwitterUserTokens = require('../models/twitterUserTokens')
+
+// Load environment variables
+dotenv.config();
 
 const router = express.Router();
 
@@ -22,12 +26,11 @@ const oauth = new OAuth({
 const getOAuthTokens = async () => {
   // Create request data for auth header generation
   const requestData = {
-    url: "https://api.twitter.com/oauth/request_token",
+    url: 'https://api.x.com/oauth/request_token?oauth_callback=oob',
     method: "POST",
-    data: {
-      oauth_callback: "oob",
-    },
   };
+
+  console.log(consumerKey, consumerSecret)
 
   // Generate Authorization header
   const authHeader = oauth.toHeader(oauth.authorize(requestData));
@@ -37,8 +40,10 @@ const getOAuthTokens = async () => {
     requestData.url,
     null,
     {
-      params: { oauth_callback: "oob" },
-      headers: authHeader
+      headers: {
+        ...authHeader,
+        "Content-Type": "application/json",
+      }
     }
   );
 
@@ -92,14 +97,14 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/start', async (req, res) => {
+router.get('/start', async (req, res) => {
   // Retrieve user ID as attached to request by token validator
   const { id } =  req.user
 
   try {
     const { oauth_token, oauth_token_secret, oauth_callback_confirmed } = await getOAuthTokens()
     if (oauth_callback_confirmed !== 'true') {
-      return res.status(500).json({ error: 'Could not retrieve valid OAuth token.' });
+      return res.status(500).json({ error: 'Could not retrieve valid OAuth tokens.' });
     }
 
     // Store auth tokens in DB for user
@@ -113,7 +118,7 @@ router.post('/start', async (req, res) => {
     const redirectLink = `https://api.x.com/oauth/authenticate?oauth_token=${oauth_token}`
     return res.status(200).json({ redirectLink })
   } catch (error) {
-    return res.status(500).json({ error: 'Internal error, could not verify authentication.' })
+    return res.status(500).json({ error: 'Internal error, could not start auth process.' })
   }
 });
 
@@ -130,15 +135,6 @@ router.post('/complete', async (req, res) => {
   }
 
   const url = "https://api.twitter.com/oauth/access_token";
-
-  const requestData = {
-    url,
-    method: "POST",
-    data: {
-      oauth_verifier: pin,
-      oauth_token,
-    },
-  };
   
   try {
     // Retrieve auth tokens from DB
@@ -148,9 +144,20 @@ router.post('/complete', async (req, res) => {
       return res.status(401).json({ authorized: false });
     }
 
+    const { oauth_token, oauth_secret } = userTokens
+
+    const requestData = {
+      url,
+      method: "POST",
+      data: {
+        oauth_verifier: pin,
+        oauth_token,
+      },
+    };
+
     const token = {
-      key: userTokens.oauth_token,
-      secret: userTokens.oauth_secret,
+      key: oauth_token,
+      secret: oauth_secret,
     };
 
     const authHeader = oauth.toHeader(oauth.authorize(requestData, token));

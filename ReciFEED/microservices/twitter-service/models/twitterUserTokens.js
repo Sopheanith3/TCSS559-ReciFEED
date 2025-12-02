@@ -7,20 +7,13 @@
 
 const mongoose = require('mongoose');
 
-// Create schema for nested field encrypted token
-const encryptedTokenSchema = new mongoose.Schema({
-  ciphertext: { type: String, required: true },
-  iv: { type: String, required: true },
-  authTag: { type: String, required: true }
-}, { _id: false });
-
 // Create schema for user
 const twitterUserTokensSchema = new mongoose.Schema({
   userId: { type: String, required: true },
-  oauth_token: { type: encryptedTokenSchema },
-  oauth_secret: { type: encryptedTokenSchema },
-  access_token: { type: encryptedTokenSchema },
-  access_secret: { type: encryptedTokenSchema },
+  oauth_token: { type: String },
+  oauth_secret: { type: String },
+  access_token: { type: String },
+  access_secret: { type: String },
 }, { collection: 'twitterUserTokens'});
 
 const TwitterUserTokens = mongoose.model('TwitterUserTokens', twitterUserTokensSchema);
