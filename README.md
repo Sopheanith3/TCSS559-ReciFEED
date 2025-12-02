@@ -69,6 +69,9 @@ PORT=5000
 
 # MongoDB connection URI
 MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
+
+# Token Generation Secret
+JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
 ```
 
 ### 2) Create `services/recipe-query-service/.env`
