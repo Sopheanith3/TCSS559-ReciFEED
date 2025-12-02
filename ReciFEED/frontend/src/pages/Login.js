@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/auth'
 import '../components/Login.css';
 
 const Login = () => {
@@ -10,6 +12,8 @@ const Login = () => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,11 +57,13 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // TODO: Replace with actual API call
-      // const response = await authService.login(formData);
+      // Call login endpoint
+      const response = await authService.login(formData.email, formData.password);
+
+      const { id, username, token } = response
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Save login token and user ID to context
+      login({ id, username }, token)
       
       // On success, navigate to home
       navigate('/');
