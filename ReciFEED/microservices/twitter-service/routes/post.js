@@ -1,5 +1,4 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express")
 const axios = require("axios");
 const OAuth = require("oauth-1.0a");
 const crypto = require("crypto");
@@ -18,22 +17,8 @@ const oauth = new OAuth({
   },
 });
 
-// Initialize Express app
-const app = express();
+router.post('/post', async (req, res) => {
+  
+})
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-const getAuthRedirect = () => {
-
-}
-
-// Start server
-const PORT = process.env.PORT || 3084;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log(`🌐 API URL: http://localhost:${PORT}`);
-});
-
-module.exports = app;
+export default router;
