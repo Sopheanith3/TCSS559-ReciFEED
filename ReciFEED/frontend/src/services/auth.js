@@ -31,7 +31,26 @@ export const authService = {
     return response.json();
   },
 
-  // 4. Token validation endpoint
+  // 4. Create account endpoint
+  register: async (email, password, username) => {
+    const response = await fetch(`${API_BASE}/users/`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password, username })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Registration failed");
+    }
+
+    return response.json();
+  },
+  
+
+  // 5. Token validation endpoint
   validateToken: async (token) => {
     const response = await fetch(`${API_BASE}/users/validate`, {
       method: "GET",
