@@ -16,16 +16,12 @@ const recipeSchema = new mongoose.Schema({
   ingredients: { type: [String], default: [] },
   instructions: { type: [String], default: [] },
   image_urls: { type: [String], default: [] },
-  likes: { type: [{
+  reviews: { type: [{
     user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
-    username: { type: String},
+    username: { type: String },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String, required: true },
     created_at: { type: Date, required: true },
-  }], default: [] },
-  comments: { type: [{
-    user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
-    username: { type: String},
-    created_at: { type: Date, required: true },
-    text: { type: String, required: true },
   }], default: [] },
 }, { collection: 'recipes'});
 

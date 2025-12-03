@@ -114,8 +114,16 @@ const deleteRecipe = asyncHandler(async (req, res, next) => {
   });
 });
 
-const likeRecipe = asyncHandler(async (req, res, next) => {
-  const { userId, username } = req.body;
+const addReview = asyncHandler(async (req, res, next) => {
+  const { rating, comment, userId, username } = req.body;
+
+  if (!rating || !comment) {
+    return next(new ErrorResponse('Please provide rating and comment', 400));
+  }
+
+  if (rating < 1 || rating > 5) {
+    return next(new ErrorResponse('Rating must be between 1 and 5', 400));
+  }
 
   if (!userId) {
     return next(new ErrorResponse('Please provide userId', 400));
@@ -127,125 +135,70 @@ const likeRecipe = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Recipe not found', 404));
   }
 
-  // Check if already liked
-  const alreadyLiked = recipe.likes.some(
-    like => like.user_id.toString() === userId
+  // Check if user already reviewed
+  const alreadyReviewed = recipe.reviews.some(
+    review => review.user_id.toString() === userId
   );
 
-  if (alreadyLiked) {
-    return next(new ErrorResponse('Recipe already liked', 400));
+  if (alreadyReviewed) {
+    return next(new ErrorResponse('You have already reviewed this recipe', 400));
   }
 
-  // Add like
-  recipe.likes.push({
+  // Add review
+  const review = {
     user_id: userId,
     username: username || 'Anonymous',
-    created_at: new Date()
-  });
-
-  await recipe.save();
-
-  res.status(200).json({
-    status: 'success',
-    message: 'Recipe liked successfully',
-    data: {
-      recipeId: recipe._id,
-      totalLikes: recipe.likes.length
-    }
-  });
-});
-
-const unlikeRecipe = asyncHandler(async (req, res, next) => {
-  const { userId } = req.body;
-
-  if (!userId) {
-    return next(new ErrorResponse('Please provide userId', 400));
-  }
-
-  const recipe = await Recipe.findById(req.params.id);
-
-  if (!recipe) {
-    return next(new ErrorResponse('Recipe not found', 404));
-  }
-
-  // Remove like
-  const initialLength = recipe.likes.length;
-  recipe.likes = recipe.likes.filter(
-    like => like.user_id.toString() !== userId
-  );
-
-  if (recipe.likes.length === initialLength) {
-    return next(new ErrorResponse('Recipe was not liked by this user', 400));
-  }
-
-  await recipe.save();
-
-  res.status(200).json({
-    status: 'success',
-    message: 'Recipe unliked successfully',
-    data: {
-      recipeId: recipe._id,
-      totalLikes: recipe.likes.length
-    }
-  });
-});
-
-const addComment = asyncHandler(async (req, res, next) => {
-  const { content, userId, username } = req.body;
-
-  if (!content) {
-    return next(new ErrorResponse('Please provide comment content', 400));
-  }
-
-  if (!userId) {
-    return next(new ErrorResponse('Please provide userId', 400));
-  }
-
-  const recipe = await Recipe.findById(req.params.id);
-
-  if (!recipe) {
-    return next(new ErrorResponse('Recipe not found', 404));
-  }
-
-  const comment = {
-    user_id: userId,
-    username: username || 'Anonymous',
-    text: content,
+    rating: Number(rating),
+    comment,
     created_at: new Date()
   };
 
-  recipe.comments.push(comment);
+  recipe.reviews.push(review);
   await recipe.save();
 
-  const newComment = recipe.comments[recipe.comments.length - 1];
+  const newReview = recipe.reviews[recipe.reviews.length - 1];
+
+  // Calculate average rating
+  const avgRating = recipe.reviews.reduce((acc, r) => acc + r.rating, 0) / recipe.reviews.length;
 
   res.status(201).json({
     status: 'success',
-    data: newComment
+    data: {
+      review: newReview,
+      totalReviews: recipe.reviews.length,
+      averageRating: Math.round(avgRating * 10) / 10
+    }
   });
 });
 
-const deleteComment = asyncHandler(async (req, res, next) => {
+const deleteReview = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
 
   if (!recipe) {
     return next(new ErrorResponse('Recipe not found', 404));
   }
 
-  const comment = recipe.comments.id(req.params.commentId);
+  const review = recipe.reviews.id(req.params.reviewId);
 
-  if (!comment) {
-    return next(new ErrorResponse('Comment not found', 404));
+  if (!review) {
+    return next(new ErrorResponse('Review not found', 404));
   }
 
-  comment.deleteOne();
+  review.deleteOne();
   await recipe.save();
+
+  // Calculate average rating
+  const avgRating = recipe.reviews.length > 0 
+    ? recipe.reviews.reduce((acc, r) => acc + r.rating, 0) / recipe.reviews.length 
+    : 0;
 
   res.status(200).json({
     status: 'success',
-    message: 'Comment successfully deleted',
+    message: 'Review successfully deleted',
     data: {
-      commentId: req.params.commentId
+      reviewId: req.params.reviewId,
+      totalReviews: recipe.reviews.length,
+      averageRating: Math.round(avgRating * 10) / 10
     }
   });
 });
@@ -256,8 +209,6 @@ module.exports = {
   createRecipe,
   updateRecipe,
   deleteRecipe,
-  likeRecipe,
-  unlikeRecipe,
-  addComment,
-  deleteComment
+  addReview,
+  deleteReview
 };
