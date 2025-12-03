@@ -60,71 +60,47 @@ export const recipeService = {
     }
   },
 
-  // Like a recipe
-  likeRecipe: async (recipeId, userId, username) => {
+  // Add a review to a recipe
+  addReview: async (recipeId, rating, comment, userId, username) => {
     try {
-      const response = await fetch(`${API_URL}/recipes/${recipeId}/likes`, {
+      const response = await fetch(`${API_URL}/recipes/${recipeId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId, username }),
+        body: JSON.stringify({ rating, comment, userId, username }),
       });
       
       if (!response.ok) {
-        throw new Error('Failed to like recipe');
+        throw new Error('Failed to add review');
       }
       
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error liking recipe:', error);
+      console.error('Error adding review:', error);
       throw error;
     }
   },
 
-  // Unlike a recipe
-  unlikeRecipe: async (recipeId, userId) => {
+  // Delete a review from a recipe
+  deleteReview: async (recipeId, reviewId) => {
     try {
-      const response = await fetch(`${API_URL}/recipes/${recipeId}/likes`, {
+      const response = await fetch(`${API_URL}/recipes/${recipeId}/reviews/${reviewId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId }),
       });
       
       if (!response.ok) {
-        throw new Error('Failed to unlike recipe');
+        throw new Error('Failed to delete review');
       }
       
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error unliking recipe:', error);
-      throw error;
-    }
-  },
-
-  // Add a comment to a recipe
-  addComment: async (recipeId, content, userId, username) => {
-    try {
-      const response = await fetch(`${API_URL}/recipes/${recipeId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content, userId, username }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to add comment');
-      }
-      
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error adding comment:', error);
+      console.error('Error deleting review:', error);
       throw error;
     }
   },

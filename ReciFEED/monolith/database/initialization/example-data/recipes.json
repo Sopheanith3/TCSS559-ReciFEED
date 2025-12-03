@@ -9,12 +9,10 @@
     "instructions": ["Mix dry ingredients.", "Add wet ingredients and stir.", "Bake at 350°F for 30 mins."],
     "image_urls": ["https://static.toiimg.com/thumb/53096885.cms?imgsize=1572013&width=800&height=800"],
     "cooking_time": "45m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-07T11:00:00Z" },
-      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "created_at": "2025-11-07T12:00:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "created_at": "2025-11-07T12:30:00Z", "text": "Delicious!" }
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Absolutely delicious! Best chocolate cake I've ever made.", "created_at": "2025-11-07T11:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 4, "comment": "Great recipe, very moist and chocolatey!", "created_at": "2025-11-07T12:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 5, "comment": "Delicious!", "created_at": "2025-11-07T12:30:00Z" }
     ]
   },
   {
@@ -27,11 +25,9 @@
     "instructions": ["Cook spaghetti.", "Sauté garlic in oil.", "Toss spaghetti with garlic and top with Parmesan."],
     "image_urls": ["https://www.killingthyme.net/wp-content/uploads/2017/05/pasta-aglio-e-olio-5.jpg"],
     "cooking_time": "20m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-11-06T10:00:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "created_at": "2025-11-06T11:00:00Z", "text": "Quick and easy!" }
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "rating": 5, "comment": "Quick and easy! Perfect for a weeknight dinner.", "created_at": "2025-11-06T10:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 4, "comment": "Quick and easy!", "created_at": "2025-11-06T11:00:00Z" }
     ]
   },
   {
@@ -44,11 +40,9 @@
     "instructions": ["Combine vegetables.", "Add dressing.", "Top with feta."],
     "image_urls": ["https://images.themodernproper.com/production/posts/GreekSalad_9.jpg?w=960&h=960&q=82&fm=jpg&fit=crop&dm=1718650734&s=a621884105b631b5c3767e9be8069b7b"],
     "cooking_time": "15m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-11-05T15:00:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "created_at": "2025-11-05T15:30:00Z", "text": "Fresh and tasty!" }
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 4, "comment": "Fresh and tasty!", "created_at": "2025-11-05T15:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Fresh and tasty!", "created_at": "2025-11-05T15:30:00Z" }
     ]
   },
   {
@@ -61,11 +55,9 @@
     "instructions": ["Season chicken.", "Cook in pan until done."],
     "image_urls": ["https://www.budgetbytes.com/wp-content/uploads/2021/12/Chicken-Breast-Pan.jpg"],
     "cooking_time": "25m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "created_at": "2025-11-04T16:30:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "created_at": "2025-11-04T17:00:00Z", "text": "Perfectly cooked!" }
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "rating": 5, "comment": "Perfectly cooked!", "created_at": "2025-11-04T16:30:00Z" },
+      { "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "rating": 5, "comment": "Perfectly cooked!", "created_at": "2025-11-04T17:00:00Z" }
     ]
   },
   {
@@ -78,11 +70,9 @@
     "instructions": ["Mix oats and milk.", "Add honey and enjoy."],
     "image_urls": ["https://wholefoodsoulfoodkitchen.com/wp-content/uploads/2023/03/honey-oatmeal-recipe-1.jpg"],
     "cooking_time": "10m",
-    "likes": [
-      { "user_id": "690f704e3fe0dd94aba6c97b", "username": "judy", "created_at": "2025-11-03T12:15:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "650000000000000000000001", "username": "alice", "created_at": "2025-11-03T12:30:00Z", "text": "Healthy and delicious!" }
+    "reviews": [
+      { "user_id": "690f704e3fe0dd94aba6c97b", "username": "judy", "rating": 4, "comment": "Healthy and delicious!", "created_at": "2025-11-03T12:15:00Z" },
+      { "user_id": "650000000000000000000001", "username": "alice", "rating": 5, "comment": "Healthy and delicious!", "created_at": "2025-11-03T12:30:00Z" }
     ]
   },
   {
@@ -95,11 +85,9 @@
     "instructions": ["Spread peanut butter.", "Add banana slices."],
     "image_urls": ["https://beyondthenoms.com/wp-content/uploads/2023/03/Fried-Peanut-Butter-Banana-Honey-Sandwich-02.jpg"],
     "cooking_time": "5m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-02T09:30:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "created_at": "2025-11-02T10:00:00Z", "text": "Quick snack!" }
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 3, "comment": "Quick snack!", "created_at": "2025-11-02T09:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 4, "comment": "Quick snack!", "created_at": "2025-11-02T10:00:00Z" }
     ]
   },
   {
@@ -112,10 +100,9 @@
     "instructions": ["Boil water.", "Add rice and butter.", "Simmer until done."],
     "image_urls": ["https://andianne.com/wp-content/uploads/2023/05/garlic-butter-rice-02.jpg"],
     "cooking_time": "25m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "created_at": "2025-11-01T18:45:00Z" }
-    ],
-    "comments": []
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 4, "comment": "Simple and satisfying!", "created_at": "2025-11-01T18:45:00Z" }
+    ]
   },
   {
     "created_at": "2025-10-31T14:50:00Z",
@@ -127,11 +114,9 @@
     "instructions": ["Beat eggs and milk.", "Cook in pan."],
     "image_urls": ["https://www.healthyfood.com/wp-content/uploads/2018/02/Basic-omelette.jpg"],
     "cooking_time": "10m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-10-31T15:20:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "created_at": "2025-10-31T15:45:00Z", "text": "Fluffy!" }
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 5, "comment": "Fluffy!", "created_at": "2025-10-31T15:20:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Fluffy!", "created_at": "2025-10-31T15:45:00Z" }
     ]
   },
   {
@@ -144,8 +129,7 @@
     "instructions": ["Layer yogurt, granola, and strawberries."],
     "image_urls": ["https://spicecravings.com/wp-content/uploads/2023/09/Greek-Yogurt-Parfait-Featured.jpg"],
     "cooking_time": "10m",
-    "likes": [],
-    "comments": []
+    "reviews": []
   },
   {
     "created_at": "2025-10-29T20:25:00Z",
@@ -157,12 +141,10 @@
     "instructions": ["Mash avocado with seasoning.", "Spread on toasted bread."],
     "image_urls": ["https://thesaltypot.com/wp-content/uploads/2019/02/Avocado-Toast09.jpg"],
     "cooking_time": "10m",
-    "likes": [
-      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-10-29T21:00:00Z" }
-    ],
-    "comments": [
-      { "_id": "000000000000000000000001", "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-10-29T21:30:00Z", "text": "Simple and delicious!" },
-      { "_id": "000000000000000000000002", "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-10-29T21:40:00Z", "text": "Again, great recipe!" }
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "rating": 5, "comment": "Simple and delicious!", "created_at": "2025-10-29T21:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Simple and delicious!", "created_at": "2025-10-29T21:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Again, great recipe!", "created_at": "2025-10-29T21:40:00Z" }
     ]
   }
 ]

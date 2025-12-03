@@ -51,8 +51,11 @@ const Recipe = () => {
           ingredients: recipe.ingredients,
           instructions: recipe.instructions,
           tags: recipe.tags,
-          likes: recipe.likes,
-          comments: recipe.comments,
+          reviews: recipe.reviews || [],
+          averageRating: recipe.reviews && recipe.reviews.length > 0
+            ? recipe.reviews.reduce((acc, r) => acc + r.rating, 0) / recipe.reviews.length
+            : 0,
+          totalReviews: recipe.reviews ? recipe.reviews.length : 0,
           username: recipe.username,
           created_at: recipe.created_at,
           // Assign random sizes for masonry layout
@@ -80,6 +83,11 @@ const Recipe = () => {
     setSelectedRecipe(null);
   };
 
+  const handleReviewAdded = () => {
+    // Refresh recipes to show updated reviews
+    fetchRecipes();
+  };
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -90,7 +98,12 @@ const Recipe = () => {
   
   return (
     <div className="recipe">
-      <RecipeModal isOpen={showRecipeModal} onClose={handleCloseModal} recipe={selectedRecipe} />
+      <RecipeModal 
+        isOpen={showRecipeModal} 
+        onClose={handleCloseModal} 
+        recipe={selectedRecipe}
+        onReviewAdded={handleReviewAdded}
+      />
       {/* Page Title */}
       <div style={{
         width: '100%',
@@ -229,10 +242,14 @@ const Recipe = () => {
                         <span className="recipe__card-time">{recipe.servings}</span>
                       </div>
                     )}
-                    {!recipe.level && recipe.cookingTime && (
+                    {!recipe.level && recipe.cookingTime && recipe.totalReviews > 0 && (
                       <>
-                        <span className="recipe__card-rating">★★★★</span>
-                          {/* Removed cookingTime next to the star as requested */}
+                        <span className="recipe__card-rating">
+                          {'★'.repeat(Math.round(recipe.averageRating)) + '☆'.repeat(5 - Math.round(recipe.averageRating))}
+                        </span>
+                        <span style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                          ({recipe.totalReviews})
+                        </span>
                       </>
                     )}
                   </div>

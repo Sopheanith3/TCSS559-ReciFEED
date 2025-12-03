@@ -6,10 +6,8 @@ const {
   createRecipe,
   updateRecipe,
   deleteRecipe,
-  likeRecipe,
-  unlikeRecipe,
-  addComment,
-  deleteComment
+  addReview,
+  deleteReview
 } = require('../controllers/recipeController');
 
 // Recipe routes
@@ -19,12 +17,8 @@ router.post('/', createRecipe);
 router.put('/:id', updateRecipe);
 router.delete('/:id', deleteRecipe);
 
-// Like/Unlike routes
-router.post('/:id/likes', likeRecipe);
-router.delete('/:id/likes', unlikeRecipe);
-
-// Comment routes
-router.post('/:id/comments', addComment);
-router.delete('/:id/comments/:commentId', deleteComment);
+// Review routes
+router.post('/:id/reviews', addReview);
+router.delete('/:id/reviews/:reviewId', deleteReview);
 
 module.exports = router;
