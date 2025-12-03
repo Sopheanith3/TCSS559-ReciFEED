@@ -1,5 +1,10 @@
 const User = require('../models/user');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
+const jwt = require('jsonwebtoken')
+const dotenv = require('dotenv')
+
+// Load environment variables
+dotenv.config({ path: '../.env' });
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -117,10 +122,50 @@ const deleteUser = asyncHandler(async (req, res, next) => {
   });
 });
 
+const generateToken = (user) =>
+  jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: "12h" });
+
+const loginUser = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return next(new ErrorResponse('Email and password required for login.', 400));
+  }
+
+  const user = await User.findOne({ email }); // Find user by email
+
+  // TODO: In production, check !(await bcrypt.compare(password, user.password)
+  if (!user || password !== user.password_hash) {
+    return next(new ErrorResponse('Invalid email or password.', 401)); // Validate credentials
+  }
+  const token = generateToken(user); // Generate JWT token
+  res.json({ 
+    message: "Login successful", 
+    token, 
+    id: user._id, 
+    username: user.username 
+  }); // Respond with token, user ID and username
+});
+
+const validateUser = asyncHandler(async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new ErrorResponse('Unauthorized: Missing or invalid token.', 401)); // Validate credentials
+  }
+  const token = authHeader.split(" ")[1]; // Extract the token
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ valid: true, user: decoded });
+  } catch (error) {
+    return next(new ErrorResponse('Unauthorized: Missing or invalid token.', 401));
+  }
+});
+
 module.exports = {
   getAllUsers,
   getUserById,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  loginUser,
+  validateUser
 };

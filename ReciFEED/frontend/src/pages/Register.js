@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../components/Register.css';
+import { authService } from '../services/auth';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -66,10 +67,8 @@ const Register = () => {
     setIsLoading(true);
     
     try {
-      // TODO: Replace with actual API call
-      // const response = await authService.register(formData);
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call register endpoint
+      await authService.register(formData.email, formData.password, formData.username);
       
       navigate('/login');
     } catch (error) {

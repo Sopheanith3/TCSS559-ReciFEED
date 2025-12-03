@@ -2,12 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./database/connection');
+const jwt = require('jsonwebtoken')
 
 // Import routes
 const userRoutes = require('./routes/userRoutes');
 const recipeRoutes = require('./routes/recipeRoutes');
 const postRoutes = require('./routes/postRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const { ErrorResponse } = require('./utils/errorHandler');
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +30,32 @@ app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
   next();
 });
+
+// JWT Token Validation Middleware
+// This middleware validates JSON Web Tokens (JWT) in incoming requests
+// to ensure that the user is authenticated.
+const validateToken = (req, res, next) => {
+  // Public routes that don't require authentication
+  const publicRoutes = ["/api/users/", "/api/users/login", "api/users/validate"];
+  const requestPath = req.originalUrl.toLowerCase(); // Normalize path
+
+  // Skip token validation for public routes
+  if (publicRoutes.some((route) => requestPath.startsWith(route))) {
+    return next();
+  }
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return next(new ErrorResponse('Unauthorized: Missing or invalid token.', 401));
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach user info
+    next();
+  } catch (error) {
+    return next(new ErrorResponse('Unauthorized: Invalid token.', 401));
+  }
+};
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -54,10 +82,10 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/users', userRoutes);
-app.use('/api/recipes', recipeRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/search', searchRoutes);
+app.use('/api/users', validateToken, userRoutes);
+app.use('/api/recipes', validateToken, recipeRoutes);
+app.use('/api/posts', validateToken, postRoutes);
+app.use('/api/search', validateToken, searchRoutes);
 
 // Global Error Handler (must be before 404)
 app.use((err, req, res, next) => {
@@ -84,7 +112,7 @@ app.use((req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`🌐 API URL: http://localhost:${PORT}`);
