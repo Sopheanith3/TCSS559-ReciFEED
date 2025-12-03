@@ -81,7 +81,7 @@ PORT=3082
 MISTRAL_API_KEY=7QOauC1jWUCdIVZWstFclHuX058GwQIK
 ```
 
-### 2) Create `microservices/twitter-service/.env`
+### 3) Create `microservices/twitter-service/.env`
 
 ```bash
 # Twitter Service port
