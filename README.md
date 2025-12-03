@@ -65,7 +65,7 @@ This project requires environment variables to connect to MongoDB and other exte
 
 ```bash
 # Monolith Port
-PORT=5000
+PORT=5050
 
 # MongoDB connection URI
 MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
