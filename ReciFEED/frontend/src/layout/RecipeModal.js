@@ -86,28 +86,10 @@ const RecipeModal = ({ isOpen, onClose, recipe }) => {
                   </li>
                 ))
               ) : (
-                <>
-                  <li className="recipe-modal__ingredient-item">
-                    <span className="recipe-modal__ingredient-bullet">•</span>
-                    2 cups all-purpose flour
-                  </li>
-                  <li className="recipe-modal__ingredient-item">
-                    <span className="recipe-modal__ingredient-bullet">•</span>
-                    1 cup sugar
-                  </li>
-                  <li className="recipe-modal__ingredient-item">
-                    <span className="recipe-modal__ingredient-bullet">•</span>
-                    3 eggs
-                  </li>
-                  <li className="recipe-modal__ingredient-item">
-                    <span className="recipe-modal__ingredient-bullet">•</span>
-                    1 tsp vanilla extract
-                  </li>
-                  <li className="recipe-modal__ingredient-item">
-                    <span className="recipe-modal__ingredient-bullet">•</span>
-                    1/2 cup butter, melted
-                  </li>
-                </>
+                <li className="recipe-modal__ingredient-item">
+                  <span className="recipe-modal__ingredient-bullet">•</span>
+                  No ingredients listed
+                </li>
               )}
             </ul>
           </div>
@@ -129,44 +111,12 @@ const RecipeModal = ({ isOpen, onClose, recipe }) => {
                   </li>
                 ))
               ) : (
-                <>
-                  <li className="recipe-modal__instruction-item">
-                    <span className="recipe-modal__instruction-number">1</span>
-                    <p className="recipe-modal__instruction-text">
-                      Preheat your oven to 350°F (175°C) and prepare your baking pan by greasing it lightly.
-                    </p>
-                  </li>
-                  <li className="recipe-modal__instruction-item">
-                    <span className="recipe-modal__instruction-number">2</span>
-                    <p className="recipe-modal__instruction-text">
-                      In a large mixing bowl, combine the flour and sugar. Mix well to ensure even distribution.
-                    </p>
-                  </li>
-                  <li className="recipe-modal__instruction-item">
-                    <span className="recipe-modal__instruction-number">3</span>
-                    <p className="recipe-modal__instruction-text">
-                      Add the eggs one at a time, beating well after each addition. Stir in the vanilla extract.
-                    </p>
-                  </li>
-                  <li className="recipe-modal__instruction-item">
-                    <span className="recipe-modal__instruction-number">4</span>
-                    <p className="recipe-modal__instruction-text">
-                      Pour in the melted butter and mix until the batter is smooth and well combined.
-                    </p>
-                  </li>
-                  <li className="recipe-modal__instruction-item">
-                    <span className="recipe-modal__instruction-number">5</span>
-                    <p className="recipe-modal__instruction-text">
-                      Transfer the batter to the prepared pan and bake for 25-30 minutes, or until a toothpick inserted in the center comes out clean.
-                    </p>
-                  </li>
-                  <li className="recipe-modal__instruction-item">
-                    <span className="recipe-modal__instruction-number">6</span>
-                    <p className="recipe-modal__instruction-text">
-                      Remove from oven and let cool for 10 minutes before serving. Enjoy your delicious creation!
-                    </p>
-                  </li>
-                </>
+                <li className="recipe-modal__instruction-item">
+                  <span className="recipe-modal__instruction-number">1</span>
+                  <p className="recipe-modal__instruction-text">
+                    No instructions available for this recipe.
+                  </p>
+                </li>
               )}
             </ol>
           </div>

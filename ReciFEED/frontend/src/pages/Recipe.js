@@ -1,11 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../components/Recipe.css';
 import RecipeModal from '../layout/RecipeModal';
+import { recipeService } from '../services/recipeService';
 
 const Recipe = () => {
   const [activeFilter, setActiveFilter] = useState('For you');
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch recipes from backend
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const fetchRecipes = async () => {
+    try {
+      setLoading(true);
+      const response = await recipeService.getAllRecipes(1, 50);
+      
+      if (response.status === 'success') {
+        // Transform backend data to match frontend structure
+        const transformedRecipes = response.data.recipes.map((recipe, index) => ({
+          id: recipe._id,
+          title: recipe.title,
+          image: recipe.image_urls && recipe.image_urls.length > 0 
+            ? recipe.image_urls[0] 
+            : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',
+          cookingTime: recipe.cooking_time || '0 mins',
+          servings: recipe.servings,
+          level: recipe.difficulty_level,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions,
+          tags: recipe.tags,
+          likes: recipe.likes,
+          comments: recipe.comments,
+          username: recipe.username,
+          created_at: recipe.created_at,
+          // Assign random sizes for masonry layout
+          size: index % 7 === 0 ? 'large' : index % 3 === 0 ? 'small' : 'medium'
+        }));
+        
+        setRecipes(transformedRecipes);
+      }
+    } catch (err) {
+      console.error('Error fetching recipes:', err);
+      setError('Failed to load recipes. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleRecipeClick = (recipe) => {
     setSelectedRecipe(recipe);
@@ -16,85 +62,6 @@ const Recipe = () => {
     setShowRecipeModal(false);
     setSelectedRecipe(null);
   };
-
-  // Sample recipe data - you would fetch this from your API
-  const recipes = [
-    {
-      id: 1,
-      title: 'Heart of Palm & Plantain Moqueca',
-      image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=500',
-      // difficulty: 'CREAMY',
-      level: 'Level: 11/11',
-      cookingTime: '30m',
-      overallTime: '30m',
-      servings: '6-8 servings',
-      size: 'large'
-    },
-    {
-      id: 2,
-      title: 'Quick Tekuan',
-      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '15m',
-      size: 'medium'
-    },
-    {
-      id: 3,
-      title: 'Blue Cheese Dressing',
-      image: 'https://images.unsplash.com/photo-1528712306091-ed0763094c98?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '13m',
-      size: 'medium'
-    },
-    {
-      id: 4,
-      title: 'Roasted Lamb Shoulder & Boulangère Potato',
-      image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '3h+',
-      size: 'medium'
-    },
-    {
-      id: 5,
-      title: 'Egg-Filled Pancake',
-      image: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '2h+',
-      size: 'medium'
-    },
-    {
-      id: 6,
-      title: 'Salmon Tartare',
-      image: 'https://images.unsplash.com/photo-1580959375944-0e9b8e8d25b7?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '30m',
-      size: 'small'
-    },
-    {
-      id: 7,
-      title: 'Panettoni',
-      image: 'https://images.unsplash.com/photo-1481391243133-f96216dcb5d2?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '1d+',
-      size: 'medium'
-    },
-    {
-      id: 8,
-      title: 'Grilled Cabbage, Seaweed & Ember Baked Strawberries',
-      image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '1h+',
-      size: 'medium'
-    },
-    {
-      id: 9,
-      title: 'Frozen Margarita',
-      image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400',
-      // difficulty: 'NEW',
-      cookingTime: '5m',
-      size: 'small'
-    }
-  ];
 
   const filters = [
     'For you',
@@ -150,48 +117,78 @@ const Recipe = () => {
         </div>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
+          <p>Loading recipes...</p>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div style={{ textAlign: 'center', padding: '40px', color: '#ff6b6b' }}>
+          <p>{error}</p>
+          <button 
+            onClick={fetchRecipes}
+            style={{ 
+              marginTop: '16px', 
+              padding: '10px 20px', 
+              backgroundColor: '#007bff', 
+              color: '#fff', 
+              border: 'none', 
+              borderRadius: '8px', 
+              cursor: 'pointer' 
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Recipe Grid */}
-      <div className="recipe__grid">
-        {recipes.map((recipe) => (
-          <div key={recipe.id} className={`recipe__card recipe__card--${recipe.size}`} onClick={() => handleRecipeClick(recipe)}>
-            <div className="recipe__card-image" style={{backgroundImage: `url(${recipe.image})`}}>
-              {recipe.difficulty && (
-                <span className="recipe__card-badge">{recipe.difficulty}</span>
-              )}
-              <div className="recipe__card-content">
-                <h3 className="recipe__card-title">{recipe.title}</h3>
-                <div className="recipe__card-meta">
-                  {recipe.level && <span className="recipe__card-level">{recipe.level}</span>}
-                  {recipe.cookingTime && (
-                    <div className="recipe__card-info">
-                      <span className="recipe__card-label">Cooking</span>
-                      <span className="recipe__card-time">{recipe.cookingTime}</span>
-                    </div>
-                  )}
-                  {recipe.overallTime && (
-                    <div className="recipe__card-info">
-                      <span className="recipe__card-label">Overall</span>
-                      <span className="recipe__card-time">{recipe.overallTime}</span>
-                    </div>
-                  )}
-                  {recipe.servings && (
-                    <div className="recipe__card-info">
-                      <span className="recipe__card-label">Ready</span>
-                      <span className="recipe__card-time">{recipe.servings}</span>
-                    </div>
-                  )}
-                  {!recipe.level && recipe.cookingTime && (
-                    <>
-                      <span className="recipe__card-rating">★★★★</span>
-                      <span className="recipe__card-time">{recipe.cookingTime}</span>
-                    </>
-                  )}
+      {!loading && !error && (
+        <div className="recipe__grid">
+          {recipes.map((recipe) => (
+            <div key={recipe.id} className={`recipe__card recipe__card--${recipe.size}`} onClick={() => handleRecipeClick(recipe)}>
+              <div className="recipe__card-image" style={{backgroundImage: `url(${recipe.image})`}}>
+                {recipe.difficulty && (
+                  <span className="recipe__card-badge">{recipe.difficulty}</span>
+                )}
+                <div className="recipe__card-content">
+                  <h3 className="recipe__card-title">{recipe.title}</h3>
+                  <div className="recipe__card-meta">
+                    {recipe.level && <span className="recipe__card-level">{recipe.level}</span>}
+                    {recipe.cookingTime && (
+                      <div className="recipe__card-info">
+                        <span className="recipe__card-label">Cooking</span>
+                        <span className="recipe__card-time">{recipe.cookingTime}</span>
+                      </div>
+                    )}
+                    {recipe.overallTime && (
+                      <div className="recipe__card-info">
+                        <span className="recipe__card-label">Overall</span>
+                        <span className="recipe__card-time">{recipe.overallTime}</span>
+                      </div>
+                    )}
+                    {recipe.servings && (
+                      <div className="recipe__card-info">
+                        <span className="recipe__card-label">Servings</span>
+                        <span className="recipe__card-time">{recipe.servings}</span>
+                      </div>
+                    )}
+                    {!recipe.level && recipe.cookingTime && (
+                      <>
+                        <span className="recipe__card-rating">★★★★</span>
+                        <span className="recipe__card-time">{recipe.cookingTime}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

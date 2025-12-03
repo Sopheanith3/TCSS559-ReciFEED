@@ -7,7 +7,8 @@
     "tags": ["Dessert", "Pastry"],
     "ingredients": ["2 cups flour", "1 cup sugar", "1/2 cup cocoa powder", "1 cup milk", "2 eggs"],
     "instructions": ["Mix dry ingredients.", "Add wet ingredients and stir.", "Bake at 350°F for 30 mins."],
-    "image_urls": ["https://example.com/images/chocolate_cake1.jpg"],
+    "image_urls": ["https://static.toiimg.com/thumb/53096885.cms?imgsize=1572013&width=800&height=800"],
+    "cooking_time": "45m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-07T11:00:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "created_at": "2025-11-07T12:00:00Z" }
@@ -24,7 +25,8 @@
     "tags": ["Lunch"],
     "ingredients": ["200g spaghetti", "2 tbsp olive oil", "2 garlic cloves", "Parmesan to taste"],
     "instructions": ["Cook spaghetti.", "Sauté garlic in oil.", "Toss spaghetti with garlic and top with Parmesan."],
-    "image_urls": ["https://example.com/images/spaghetti1.jpg"],
+    "image_urls": ["https://www.killingthyme.net/wp-content/uploads/2017/05/pasta-aglio-e-olio-5.jpg"],
+    "cooking_time": "20m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-11-06T10:00:00Z" }
     ],
@@ -40,7 +42,8 @@
     "tags": ["Lunch", "Vegan"],
     "ingredients": ["3 cups salad greens", "1/2 cup cherry tomatoes", "1/4 cup feta cheese"],
     "instructions": ["Combine vegetables.", "Add dressing.", "Top with feta."],
-    "image_urls": ["https://example.com/images/salad1.jpg"],
+    "image_urls": ["https://images.themodernproper.com/production/posts/GreekSalad_9.jpg?w=960&h=960&q=82&fm=jpg&fit=crop&dm=1718650734&s=a621884105b631b5c3767e9be8069b7b"],
+    "cooking_time": "15m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-11-05T15:00:00Z" }
     ],
@@ -56,7 +59,8 @@
     "tags": ["Dinner"],
     "ingredients": ["2 chicken breasts", "1 tsp paprika", "2 tbsp olive oil"],
     "instructions": ["Season chicken.", "Cook in pan until done."],
-    "image_urls": ["https://example.com/images/chicken1.jpg"],
+    "image_urls": ["https://www.budgetbytes.com/wp-content/uploads/2021/12/Chicken-Breast-Pan.jpg"],
+    "cooking_time": "25m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "created_at": "2025-11-04T16:30:00Z" }
     ],
@@ -72,7 +76,8 @@
     "tags": ["Breakfast", "Vegan"],
     "ingredients": ["1 cup oats", "1/2 cup almond milk", "1 tbsp honey"],
     "instructions": ["Mix oats and milk.", "Add honey and enjoy."],
-    "image_urls": ["https://example.com/images/oatmeal1.jpg"],
+    "image_urls": ["https://wholefoodsoulfoodkitchen.com/wp-content/uploads/2023/03/honey-oatmeal-recipe-1.jpg"],
+    "cooking_time": "10m",
     "likes": [
       { "user_id": "690f704e3fe0dd94aba6c97b", "username": "judy", "created_at": "2025-11-03T12:15:00Z" }
     ],
@@ -88,7 +93,8 @@
     "tags": ["Breakfast", "Snack"],
     "ingredients": ["2 slices bread", "2 tbsp peanut butter", "1 banana"],
     "instructions": ["Spread peanut butter.", "Add banana slices."],
-    "image_urls": ["https://example.com/images/sandwich1.jpg"],
+    "image_urls": ["https://beyondthenoms.com/wp-content/uploads/2023/03/Fried-Peanut-Butter-Banana-Honey-Sandwich-02.jpg"],
+    "cooking_time": "5m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "created_at": "2025-11-02T09:30:00Z" }
     ],
@@ -104,7 +110,8 @@
     "tags": ["Lunch", "Dinner"],
     "ingredients": ["1 cup rice", "2 cups water", "1 tbsp butter"],
     "instructions": ["Boil water.", "Add rice and butter.", "Simmer until done."],
-    "image_urls": ["https://example.com/images/rice1.jpg"],
+    "image_urls": ["https://andianne.com/wp-content/uploads/2023/05/garlic-butter-rice-02.jpg"],
+    "cooking_time": "25m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "created_at": "2025-11-01T18:45:00Z" }
     ],
@@ -118,7 +125,8 @@
     "tags": ["Breakfast"],
     "ingredients": ["4 eggs", "1/4 cup milk", "Salt and pepper"],
     "instructions": ["Beat eggs and milk.", "Cook in pan."],
-    "image_urls": ["https://example.com/images/omelette1.jpg"],
+    "image_urls": ["https://www.healthyfood.com/wp-content/uploads/2018/02/Basic-omelette.jpg"],
+    "cooking_time": "10m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "created_at": "2025-10-31T15:20:00Z" }
     ],
@@ -134,7 +142,8 @@
     "tags": ["Breakfast", "Snack"],
     "ingredients": ["1 cup yogurt", "1/2 cup granola", "1/4 cup strawberries"],
     "instructions": ["Layer yogurt, granola, and strawberries."],
-    "image_urls": ["https://example.com/images/parfait1.jpg"],
+    "image_urls": ["https://spicecravings.com/wp-content/uploads/2023/09/Greek-Yogurt-Parfait-Featured.jpg"],
+    "cooking_time": "10m",
     "likes": [],
     "comments": []
   },
@@ -146,7 +155,8 @@
     "tags": ["Breakfast", "Vegan", "Snack"],
     "ingredients": ["1 avocado", "2 slices bread", "Salt and pepper"],
     "instructions": ["Mash avocado with seasoning.", "Spread on toasted bread."],
-    "image_urls": ["https://example.com/images/avocado_toast1.jpg"],
+    "image_urls": ["https://thesaltypot.com/wp-content/uploads/2019/02/Avocado-Toast09.jpg"],
+    "cooking_time": "10m",
     "likes": [
       { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "created_at": "2025-10-29T21:00:00Z" }
     ],
