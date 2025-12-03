@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/post');
-const connectDB = require('./utils/database');
+const connectDB = require('./database/connection');
 
 // Load environment variables
 dotenv.config();
