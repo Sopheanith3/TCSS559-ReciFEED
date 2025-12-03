@@ -101,6 +101,19 @@ MONGODB_URI=mongodb+srv://recifeed_dev_db_user:xyInl7KWe3vRzmQV@recifeed-cluster
 JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
 ```
 
+### 4) Create `microservices/bsky-service/.env`
+
+```bash
+# Bsky Service port
+PORT=3082
+
+# MongoDB connection URI (recifeed_db)
+MONGODB_URI=mongodb+srv://recifeed_dev_db_user:xyInl7KWe3vRzmQV@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
+
+# JWT Secret
+JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
+```
+
 ### Project Structure
 ```
 TCSS559-RECIFEED/
@@ -137,9 +150,20 @@ TCSS559-RECIFEED/
 |  |  |─ .env             # NOT committed - use provided
 │  │  └─ index.js
 │  ├─ twitter-service/
+|  |  ├─ database/
+│  |  │  └─ connection.js
+|  |  ├─ models/
+│  |  │  └─ twitterUserTokens.js
+|  |  ├─ routes/
+|  |  |  |─ post.js
+│  |  │  └─ auth.js
 |  |  |─ .env             # NOT committed - use provided
 │  │  └─ index.js
 │  └─ bsky-service/
+|     ├─ database/
+│     │  └─ connection.js
+|     ├─ models/
+│     │  └─ bskyUserToken.js
 |     |─ .env             # NOT committed - use provided
 │     └─ index.js
 │
