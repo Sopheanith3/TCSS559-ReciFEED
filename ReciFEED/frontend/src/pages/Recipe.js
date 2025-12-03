@@ -4,17 +4,33 @@ import RecipeModal from '../layout/RecipeModal';
 import { recipeService } from '../services/recipeService';
 
 const Recipe = () => {
-  const [activeFilter, setActiveFilter] = useState('For you');
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [recipes, setRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch recipes from backend
   useEffect(() => {
     fetchRecipes();
   }, []);
+
+  // Filter recipes when search query changes
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredRecipes(recipes);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = recipes.filter(recipe => 
+        recipe.title.toLowerCase().includes(query) ||
+        recipe.tags?.some(tag => tag.toLowerCase().includes(query)) ||
+        recipe.ingredients?.some(ingredient => ingredient.toLowerCase().includes(query))
+      );
+      setFilteredRecipes(filtered);
+    }
+  }, [searchQuery, recipes]);
 
   const fetchRecipes = async () => {
     try {
@@ -44,6 +60,7 @@ const Recipe = () => {
         }));
         
         setRecipes(transformedRecipes);
+        setFilteredRecipes(transformedRecipes);
       }
     } catch (err) {
       console.error('Error fetching recipes:', err);
@@ -63,25 +80,35 @@ const Recipe = () => {
     setSelectedRecipe(null);
   };
 
-  const filters = [
-    'For you',
-    'Quick',
-    '1h or less',
-    'Few ingredients',
-    'Breakfast',
-    'Lunch',
-    'Dinner',
-    'Snacks',
-    'Dessert',
-    'Cocktails',
-    'Vegan',
-    'Vegetarian',
-    'Plant-forward'
-  ];
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchClear = () => {
+    setSearchQuery('');
+  };
   
   return (
     <div className="recipe">
       <RecipeModal isOpen={showRecipeModal} onClose={handleCloseModal} recipe={selectedRecipe} />
+      {/* Page Title */}
+      <div style={{
+        width: '100%',
+        padding: '0 0 8px 0',
+        background: 'transparent',
+        position: 'sticky',
+        top: 0,
+        zIndex: 101
+      }}>
+        <h1 style={{
+          fontSize: '2rem',
+          fontWeight: 700,
+          color: '#fff',
+          margin: 0,
+          letterSpacing: '1px',
+          fontFamily: 'Segoe UI, Roboto, Arial, sans-serif'
+        }}>Recipe</h1>
+      </div>
       {/* Search Bar */}
       <div className="recipe__search-container">
         <div className="recipe__search-wrapper">
@@ -92,28 +119,32 @@ const Recipe = () => {
           <input 
             type="text" 
             className="recipe__search-input" 
-            placeholder="What's cooking?"
+            placeholder="Search recipes, ingredients, or tags..."
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
-        </div>
-        <button className="recipe__filter-button">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M3 6h18M7 12h10M10 18h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        </button>
-      </div>
-
-      {/* Filter Pills */}
-      <div className="recipe__filters">
-        <div className="recipe__filters-scroll">
-          {filters.map((filter, index) => (
-            <button
-              key={index}
-              className={`recipe__filter-pill ${activeFilter === filter ? 'recipe__filter-pill--active' : ''}`}
-              onClick={() => setActiveFilter(filter)}
+          {searchQuery && (
+            <button 
+              className="recipe__search-clear"
+              onClick={handleSearchClear}
+              style={{
+                position: 'absolute',
+                right: '16px',
+                background: 'none',
+                border: 'none',
+                color: 'rgba(255, 255, 255, 0.5)',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
-              {filter}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
             </button>
-          ))}
+          )}
         </div>
       </div>
 
@@ -147,12 +178,34 @@ const Recipe = () => {
 
       {/* Recipe Grid */}
       {!loading && !error && (
-        <div className="recipe__grid">
-          {recipes.map((recipe) => (
+        <>
+          {filteredRecipes.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 20px', color: 'rgba(255, 255, 255, 0.6)' }}>
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" style={{ margin: '0 auto 20px', opacity: 0.3 }}>
+                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>
+                <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              <p style={{ fontSize: '1.2rem', marginBottom: '8px' }}>No recipes found</p>
+              <p style={{ fontSize: '0.95rem', opacity: 0.7 }}>
+                Try searching for something else or clear your search
+              </p>
+            </div>
+          ) : (
+            <div className="recipe__grid">
+              {filteredRecipes.map((recipe) => (
             <div key={recipe.id} className={`recipe__card recipe__card--${recipe.size}`} onClick={() => handleRecipeClick(recipe)}>
               <div className="recipe__card-image" style={{backgroundImage: `url(${recipe.image})`}}>
+                {/* Difficulty badge (top left) */}
                 {recipe.difficulty && (
                   <span className="recipe__card-badge">{recipe.difficulty}</span>
+                )}
+                {/* Tags (top right) */}
+                {recipe.tags && recipe.tags.length > 0 && (
+                  <div className="recipe__card-tags">
+                    <span className="recipe__card-tag">
+                      {recipe.tags.join(', ')}
+                    </span>
+                  </div>
                 )}
                 <div className="recipe__card-content">
                   <h3 className="recipe__card-title">{recipe.title}</h3>
@@ -179,7 +232,7 @@ const Recipe = () => {
                     {!recipe.level && recipe.cookingTime && (
                       <>
                         <span className="recipe__card-rating">★★★★</span>
-                        <span className="recipe__card-time">{recipe.cookingTime}</span>
+                          {/* Removed cookingTime next to the star as requested */}
                       </>
                     )}
                   </div>
@@ -187,7 +240,9 @@ const Recipe = () => {
               </div>
             </div>
           ))}
-        </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
