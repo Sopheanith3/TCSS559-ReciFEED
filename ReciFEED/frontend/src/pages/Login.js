@@ -60,10 +60,10 @@ const Login = () => {
       // Call login endpoint
       const response = await authService.login(formData.email, formData.password);
 
-      const { id, username, token } = response
+      const { id, username, token } = response;
       
       // Save login token and user ID to context
-      login({ id, username }, token)
+      login({ id, username }, token);
       
       // On success, navigate to home
       navigate('/');

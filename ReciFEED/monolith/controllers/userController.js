@@ -144,7 +144,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
     id: user._id, 
     username: user.username 
   }); // Respond with token, user ID and username
-})
+});
 
 const validateUser = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
