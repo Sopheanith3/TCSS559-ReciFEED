@@ -6,7 +6,7 @@ const multer = require('multer');
 const FormData = require('form-data')
 const TwitterUserTokens = require('../models/twitterUserTokens');
 
-const router = express.Router()
+const router = express.Router();
 
 // Multer memory storage for images
 const upload = multer({ storage: multer.memoryStorage() });

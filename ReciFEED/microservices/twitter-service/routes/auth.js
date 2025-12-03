@@ -30,8 +30,6 @@ const getOAuthTokens = async () => {
     method: "POST",
   };
 
-  console.log(consumerKey, consumerSecret)
-
   // Generate Authorization header
   const authHeader = oauth.toHeader(oauth.authorize(requestData));
 
@@ -58,6 +56,7 @@ const getOAuthTokens = async () => {
 }
 
 /**
+ * GET /twitter/auth/
  * Retrieves if current user is authenticated for Twitter
  */
 router.get('/', async (req, res) => {
@@ -90,13 +89,17 @@ router.get('/', async (req, res) => {
     return res.status(200).json({ authorized: true })
   } catch (error) {
     if (error.response && error.response.status === 401) {
-        return res.status(401).json({ authorized: false })
+      return res.status(401).json({ authorized: false });
     }
     // Other server error
     return res.status(500).json({ error: 'Internal error, could not verify authentication.' })
   }
 });
 
+/**
+ * GET twitter/auth/start
+ * Get a redirect link to start the auth process for this user
+ */
 router.get('/start', async (req, res) => {
   // Retrieve user ID as attached to request by token validator
   const { id } =  req.user
@@ -123,7 +126,8 @@ router.get('/start', async (req, res) => {
 });
 
 /**
- * Authenticates a user using an authentication pin after redirect
+ * POST /twitter/auth/complete
+ * Completes user authentication process using the pin from their redirect
  */
 router.post('/complete', async (req, res) => {
   // Retrieve user ID as attached to request by token validator
@@ -141,10 +145,12 @@ router.post('/complete', async (req, res) => {
     const userTokens = await TwitterUserTokens.findOne({ userId: id });
     
     if (!userTokens || !userTokens.oauth_token || !userTokens.oauth_secret) {
-      return res.status(401).json({ authorized: false });
+      return res.status(401).json({ error: 'User has not started auth process.' });
     }
 
     const { oauth_token, oauth_secret } = userTokens
+
+    // Create and send request to get user access tokens from Twitter API
 
     const requestData = {
       url,
