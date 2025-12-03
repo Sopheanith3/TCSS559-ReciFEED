@@ -1,11 +1,28 @@
 const API_URL = 'http://localhost:5050/api';
 
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return headers;
+};
+
 export const recipeService = {
   // Get all recipes with pagination and filters
   getAllRecipes: async (page = 1, limit = 20, sortBy = 'created_at', order = 'desc') => {
     try {
       const response = await fetch(
-        `${API_URL}/recipes?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${order}`
+        `${API_URL}/recipes?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${order}`,
+        {
+          headers: getAuthHeaders(),
+        }
       );
       
       if (!response.ok) {
@@ -23,7 +40,9 @@ export const recipeService = {
   // Get a single recipe by ID
   getRecipeById: async (id) => {
     try {
-      const response = await fetch(`${API_URL}/recipes/${id}`);
+      const response = await fetch(`${API_URL}/recipes/${id}`, {
+        headers: getAuthHeaders(),
+      });
       
       if (!response.ok) {
         throw new Error('Failed to fetch recipe');
@@ -42,9 +61,7 @@ export const recipeService = {
     try {
       const response = await fetch(`${API_URL}/recipes`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(recipeData),
       });
       
@@ -65,9 +82,7 @@ export const recipeService = {
     try {
       const response = await fetch(`${API_URL}/recipes/${recipeId}/reviews`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ rating, comment, userId, username }),
       });
       
@@ -88,9 +103,7 @@ export const recipeService = {
     try {
       const response = await fetch(`${API_URL}/recipes/${recipeId}/reviews/${reviewId}`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
       });
       
       if (!response.ok) {
