@@ -104,26 +104,18 @@ const Recipe = () => {
         recipe={selectedRecipe}
         onReviewAdded={handleReviewAdded}
       />
-      {/* Page Title */}
-      <div style={{
-        width: '100%',
-        padding: '0 0 8px 0',
-        background: 'transparent',
-        position: 'sticky',
-        top: 0,
-        zIndex: 101
-      }}>
+      {/* Page Title and Search Bar on Same Line */}
+      <div className="recipe__search-container">
         <h1 style={{
           fontSize: '2rem',
           fontWeight: 700,
           color: '#fff',
           margin: 0,
           letterSpacing: '1px',
-          fontFamily: 'Segoe UI, Roboto, Arial, sans-serif'
+          fontFamily: 'Segoe UI, Roboto, Arial, sans-serif',
+          marginRight: '20px',
+          flexShrink: 0
         }}>Recipe</h1>
-      </div>
-      {/* Search Bar */}
-      <div className="recipe__search-container">
         <div className="recipe__search-wrapper">
           <svg className="recipe__search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
             <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>

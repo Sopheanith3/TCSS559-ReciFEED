@@ -45,7 +45,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  padding: 20px 0;
+  padding: 12px 0;
   position: sticky;
   top: 0;
   background-color: #1a1a1a;
@@ -57,6 +57,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  max-width: 370px;
 }
 
 .recipe__search-icon {
@@ -68,15 +69,18 @@
 
 .recipe__search-input {
   width: 100%;
-  background-color: #2a2a2a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px 16px 12px 48px;
-  color: #ffffff;
-  font-size: 1rem;
+  background-color: #232323;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 7px 14px 7px 40px;
+  color: #fff;
+  font-size: 0.95rem;
   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
   outline: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   transition: all 0.2s ease;
+  min-height: 20px;
+  max-width: 300px;
 }
 
 .recipe__search-input::placeholder {
