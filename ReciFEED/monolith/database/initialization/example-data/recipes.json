@@ -8,7 +8,7 @@
     "ingredients": ["2 cups flour", "1 cup sugar", "1/2 cup cocoa powder", "1 cup milk", "2 eggs"],
     "instructions": ["Mix dry ingredients.", "Add wet ingredients and stir.", "Bake at 350°F for 30 mins."],
     "image_urls": ["https://static.toiimg.com/thumb/53096885.cms?imgsize=1572013&width=800&height=800"],
-    "cooking_time": "45m",
+    "cooking_time": "45mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Absolutely delicious! Best chocolate cake I've ever made.", "created_at": "2025-11-07T11:00:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 4, "comment": "Great recipe, very moist and chocolatey!", "created_at": "2025-11-07T12:00:00Z" },
@@ -24,7 +24,7 @@
     "ingredients": ["200g spaghetti", "2 tbsp olive oil", "2 garlic cloves", "Parmesan to taste"],
     "instructions": ["Cook spaghetti.", "Sauté garlic in oil.", "Toss spaghetti with garlic and top with Parmesan."],
     "image_urls": ["https://www.killingthyme.net/wp-content/uploads/2017/05/pasta-aglio-e-olio-5.jpg"],
-    "cooking_time": "20m",
+    "cooking_time": "20mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "rating": 5, "comment": "Quick and easy! Perfect for a weeknight dinner.", "created_at": "2025-11-06T10:00:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 4, "comment": "Quick and easy!", "created_at": "2025-11-06T11:00:00Z" }
@@ -39,7 +39,7 @@
     "ingredients": ["3 cups salad greens", "1/2 cup cherry tomatoes", "1/4 cup feta cheese"],
     "instructions": ["Combine vegetables.", "Add dressing.", "Top with feta."],
     "image_urls": ["https://images.themodernproper.com/production/posts/GreekSalad_9.jpg?w=960&h=960&q=82&fm=jpg&fit=crop&dm=1718650734&s=a621884105b631b5c3767e9be8069b7b"],
-    "cooking_time": "15m",
+    "cooking_time": "15mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 4, "comment": "Fresh and tasty!", "created_at": "2025-11-05T15:00:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Fresh and tasty!", "created_at": "2025-11-05T15:30:00Z" }
@@ -54,7 +54,7 @@
     "ingredients": ["2 chicken breasts", "1 tsp paprika", "2 tbsp olive oil"],
     "instructions": ["Season chicken.", "Cook in pan until done."],
     "image_urls": ["https://www.budgetbytes.com/wp-content/uploads/2021/12/Chicken-Breast-Pan.jpg"],
-    "cooking_time": "25m",
+    "cooking_time": "25mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "rating": 5, "comment": "Perfectly cooked!", "created_at": "2025-11-04T16:30:00Z" },
       { "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "rating": 5, "comment": "Perfectly cooked!", "created_at": "2025-11-04T17:00:00Z" }
@@ -69,7 +69,7 @@
     "ingredients": ["1 cup oats", "1/2 cup almond milk", "1 tbsp honey"],
     "instructions": ["Mix oats and milk.", "Add honey and enjoy."],
     "image_urls": ["https://wholefoodsoulfoodkitchen.com/wp-content/uploads/2023/03/honey-oatmeal-recipe-1.jpg"],
-    "cooking_time": "10m",
+    "cooking_time": "10mins",
     "reviews": [
       { "user_id": "690f704e3fe0dd94aba6c97b", "username": "judy", "rating": 4, "comment": "Healthy and delicious!", "created_at": "2025-11-03T12:15:00Z" },
       { "user_id": "650000000000000000000001", "username": "alice", "rating": 5, "comment": "Healthy and delicious!", "created_at": "2025-11-03T12:30:00Z" }
@@ -84,7 +84,7 @@
     "ingredients": ["2 slices bread", "2 tbsp peanut butter", "1 banana"],
     "instructions": ["Spread peanut butter.", "Add banana slices."],
     "image_urls": ["https://beyondthenoms.com/wp-content/uploads/2023/03/Fried-Peanut-Butter-Banana-Honey-Sandwich-02.jpg"],
-    "cooking_time": "5m",
+    "cooking_time": "5mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 3, "comment": "Quick snack!", "created_at": "2025-11-02T09:30:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 4, "comment": "Quick snack!", "created_at": "2025-11-02T10:00:00Z" }
@@ -99,7 +99,7 @@
     "ingredients": ["1 cup rice", "2 cups water", "1 tbsp butter"],
     "instructions": ["Boil water.", "Add rice and butter.", "Simmer until done."],
     "image_urls": ["https://andianne.com/wp-content/uploads/2023/05/garlic-butter-rice-02.jpg"],
-    "cooking_time": "25m",
+    "cooking_time": "25mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 4, "comment": "Simple and satisfying!", "created_at": "2025-11-01T18:45:00Z" }
     ]
@@ -113,7 +113,7 @@
     "ingredients": ["4 eggs", "1/4 cup milk", "Salt and pepper"],
     "instructions": ["Beat eggs and milk.", "Cook in pan."],
     "image_urls": ["https://www.healthyfood.com/wp-content/uploads/2018/02/Basic-omelette.jpg"],
-    "cooking_time": "10m",
+    "cooking_time": "10mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 5, "comment": "Fluffy!", "created_at": "2025-10-31T15:20:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Fluffy!", "created_at": "2025-10-31T15:45:00Z" }
@@ -128,7 +128,7 @@
     "ingredients": ["1 cup yogurt", "1/2 cup granola", "1/4 cup strawberries"],
     "instructions": ["Layer yogurt, granola, and strawberries."],
     "image_urls": ["https://spicecravings.com/wp-content/uploads/2023/09/Greek-Yogurt-Parfait-Featured.jpg"],
-    "cooking_time": "10m",
+    "cooking_time": "10mins",
     "reviews": []
   },
   {
@@ -140,11 +140,285 @@
     "ingredients": ["1 avocado", "2 slices bread", "Salt and pepper"],
     "instructions": ["Mash avocado with seasoning.", "Spread on toasted bread."],
     "image_urls": ["https://thesaltypot.com/wp-content/uploads/2019/02/Avocado-Toast09.jpg"],
-    "cooking_time": "10m",
+    "cooking_time": "10mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "rating": 5, "comment": "Simple and delicious!", "created_at": "2025-10-29T21:00:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Simple and delicious!", "created_at": "2025-10-29T21:30:00Z" },
       { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Again, great recipe!", "created_at": "2025-10-29T21:40:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-28T13:15:00Z",
+    "user_id": "690f704e3fe0dd94aba6c97c",
+    "username": "kevin",
+    "title": "Burnt Garlic Fried Rice",
+    "tags": ["Dinner", "Lunch"],
+    "ingredients": ["2 cups cooked rice", "4 cloves garlic", "2 tbsp soy sauce", "1 egg", "2 tbsp vegetable oil"],
+    "instructions": ["Heat oil and fry minced garlic until golden.", "Add rice and stir-fry.", "Push rice aside, scramble egg, then mix.", "Add soy sauce."],
+    "image_urls": ["https://i0.wp.com/curryandvanilla.com/wp-content/uploads/2018/07/Burnt-garlic-Schezwan-Fried-Rice-b.jpg?resize=667%2C667&ssl=1"],
+    "cooking_time": "15mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 2, "comment": "I actually burnt the garlic and it tasted bitter. Need clearer instructions on timing.", "created_at": "2025-10-28T14:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 4, "comment": "Good once I figured out the garlic timing. Use medium heat!", "created_at": "2025-10-28T15:30:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-27T10:45:00Z",
+    "user_id": "690f704e3fe0dd94aba6c97d",
+    "username": "lisa",
+    "title": "Classic Beef Tacos",
+    "tags": ["Dinner"],
+    "ingredients": ["1 lb ground beef", "1 packet taco seasoning", "8 taco shells", "1 cup shredded lettuce", "1 cup shredded cheese", "1 tomato diced", "Sour cream"],
+    "instructions": ["Brown beef in pan.", "Add taco seasoning and water, simmer.", "Warm taco shells.", "Assemble with toppings."],
+    "image_urls": ["https://www.onceuponachef.com/images/2023/08/Beef-Tacos.jpg"],
+    "cooking_time": "25mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 5, "comment": "Perfect taco night! Kids loved it.", "created_at": "2025-10-27T11:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 5, "comment": "Can't go wrong with tacos!", "created_at": "2025-10-27T12:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "rating": 4, "comment": "Great recipe, I added jalapeños for extra kick.", "created_at": "2025-10-27T13:15:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-26T16:30:00Z",
+    "user_id": "690f704e3fe0dd94aba6c97e",
+    "username": "mike",
+    "title": "Mushroom Risotto",
+    "tags": ["Dinner"],
+    "ingredients": ["1 cup arborio rice", "4 cups vegetable broth", "1 cup mushrooms sliced", "1/2 cup white wine", "1/2 cup parmesan", "2 tbsp butter", "1 onion diced"],
+    "instructions": ["Sauté onion and mushrooms.", "Add rice, toast briefly.", "Add wine, then broth gradually while stirring.", "Finish with butter and parmesan."],
+    "image_urls": ["https://veganhuggs.com/wp-content/uploads/2018/04/instant-pot-mushroom-risotto-in-bowl-1.jpeg"],
+    "cooking_time": "45mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "rating": 3, "comment": "Way too much stirring! My arm was tired. It was good but not worth the effort.", "created_at": "2025-10-26T18:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Rich and creamy! Worth the effort if you have time.", "created_at": "2025-10-26T19:30:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-25T09:20:00Z",
+    "user_id": "690f704e3fe0dd94aba6c97f",
+    "username": "nancy",
+    "title": "Blueberry Pancakes",
+    "tags": ["Breakfast"],
+    "ingredients": ["1.5 cups flour", "2 tbsp sugar", "2 tsp baking powder", "1 cup milk", "1 egg", "1 cup blueberries", "2 tbsp melted butter"],
+    "instructions": ["Mix dry ingredients.", "Whisk wet ingredients separately.", "Combine and fold in blueberries.", "Cook on griddle until bubbles form, flip."],
+    "image_urls": ["https://www.kulickspancakerecipes.com/wp-content/uploads/2022/03/Blueberry-pancake-recipe-500x500.jpg"],
+    "cooking_time": "20mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Fluffy and delicious! Best pancakes ever.", "created_at": "2025-10-25T10:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 5, "comment": "Kids demolished these in minutes!", "created_at": "2025-10-25T10:45:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-24T14:00:00Z",
+    "user_id": "690f704e3fe0dd94aba6c980",
+    "username": "oliver",
+    "title": "Tomato Soup",
+    "tags": ["Lunch", "Dinner"],
+    "ingredients": ["6 tomatoes diced", "1 onion diced", "2 cloves garlic", "2 cups vegetable broth", "1/2 cup heavy cream", "2 tbsp olive oil", "Salt and pepper"],
+    "instructions": ["Sauté onion and garlic in oil.", "Add tomatoes and broth.", "Simmer 20 minutes.", "Blend until smooth.", "Stir in cream."],
+    "image_urls": ["https://cdn.loveandlemons.com/wp-content/uploads/2023/01/tomato-soup-recipe.jpg"],
+    "cooking_time": "35mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 2, "comment": "Too watery for my taste. Maybe I needed to cook it longer?", "created_at": "2025-10-24T15:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 4, "comment": "Nice comfort food. I reduced the broth by half cup and it was perfect.", "created_at": "2025-10-24T16:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-23T11:30:00Z",
+    "user_id": "690f704e3fe0dd94aba6c981",
+    "username": "paula",
+    "title": "Caesar Salad",
+    "tags": ["Lunch"],
+    "ingredients": ["1 head romaine lettuce", "1/2 cup caesar dressing", "1/2 cup croutons", "1/4 cup parmesan shaved", "2 anchovy fillets"],
+    "instructions": ["Chop lettuce.", "Toss with dressing.", "Top with croutons, parmesan, and anchovies."],
+    "image_urls": ["https://itsavegworldafterall.com/wp-content/uploads/2023/04/Avocado-Caesar-Salad-FI.jpg"],
+    "cooking_time": "10mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 4, "comment": "Classic and tasty!", "created_at": "2025-10-23T12:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 3, "comment": "The anchovies were too strong for me. Would skip next time.", "created_at": "2025-10-23T13:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-22T17:45:00Z",
+    "user_id": "690f704e3fe0dd94aba6c982",
+    "username": "quinn",
+    "title": "Chicken Quesadilla",
+    "tags": ["Lunch", "Dinner"],
+    "ingredients": ["2 flour tortillas", "1 cup cooked chicken shredded", "1 cup shredded cheese", "1/4 cup salsa", "2 tbsp butter"],
+    "instructions": ["Place cheese and chicken on one tortilla.", "Top with second tortilla.", "Cook in buttered pan until golden and cheese melts.", "Serve with salsa."],
+    "image_urls": ["https://cookingformysoul.com/wp-content/uploads/2019/02/feat2-chicken-quesadillas.jpg"],
+    "cooking_time": "15mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "rating": 5, "comment": "Quick weeknight dinner win!", "created_at": "2025-10-22T18:30:00Z" },
+      { "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "rating": 5, "comment": "Crispy and cheesy perfection!", "created_at": "2025-10-22T19:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-21T08:30:00Z",
+    "user_id": "690f704e3fe0dd94aba6c983",
+    "username": "rachel",
+    "title": "Green Smoothie",
+    "tags": ["Breakfast", "Vegan"],
+    "ingredients": ["1 banana", "1 cup spinach", "1/2 cup almond milk", "1 tbsp peanut butter", "1 tsp honey"],
+    "instructions": ["Blend all ingredients until smooth."],
+    "image_urls": ["https://images.squarespace-cdn.com/content/v1/5df04a627f175b0bc9e43493/1598492106385-8ISGFU6ZO8FT9QF7BLGJ/Kale_Pineapple_Mango_Smoothie_Tropical_Peaches_Easy"],
+    "cooking_time": "5mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "rating": 1, "comment": "I could taste nothing but spinach. Way too healthy tasting for me!", "created_at": "2025-10-21T09:00:00Z" },
+      { "user_id": "690f704e3fe0dd94aba6c97b", "username": "judy", "rating": 5, "comment": "Perfect healthy breakfast! Love the energy boost.", "created_at": "2025-10-21T09:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 4, "comment": "Good but I added more banana to sweeten it up.", "created_at": "2025-10-21T10:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-20T15:10:00Z",
+    "user_id": "690f704e3fe0dd94aba6c984",
+    "username": "steve",
+    "title": "BBQ Pulled Pork Sandwich",
+    "tags": ["Dinner", "Lunch"],
+    "ingredients": ["2 lbs pork shoulder", "1 cup BBQ sauce", "4 hamburger buns", "1 onion sliced", "Coleslaw for topping"],
+    "instructions": ["Slow cook pork shoulder 8 hours.", "Shred pork.", "Mix with BBQ sauce.", "Serve on buns with coleslaw."],
+    "image_urls": ["https://www.foodnetwork.com/content/dam/images/food/fullset/2011/5/27/0/BW2D12_Pulled_Pork-Barbecue_s4x3.jpg"],
+    "cooking_time": "8hrs",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Worth the wait! Meat was fall-apart tender.", "created_at": "2025-10-20T23:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 2, "comment": "8 hours is just too long. Came out dry because I think I overcooked it.", "created_at": "2025-10-21T00:15:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-19T12:20:00Z",
+    "user_id": "690f704e3fe0dd94aba6c985",
+    "username": "tina",
+    "title": "Vegetable Stir Fry",
+    "tags": ["Dinner", "Vegan", "Lunch"],
+    "ingredients": ["2 cups mixed vegetables", "2 tbsp soy sauce", "1 tbsp sesame oil", "2 cloves garlic minced", "1 tsp ginger minced", "Cooked rice for serving"],
+    "instructions": ["Heat oil in wok.", "Add garlic and ginger.", "Add vegetables and stir-fry.", "Add soy sauce.", "Serve over rice."],
+    "image_urls": ["https://ohsweetbasil.com/wp-content/uploads/the-best-easy-stir-fry-vegetables-recipe-6.jpg"],
+    "cooking_time": "20mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 4, "comment": "Healthy and quick! Great for busy nights.", "created_at": "2025-10-19T13:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 5, "comment": "I added tofu for protein. Perfect!", "created_at": "2025-10-19T13:45:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-18T10:00:00Z",
+    "user_id": "690f704e3fe0dd94aba6c986",
+    "username": "uma",
+    "title": "French Toast",
+    "tags": ["Breakfast"],
+    "ingredients": ["4 slices bread", "2 eggs", "1/4 cup milk", "1 tsp cinnamon", "1 tsp vanilla extract", "Maple syrup", "Butter for pan"],
+    "instructions": ["Whisk eggs, milk, cinnamon, and vanilla.", "Dip bread in mixture.", "Cook in buttered pan until golden.", "Serve with maple syrup."],
+    "image_urls": ["https://cdn.loveandlemons.com/wp-content/uploads/2024/08/french-toast-recipe.jpg"],
+    "cooking_time": "15mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Classic breakfast! Crispy outside, soft inside.", "created_at": "2025-10-18T10:45:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "rating": 4, "comment": "Delicious! I used challah bread instead.", "created_at": "2025-10-18T11:30:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-17T16:40:00Z",
+    "user_id": "690f704e3fe0dd94aba6c987",
+    "username": "victor",
+    "title": "Margherita Pizza",
+    "tags": ["Dinner"],
+    "ingredients": ["1 pizza dough", "1/2 cup tomato sauce", "8 oz fresh mozzarella", "Fresh basil leaves", "2 tbsp olive oil", "Salt"],
+    "instructions": ["Roll out dough.", "Spread sauce.", "Add mozzarella.", "Bake at 475°F for 12-15 mins.", "Top with fresh basil."],
+    "image_urls": ["https://www.acouplecooks.com/wp-content/uploads/2022/10/Margherita-Pizza-093.jpg"],
+    "cooking_time": "30mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c972", "username": "alice", "rating": 3, "comment": "Dough stuck to my pan. Maybe I needed parchment paper?", "created_at": "2025-10-17T18:00:00Z" },
+      { "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "rating": 5, "comment": "Used store-bought dough and it was amazing! Better than delivery.", "created_at": "2025-10-17T19:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-16T13:25:00Z",
+    "user_id": "690f704e3fe0dd94aba6c988",
+    "username": "wendy",
+    "title": "Chocolate Chip Cookies",
+    "tags": ["Dessert", "Snack"],
+    "ingredients": ["2 cups flour", "1 cup butter softened", "3/4 cup brown sugar", "1/4 cup white sugar", "2 eggs", "2 tsp vanilla", "1 tsp baking soda", "2 cups chocolate chips"],
+    "instructions": ["Cream butter and sugars.", "Add eggs and vanilla.", "Mix in dry ingredients.", "Fold in chocolate chips.", "Bake at 350°F for 10-12 mins."],
+    "image_urls": ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOdl7LWfZvgkE1CpYzFdRzPC7Qc8-vUN9DgA&s"],
+    "cooking_time": "25mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c973", "username": "bob", "rating": 5, "comment": "Perfect cookies! Crispy edges, soft center.", "created_at": "2025-10-16T14:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 5, "comment": "Best cookie recipe ever! Made 3 batches already.", "created_at": "2025-10-16T15:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 4, "comment": "Great recipe. Mine spread too much though.", "created_at": "2025-10-16T16:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-15T09:15:00Z",
+    "user_id": "690f704e3fe0dd94aba6c989",
+    "username": "xavier",
+    "title": "Shrimp Scampi",
+    "tags": ["Dinner"],
+    "ingredients": ["1 lb shrimp peeled", "4 cloves garlic minced", "1/4 cup white wine", "3 tbsp butter", "2 tbsp lemon juice", "1/4 cup parsley", "1/2 lb linguine"],
+    "instructions": ["Cook pasta.", "Sauté garlic in butter.", "Add shrimp, cook until pink.", "Add wine and lemon juice.", "Toss with pasta and parsley."],
+    "image_urls": ["https://bakerbynature.com/wp-content/uploads/2023/02/shrimp-scampi-119.jpg"],
+    "cooking_time": "25mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 1, "comment": "Shrimp was rubbery. I think I overcooked it but instructions weren't clear on time.", "created_at": "2025-10-15T10:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 5, "comment": "Restaurant quality! Just watch the shrimp closely, they cook fast.", "created_at": "2025-10-15T11:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-14T14:50:00Z",
+    "user_id": "690f704e3fe0dd94aba6c98a",
+    "username": "yara",
+    "title": "Chicken Noodle Soup",
+    "tags": ["Lunch", "Dinner"],
+    "ingredients": ["2 chicken breasts", "6 cups chicken broth", "2 carrots sliced", "2 celery stalks sliced", "1 onion diced", "2 cups egg noodles", "2 cloves garlic", "Salt and pepper"],
+    "instructions": ["Boil chicken in broth until cooked.", "Remove chicken, shred it.", "Add vegetables to broth, simmer.", "Add noodles and chicken.", "Cook until noodles are done."],
+    "image_urls": ["https://www.budgetbytes.com/wp-content/uploads/2017/02/Chicken-Noodle-Soup-Vertical-1.jpg"],
+    "cooking_time": "40mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Perfect sick day soup! So comforting.", "created_at": "2025-10-14T16:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "rating": 5, "comment": "Just like grandma's!", "created_at": "2025-10-14T17:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-11T15:20:00Z",
+    "user_id": "690f704e3fe0dd94aba6c98d",
+    "username": "bella",
+    "title": "Beef Stew",
+    "tags": ["Dinner"],
+    "ingredients": ["2 lbs beef stew meat", "4 potatoes cubed", "3 carrots sliced", "1 onion diced", "4 cups beef broth", "2 tbsp tomato paste", "2 cloves garlic", "2 tbsp flour", "Salt and pepper"],
+    "instructions": ["Brown beef in pot.", "Add flour and stir.", "Add vegetables, broth, and tomato paste.", "Simmer 90 minutes until tender."],
+    "image_urls": ["https://static01.nyt.com/images/2024/10/28/multimedia/beef-stew-mlfk/beef-stew-mlfk-mediumSquareAt3X.jpg"],
+    "cooking_time": "2hrs",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c974", "username": "carol", "rating": 5, "comment": "Hearty and warming! Perfect for cold days.", "created_at": "2025-10-11T17:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c975", "username": "dave", "rating": 3, "comment": "Good flavor but meat was a bit tough. Maybe needed more time?", "created_at": "2025-10-11T18:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-10T12:10:00Z",
+    "user_id": "690f704e3fe0dd94aba6c98e",
+    "username": "carlos",
+    "title": "Spinach and Feta Stuffed Chicken",
+    "tags": ["Dinner"],
+    "ingredients": ["4 chicken breasts", "1 cup spinach", "1/2 cup feta cheese", "2 cloves garlic minced", "2 tbsp olive oil", "Salt and pepper"],
+    "instructions": ["Cut pocket in chicken breasts.", "Mix spinach, feta, and garlic.", "Stuff chicken with mixture.", "Sear in pan, then bake at 375°F for 25 mins."],
+    "image_urls": ["https://www.eatingwell.com/thmb/lAEwtQROBY8pEVjuip5Q-eSfQ3U=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/1501p130-spinach-feta-stuffed-chicken-breasts-8030825-66b09a00be4340c6a6af32fda656319c.jpg"],
+    "cooking_time": "40mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 4, "comment": "Fancy but doable! Guests were impressed.", "created_at": "2025-10-10T13:30:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c977", "username": "frank", "rating": 2, "comment": "The filling fell out during cooking. Needed toothpicks which weren't mentioned.", "created_at": "2025-10-10T14:00:00Z" }
+    ]
+  },
+  {
+    "created_at": "2025-10-09T10:30:00Z",
+    "user_id": "690f704e3fe0dd94aba6c98f",
+    "username": "diana",
+    "title": "Apple Pie",
+    "tags": ["Dessert"],
+    "ingredients": ["2 pie crusts", "6 apples peeled and sliced", "3/4 cup sugar", "2 tbsp flour", "1 tsp cinnamon", "1/4 tsp nutmeg", "2 tbsp butter"],
+    "instructions": ["Mix apples with sugar, flour, and spices.", "Place bottom crust in pie pan.", "Add apple mixture and dot with butter.", "Top with second crust.", "Bake at 425°F for 15 mins, then 350°F for 45 mins."],
+    "image_urls": ["https://cdn.jwplayer.com/v2/media/sC8av9Hc/thumbnails/oynyDlfN.jpg?width=1280"],
+    "cooking_time": "75mins",
+    "reviews": [
+      { "user_id": "690f704d3fe0dd94aba6c978", "username": "grace", "rating": 5, "comment": "Classic apple pie! Crust was flaky and filling was perfect.", "created_at": "2025-10-09T12:00:00Z" },
+      { "user_id": "690f704d3fe0dd94aba6c979", "username": "heidi", "rating": 5, "comment": "Best with vanilla ice cream!", "created_at": "2025-10-09T13:00:00Z" },
+      { "user_id": "690f704e3fe0dd94aba6c97a", "username": "ivan", "rating": 4, "comment": "Delicious! Bottom crust was a tiny bit soggy though.", "created_at": "2025-10-09T13:30:00Z" }
     ]
   }
 ]
