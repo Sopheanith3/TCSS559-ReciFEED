@@ -398,7 +398,7 @@
     "tags": ["Dinner"],
     "ingredients": ["4 chicken breasts", "1 cup spinach", "1/2 cup feta cheese", "2 cloves garlic minced", "2 tbsp olive oil", "Salt and pepper"],
     "instructions": ["Cut pocket in chicken breasts.", "Mix spinach, feta, and garlic.", "Stuff chicken with mixture.", "Sear in pan, then bake at 375°F for 25 mins."],
-    "image_urls": ["https://www.eatingwell.com/thmb/lAEwtQROBY8pEVjuip5Q-eSfQ3U=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/1501p130-spinach-feta-stuffed-chicken-breasts-8030825-66b09a00be4340c6a6af32fda656319c.jpg"],
+    "image_urls": ["https://media-cldnry.s-nbcnews.com/image/upload/newscms/2023_48/2041164/chef-dan-churchill-chicken-mc-1x1-231128.jpg"],
     "cooking_time": "40mins",
     "reviews": [
       { "user_id": "690f704d3fe0dd94aba6c976", "username": "eve", "rating": 4, "comment": "Fancy but doable! Guests were impressed.", "created_at": "2025-10-10T13:30:00Z" },
