@@ -88,7 +88,8 @@ export const recipeService = {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to add review');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add review');
       }
       
       const data = await response.json();
@@ -108,7 +109,8 @@ export const recipeService = {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to delete review');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete review');
       }
       
       const data = await response.json();
