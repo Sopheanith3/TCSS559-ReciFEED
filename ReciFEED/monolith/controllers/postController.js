@@ -1,4 +1,5 @@
 const Post = require('../models/post');
+const User = require('../models/user');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const createPost = asyncHandler(async (req, res, next) => {
@@ -48,12 +49,44 @@ const getFeed = asyncHandler(async (req, res, next) => {
     .limit(limit)
     .skip(skip);
 
+  // Populate current usernames for posts, likes, and comments
+  const userIds = new Set();
+  posts.forEach(post => {
+    userIds.add(post.user_id.toString());
+    post.likes.forEach(like => userIds.add(like.user_id.toString()));
+    post.comments.forEach(comment => userIds.add(comment.user_id.toString()));
+  });
+
+  // Fetch all users at once
+  const users = await User.find({ _id: { $in: Array.from(userIds) } }).select('username');
+  const userMap = new Map(users.map(u => [u._id.toString(), u.username]));
+
+  // Update posts with current usernames
+  const updatedPosts = posts.map(post => {
+    const postObj = post.toObject();
+    postObj.username = userMap.get(post.user_id.toString()) || postObj.username || 'Anonymous';
+    
+    // Update likes usernames
+    postObj.likes = postObj.likes.map(like => ({
+      ...like,
+      username: userMap.get(like.user_id.toString()) || like.username || 'Anonymous'
+    }));
+    
+    // Update comments usernames
+    postObj.comments = postObj.comments.map(comment => ({
+      ...comment,
+      username: userMap.get(comment.user_id.toString()) || comment.username || 'Anonymous'
+    }));
+    
+    return postObj;
+  });
+
   const total = await Post.countDocuments();
 
   res.status(200).json({
     status: 'success',
     data: {
-      posts,
+      posts: updatedPosts,
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total / limit),
