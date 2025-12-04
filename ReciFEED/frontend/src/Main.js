@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import Sidebar from './layout/Sidebar';
+import Sidebar from './layout/SideBar';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 import Recipe from './pages/Recipe';
