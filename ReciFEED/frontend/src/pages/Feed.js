@@ -22,6 +22,7 @@ const Feed = () => {
   const [commentInputs, setCommentInputs] = useState({}); // Track comment input per post
   const [expandedComments, setExpandedComments] = useState({}); // Track which posts have expanded comments
   const [commentDropdowns, setCommentDropdowns] = useState({}); // Track which comment dropdowns are open
+  const [postDropdowns, setPostDropdowns] = useState({}); // Track which post dropdowns are open
 
   // Modal state for full image view
   const [modalImage, setModalImage] = useState(null);
@@ -45,6 +46,30 @@ const Feed = () => {
       if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
         setShowProfileDropdown(false);
       }
+      
+      // Close post dropdowns when clicking outside
+      const postDropdownElements = document.querySelectorAll('[data-post-dropdown]');
+      let clickedInside = false;
+      postDropdownElements.forEach(el => {
+        if (el.contains(event.target)) {
+          clickedInside = true;
+        }
+      });
+      if (!clickedInside) {
+        setPostDropdowns({});
+      }
+      
+      // Close comment dropdowns when clicking outside
+      const commentDropdownElements = document.querySelectorAll('[data-comment-dropdown]');
+      clickedInside = false;
+      commentDropdownElements.forEach(el => {
+        if (el.contains(event.target)) {
+          clickedInside = true;
+        }
+      });
+      if (!clickedInside) {
+        setCommentDropdowns({});
+      }
     };
     
     if (showProfileDropdown) {
@@ -62,6 +87,11 @@ const Feed = () => {
     setTimeout(() => {
       navigate('/', { replace: true });
     }, 0);
+  };
+
+  const handlePostCreated = () => {
+    // Refresh feed when a new post is created
+    fetchFeed(1);
   };
 
   // Fetch feed posts from API
@@ -358,9 +388,66 @@ const Feed = () => {
     }
   };
 
+  const togglePostDropdown = (postId) => {
+    setPostDropdowns(prev => ({
+      ...prev,
+      [postId]: !prev[postId]
+    }));
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      if (!user) {
+        console.error('User not authenticated');
+        return;
+      }
+
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      // Extract userId as string
+      let userId = user.id || user.userId;
+      if (typeof userId === 'object') {
+        userId = userId.id || userId.userId || userId._id;
+      }
+      userId = String(userId);
+
+      // Check if user owns this post
+      if (post.rawData.user_id.toString() !== userId) {
+        alert('You can only delete your own posts');
+        return;
+      }
+
+      if (!window.confirm('Are you sure you want to delete this post?')) {
+        return;
+      }
+
+      // Close the dropdown
+      setPostDropdowns(prev => ({
+        ...prev,
+        [postId]: false
+      }));
+
+      // Optimistically remove post from UI
+      setPosts(posts.filter(p => p.id !== postId));
+
+      // Call API in background to delete post
+      await postService.deletePost(postId);
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      alert('Failed to delete post: ' + err.message);
+      // Refresh on error to get accurate state
+      await fetchFeed(pagination.currentPage);
+    }
+  };
+
   return (
     <div className="feed-page">
-      <CreatePostModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} />
+      <CreatePostModal 
+        isOpen={showCreateModal} 
+        onClose={() => setShowCreateModal(false)}
+        onPostCreated={handlePostCreated}
+      />
       {/* Sticky Header */}
       <section className="feed-header">
         <div className="feed-header__content" style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
@@ -515,31 +602,81 @@ const Feed = () => {
         )}
 
         {/* Posts List */}
-        {!loading && !error && posts.map((post) => (
-          <article key={post.id} className="post-card">
-            {/* Post Header */}
-            <div className="post-card__header">
-              <div className="post-card__user">
-                <img 
-                  src={post.user.avatar} 
-                  alt={post.user.name} 
-                  className="post-card__avatar"
-                />
-                <div className="post-card__user-info">
-                  <h3 className="post-card__username">{post.user.name}</h3>
-                  <p className="post-card__timestamp">{post.timestamp}</p>
+        {!loading && !error && posts.map((post) => {
+          // Check if current user owns this post
+          let userId = user?.id || user?.userId;
+          if (typeof userId === 'object') {
+            userId = userId.id || userId.userId || userId._id;
+          }
+          userId = String(userId);
+          const isOwnPost = post.rawData?.user_id?.toString() === userId;
+
+          return (
+            <article key={post.id} className="post-card">
+              {/* Post Header */}
+              <div className="post-card__header">
+                <div className="post-card__user">
+                  <img 
+                    src={post.user.avatar} 
+                    alt={post.user.name} 
+                    className="post-card__avatar"
+                  />
+                  <div className="post-card__user-info">
+                    <h3 className="post-card__username">{post.user.name}</h3>
+                    <p className="post-card__timestamp">{post.timestamp}</p>
+                  </div>
                 </div>
+                {isOwnPost && (
+                  <div style={{ position: 'relative' }} data-post-dropdown>
+                    <button 
+                      className="post-card__menu-btn"
+                      onClick={() => togglePostDropdown(post.id)}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="5" r="1.5" fill="currentColor"/>
+                        <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                        <circle cx="12" cy="19" r="1.5" fill="currentColor"/>
+                      </svg>
+                    </button>
+                    {postDropdowns[post.id] && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        right: '0',
+                        backgroundColor: '#1a1a2e',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        minWidth: '150px',
+                        overflow: 'hidden',
+                        zIndex: 1000,
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        marginTop: '4px'
+                      }}>
+                        <button
+                          onClick={() => handleDeletePost(post.id)}
+                          style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                            color: '#ff4458',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            fontSize: '0.9rem',
+                            transition: 'background-color 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 68, 88, 0.1)'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          Delete Post
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <button className="post-card__menu-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="5" r="1.5" fill="currentColor"/>
-                  <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-                  <circle cx="12" cy="19" r="1.5" fill="currentColor"/>
-                </svg>
-              </button>
-            </div>
-            {/* Post Content */}
-            <div className="post-card__content">
+              {/* Post Content */}
+              <div className="post-card__content">
               <p className="post-card__text">{post.content.text}</p>
               {/* Post Images */}
               <div className={`post-card__images ${post.content.images.length === 1 ? 'post-card__images--single' : 'post-card__images--grid'}`}>
@@ -659,7 +796,7 @@ const Feed = () => {
                           </span>
                         </div>
                         {isOwnComment && (
-                          <div style={{ position: 'relative' }}>
+                          <div style={{ position: 'relative' }} data-comment-dropdown>
                             <button
                               onClick={() => toggleCommentDropdown(post.id, idx)}
                               style={{
@@ -759,7 +896,8 @@ const Feed = () => {
               </div>
             )}
           </article>
-        ))}
+          );
+        })}
       </div>
       {/* Full Image Modal */}
       {modalImage && (
