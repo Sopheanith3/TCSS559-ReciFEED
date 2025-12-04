@@ -1,46 +1,155 @@
 import React, { useState } from 'react';
 import './RecipeModal.css';
 import { recipeService } from '../services/recipeService';
+import { useAuth } from '../context/AuthContext';
 
 const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
+  const { user } = useAuth();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [hoveredRating, setHoveredRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [localReviews, setLocalReviews] = useState(recipe?.reviews || []);
+  const [localTotalReviews, setLocalTotalReviews] = useState(recipe?.totalReviews || 0);
+  const [localAverageRating, setLocalAverageRating] = useState(recipe?.averageRating || 0);
+
+  // Update local state when recipe changes
+  React.useEffect(() => {
+    if (recipe) {
+      setLocalReviews(recipe.reviews || []);
+      setLocalTotalReviews(recipe.totalReviews || 0);
+      setLocalAverageRating(recipe.averageRating || 0);
+    }
+  }, [recipe]);
 
   if (!isOpen || !recipe) return null;
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
+    setError('');
     
-    // Get user info from localStorage (adjust based on your auth system)
-    const userId = localStorage.getItem('userId') || 'user123';
-    const username = localStorage.getItem('username') || 'Guest';
-
-    if (!comment.trim()) {
-      alert('Please write a review comment');
+    // Check if user is logged in
+    if (!user) {
+      setError('Please log in to submit a review');
       return;
     }
 
+    if (!comment.trim()) {
+      setError('Please write a review comment');
+      return;
+    }
+
+    // Extract userId as string, handling different user object structures
+    let userId = user.id || user.userId;
+    if (typeof userId === 'object') {
+      userId = userId.id || userId.userId || userId._id;
+    }
+    userId = String(userId);
+    const username = user.username || 'Anonymous';
+
+    // Create optimistic review
+    const optimisticReview = {
+      _id: `temp-${Date.now()}`,
+      user_id: userId,
+      username: username,
+      rating: rating,
+      comment: comment.trim(),
+      created_at: new Date().toISOString()
+    };
+
+    // Optimistically update UI
+    const updatedReviews = [...localReviews, optimisticReview];
+    setLocalReviews(updatedReviews);
+    setLocalTotalReviews(localTotalReviews + 1);
+    
+    // Calculate new average
+    const totalRating = updatedReviews.reduce((acc, r) => acc + r.rating, 0);
+    const newAverage = totalRating / updatedReviews.length;
+    setLocalAverageRating(newAverage);
+    
+    // Reset form immediately
+    const submittedComment = comment;
+    const submittedRating = rating;
+    setComment('');
+    setRating(5);
+
     try {
       setIsSubmitting(true);
-      await recipeService.addReview(recipe.id, rating, comment, userId, username);
       
-      // Reset form
-      setComment('');
-      setRating(5);
+      // Call API in background
+      const response = await recipeService.addReview(recipe.id, submittedRating, submittedComment, userId, username);
+      
+      // Update with real review data from server
+      const serverReview = response.data.review;
+      setLocalReviews(prev => prev.map(r => 
+        r._id === optimisticReview._id ? serverReview : r
+      ));
+      
+      // Optionally refresh parent to update recipe list
+      if (onReviewAdded) {
+        onReviewAdded();
+      }
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      const errorMessage = error.message || 'Failed to submit review. Please try again.';
+      
+      // Revert optimistic update on error
+      setLocalReviews(localReviews);
+      setLocalTotalReviews(localTotalReviews);
+      setLocalAverageRating(localAverageRating);
+      
+      // Restore form values
+      setComment(submittedComment);
+      setRating(submittedRating);
+      
+      // Check for specific error messages
+      if (errorMessage.includes('already reviewed')) {
+        setError('You have already reviewed this recipe');
+      } else {
+        setError(errorMessage);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    // Find the review to delete
+    const reviewToDelete = localReviews.find(r => r._id === reviewId);
+    if (!reviewToDelete) return;
+
+    // Optimistically remove review from UI
+    const updatedReviews = localReviews.filter(r => r._id !== reviewId);
+    setLocalReviews(updatedReviews);
+    setLocalTotalReviews(Math.max(0, localTotalReviews - 1));
+    
+    // Recalculate average rating
+    if (updatedReviews.length > 0) {
+      const totalRating = updatedReviews.reduce((acc, r) => acc + r.rating, 0);
+      const newAverage = totalRating / updatedReviews.length;
+      setLocalAverageRating(newAverage);
+    } else {
+      setLocalAverageRating(0);
+    }
+
+    try {
+      // Call API in background
+      await recipeService.deleteReview(recipe.id, reviewId);
       
       // Notify parent to refresh recipes
       if (onReviewAdded) {
         onReviewAdded();
       }
-      
-      alert('Review added successfully!');
     } catch (error) {
-      console.error('Error submitting review:', error);
-      alert('Failed to submit review. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+      console.error('Error deleting review:', error);
+      
+      // Revert optimistic update on error
+      setLocalReviews(localReviews);
+      setLocalTotalReviews(localTotalReviews);
+      setLocalAverageRating(localAverageRating);
+      
+      setError('Failed to delete review. Please try again.');
     }
   };
 
@@ -96,11 +205,11 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
               </span>
             </div>
           </div>
-          {recipe.totalReviews > 0 && (
+          {localTotalReviews > 0 && (
             <div className="recipe-modal__rating-badge">
               <span className="rating-star">★</span>
-              <span className="rating-value">{recipe.averageRating.toFixed(1)}</span>
-              <span className="rating-count">({recipe.totalReviews})</span>
+              <span className="rating-value">{localAverageRating.toFixed(1)}</span>
+              <span className="rating-count">({localTotalReviews})</span>
             </div>
           )}
         </div>
@@ -229,62 +338,147 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              Reviews ({recipe.totalReviews || 0})
+              Reviews ({localTotalReviews})
             </h3>
 
             {/* Add Review Form */}
             <div className="review-form">
               <h4 className="review-form__title">Write a Review</h4>
-              <form onSubmit={handleSubmitReview}>
-                <div className="review-form__rating">
-                  <label>Your Rating:</label>
-                  {renderStars(rating, true)}
+              
+              {!user ? (
+                <div style={{
+                  padding: '20px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  textAlign: 'center'
+                }}>
+                  <p style={{ 
+                    color: 'rgba(255, 255, 255, 0.8)', 
+                    marginBottom: '12px',
+                    fontSize: '0.95rem'
+                  }}>
+                    Please log in to write a review
+                  </p>
+                  <button
+                    onClick={onClose}
+                    style={{
+                      padding: '10px 24px',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      fontWeight: '600'
+                    }}
+                  >
+                    Close & Log In
+                  </button>
                 </div>
-                <div className="review-form__comment">
-                  <textarea
-                    placeholder="Share your experience with this recipe..."
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    rows="4"
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <button 
-                  type="submit" 
-                  className="review-form__submit"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Submit Review'}
-                </button>
-              </form>
+              ) : (
+                <form onSubmit={handleSubmitReview}>
+                  <div className="review-form__rating">
+                    <label>Your Rating:</label>
+                    {renderStars(rating, true)}
+                  </div>
+                  <div className="review-form__comment">
+                    <textarea
+                      placeholder="Share your experience with this recipe..."
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      rows="4"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  
+                  {error && (
+                    <div style={{
+                      color: '#ff6b6b',
+                      fontSize: '0.9rem',
+                      padding: '12px 16px',
+                      backgroundColor: 'rgba(255, 107, 107, 0.15)',
+                      border: '1px solid rgba(255, 107, 107, 0.3)',
+                      borderRadius: '8px',
+                      marginBottom: '12px'
+                    }}>
+                      {error}
+                    </div>
+                  )}
+                  
+                  <button 
+                    type="submit" 
+                    className="review-form__submit"
+                    disabled={isSubmitting || !comment.trim()}
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* Reviews List */}
             <div className="reviews-list">
-              {recipe.reviews && recipe.reviews.length > 0 ? (
-                recipe.reviews.map((review, index) => (
-                  <div key={index} className="review-item">
-                    <div className="review-item__header">
-                      <div className="review-item__user">
-                        <div className="review-item__avatar">
-                          {review.username.charAt(0).toUpperCase()}
+              {localReviews && localReviews.length > 0 ? (
+                localReviews.map((review, index) => {
+                  // Check if current user owns this review
+                  let currentUserId = user?.id || user?.userId;
+                  if (typeof currentUserId === 'object') {
+                    currentUserId = currentUserId.id || currentUserId.userId || currentUserId._id;
+                  }
+                  currentUserId = String(currentUserId);
+                  const isOwnReview = user && review.user_id?.toString() === currentUserId;
+
+                  return (
+                    <div key={review._id || index} className="review-item">
+                      <div className="review-item__header">
+                        <div className="review-item__user">
+                          <div className="review-item__avatar">
+                            {review.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="review-item__info">
+                            <span className="review-item__username">{review.username}</span>
+                            <span className="review-item__date">
+                              {new Date(review.created_at).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                              })}
+                            </span>
+                          </div>
                         </div>
-                        <div className="review-item__info">
-                          <span className="review-item__username">{review.username}</span>
-                          <span className="review-item__date">
-                            {new Date(review.created_at).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          {renderStars(review.rating)}
+                          {isOwnReview && (
+                            <button
+                              onClick={() => handleDeleteReview(review._id)}
+                              style={{
+                                background: 'rgba(255, 68, 88, 0.1)',
+                                border: '1px solid rgba(255, 68, 88, 0.3)',
+                                color: '#ff4458',
+                                padding: '6px 12px',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '0.85rem',
+                                fontWeight: '500',
+                                transition: 'all 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(255, 68, 88, 0.2)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'rgba(255, 68, 88, 0.1)';
+                              }}
+                            >
+                              Delete
+                            </button>
+                          )}
                         </div>
                       </div>
-                      {renderStars(review.rating)}
+                      <p className="review-item__comment">{review.comment}</p>
                     </div>
-                    <p className="review-item__comment">{review.comment}</p>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div className="reviews-empty">
                   <p>No reviews yet. Be the first to review this recipe!</p>
