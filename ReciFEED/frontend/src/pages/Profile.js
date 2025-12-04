@@ -174,39 +174,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="profile-stats">
-          <div className="profile-stat-card">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M3 12L12 4l9 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M5 10v10a1 1 0 0 0 1 1h4m4 0h4a1 1 0 0 0 1-1V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <div className="profile-stat-info">
-              <span className="profile-stat-value">0</span>
-              <span className="profile-stat-label">Posts</span>
-            </div>
-          </div>
-
-          <div className="profile-stat-card">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <div className="profile-stat-info">
-              <span className="profile-stat-value">0</span>
-              <span className="profile-stat-label">Saved Recipes</span>
-            </div>
-          </div>
-
-          <div className="profile-stat-card">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <div className="profile-stat-info">
-              <span className="profile-stat-value">0</span>
-              <span className="profile-stat-label">Likes Given</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <EditProfileModal
