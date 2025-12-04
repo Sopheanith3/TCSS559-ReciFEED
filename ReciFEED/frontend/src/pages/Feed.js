@@ -5,6 +5,7 @@ import CreatePostModal from '../layout/CreatePostModal';
 import { postService } from '../services/postService';
 import { useAuth } from '../context/AuthContext';
 
+
 const Feed = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
@@ -19,6 +20,20 @@ const Feed = () => {
   });
   const [commentInputs, setCommentInputs] = useState({}); // Track comment input per post
   const [commentingOnPost, setCommentingOnPost] = useState(null); // Track which post is being commented on
+  const [expandedComments, setExpandedComments] = useState({}); // Track which posts have expanded comments
+
+  // Modal state for full image view
+  const [modalImage, setModalImage] = useState(null);
+
+  // Close modal on ESC
+  React.useEffect(() => {
+    if (!modalImage) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setModalImage(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [modalImage]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -192,34 +207,76 @@ const Feed = () => {
     setCommentingOnPost(commentingOnPost === postId ? null : postId);
   };
 
+  const toggleExpandComments = (postId) => {
+    setExpandedComments(prev => ({
+      ...prev,
+      [postId]: !prev[postId]
+    }));
+  };
+
   return (
     <div className="feed-page">
       <CreatePostModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} />
       {/* Sticky Header */}
       <section className="feed-header">
-        <div className="feed-header__content" style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between', position: 'relative' }}>
+        <div className="feed-header__content" style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
           {/* Left: Title */}
-          <h1 className="feed-header__title" style={{ flex: 1, textAlign: 'left', margin: 0 }}>ReciFEED Feed</h1>
-          {/* Center: Home Icon (absolutely centered) */}
-          <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}>
+          <h1 className="feed-header__title" style={{ margin: 0, fontSize: '1.5rem', flex: '1' }}>ReciFEED Feed</h1>
+          
+          {/* Center: Navigation Icons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+            {/* Home Icon */}
             <button 
-              className="feed-header__home-btn"
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+              className="feed-header__icon-btn"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', borderRadius: '8px', transition: 'background 0.2s ease' }}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              aria-label="Go to top"
+              aria-label="Home"
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <path d="M3 12L12 4l9 8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M5 10v10a1 1 0 0 0 1 1h4m4 0h4a1 1 0 0 0 1-1V10" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M3 12L12 4l9 8" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5 10v10a1 1 0 0 0 1 1h4m4 0h4a1 1 0 0 0 1-1V10" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            
+            {/* Save/Bookmark Icon */}
+            <button 
+              className="feed-header__icon-btn"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', borderRadius: '8px', transition: 'background 0.2s ease' }}
+              aria-label="Saved"
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            
+            {/* Create Post Icon */}
+            <button 
+              className="feed-header__icon-btn"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', borderRadius: '8px', transition: 'background 0.2s ease' }}
+              onClick={() => setShowCreateModal(true)}
+              aria-label="Create Post"
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5v14M5 12h14" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </button>
           </div>
-          {/* Right: Create Post */}
-          <button className="feed-header__create-btn" onClick={() => setShowCreateModal(true)}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-            Create Post
+          
+          {/* Right: User Profile Icon */}
+          <button 
+            className="feed-header__profile-btn"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+            aria-label="Profile"
+          >
+            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: '600', fontSize: '1rem' }}>
+              {user?.username?.charAt(0).toUpperCase() || 'U'}
+            </div>
           </button>
         </div>
       </section>
@@ -291,17 +348,19 @@ const Feed = () => {
               <div className={`post-card__images ${post.content.images.length === 1 ? 'post-card__images--single' : 'post-card__images--grid'}`}>
                 {post.content.images.map((image, index) => (
                   <div key={index} className="post-card__image-wrapper">
-                    <img 
-                      src={image} 
-                      alt={`Post content ${index + 1}`} 
+                    <img
+                      src={image}
+                      alt={`Post content ${index + 1}`}
                       className="post-card__image"
+                      onClick={() => setModalImage(image)}
                     />
                   </div>
                 ))}
               </div>
             </div>
             {/* Post Actions */}
-            <div className="post-card__actions">
+
+            <div className="post-card__actions" style={{ alignItems: 'center', gap: '8px', display: 'flex', flexWrap: 'wrap' }}>
               <button 
                 className="post-card__action-btn"
                 onClick={() => handleLike(post.id)}
@@ -312,78 +371,61 @@ const Feed = () => {
                 </svg>
                 <span>{post.stats.likes}</span>
               </button>
-              <button 
-                className="post-card__action-btn"
-                onClick={() => toggleCommentInput(post.id)}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>{post.stats.comments}</span>
-              </button>
-              <button className="post-card__action-btn post-card__action-btn--share">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-              <button className="post-card__action-btn post-card__action-btn--bookmark">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Comment Input Section */}
-            {commentingOnPost === post.id && (
-              <div style={{ 
-                marginTop: '12px', 
-                paddingTop: '12px', 
-                borderTop: '1px solid rgba(255, 255, 255, 0.1)'
-              }}>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                  <input
-                    type="text"
-                    placeholder="Write a comment..."
-                    value={commentInputs[post.id] || ''}
-                    onChange={(e) => handleCommentChange(post.id, e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleAddComment(post.id);
-                      }
-                    }}
-                    style={{
-                      flex: 1,
-                      padding: '8px 12px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '8px',
-                      color: '#fff',
-                      fontSize: '0.9rem',
-                      fontFamily: 'inherit',
-                      outline: 'none'
-                    }}
-                  />
-                  <button
-                    onClick={() => handleAddComment(post.id)}
-                    disabled={!commentInputs[post.id]?.trim()}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: commentInputs[post.id]?.trim() ? '#007bff' : 'rgba(255, 255, 255, 0.1)',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: commentInputs[post.id]?.trim() ? 'pointer' : 'not-allowed',
-                      fontSize: '0.9rem',
-                      fontWeight: '600',
-                      fontFamily: 'inherit'
-                    }}
-                  >
-                    Post
-                  </button>
-                </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                <button 
+                  className="post-card__action-btn"
+                  style={{ display: 'flex', alignItems: 'center' }}
+                  tabIndex={-1}
+                  disabled
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>{post.stats.comments}</span>
+                </button>
+                <input
+                  type="text"
+                  placeholder="Write a comment..."
+                  value={commentInputs[post.id] || ''}
+                  onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleAddComment(post.id);
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    padding: '8px 12px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontSize: '0.9rem',
+                    fontFamily: 'inherit',
+                    outline: 'none'
+                  }}
+                />
+                <button
+                  onClick={() => handleAddComment(post.id)}
+                  disabled={!commentInputs[post.id]?.trim()}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: commentInputs[post.id]?.trim() ? '#007bff' : 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: commentInputs[post.id]?.trim() ? 'pointer' : 'not-allowed',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    fontFamily: 'inherit'
+                  }}
+                >
+                  Post
+                </button>
               </div>
-            )}
+            </div>
 
             {/* Display Comments */}
             {post.rawData.comments && post.rawData.comments.length > 0 && (
@@ -392,7 +434,7 @@ const Feed = () => {
                 paddingTop: '12px', 
                 borderTop: '1px solid rgba(255, 255, 255, 0.1)'
               }}>
-                {post.rawData.comments.map((comment, idx) => (
+                {(expandedComments[post.id] ? post.rawData.comments : post.rawData.comments.slice(0, 2)).map((comment, idx) => (
                   <div key={idx} style={{ 
                     marginBottom: '8px', 
                     padding: '8px',
@@ -412,11 +454,88 @@ const Feed = () => {
                     </p>
                   </div>
                 ))}
+                {post.rawData.comments.length > 2 && (
+                  <button
+                    onClick={() => toggleExpandComments(post.id)}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: 'rgba(255, 255, 255, 0.6)',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      fontWeight: '500',
+                      padding: '4px 0',
+                      marginTop: '4px',
+                      fontFamily: 'inherit',
+                      transition: 'color 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = '#fff'}
+                    onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
+                  >
+                    {expandedComments[post.id] 
+                      ? 'View less comments' 
+                      : `View more comments (${post.rawData.comments.length - 2} more)`}
+                  </button>
+                )}
               </div>
             )}
           </article>
         ))}
       </div>
+      {/* Full Image Modal */}
+      {modalImage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999
+          }}
+          onClick={() => setModalImage(null)}
+        >
+          <img
+            src={modalImage}
+            alt="Full post"
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '90vh',
+              borderRadius: '12px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              background: '#222',
+            }}
+            onClick={e => e.stopPropagation()}
+          />
+          <button
+            onClick={() => setModalImage(null)}
+            style={{
+              position: 'fixed',
+              top: 24,
+              right: 32,
+              background: 'rgba(0,0,0,0.6)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '50%',
+              width: 40,
+              height: 40,
+              fontSize: 24,
+              cursor: 'pointer',
+              zIndex: 10000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            aria-label="Close image"
+          >
+            &times;
+          </button>
+        </div>
+      )}
     </div>
   );
 };
