@@ -26,10 +26,17 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      const userId = localStorage.getItem("user");
-      if (userId) {
-        setUser({ userId });
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (e) {
+          console.error('Error parsing user from localStorage:', e);
+          setUser(null);
+        }
       }
+    } else {
+      setUser(null);
     }
   }, [token]);
 
