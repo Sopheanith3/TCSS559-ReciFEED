@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import Sidebar from './layout/Sidebar';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
@@ -8,10 +9,32 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import './components/Main.css';
 
+// Protected Route Component
+function ProtectedRoute({ children }) {
+  const { token } = useAuth();
+  const location = useLocation();
+  
+  if (!token) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  return children;
+}
+
+// Home Route Component - redirect to feed if logged in
+function HomeRoute() {
+  const { token } = useAuth();
+  
+  if (token) {
+    return <Navigate to="/feed" replace />;
+  }
+  
+  return <Home />;
+}
+
 function AppContent() {
   const location = useLocation();
-  const [currentUser, setCurrentUser] = React.useState(null);
-  const [showSidebar, setShowSidebar] = React.useState(true);
+  const { token } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(true);
 
   // Check if current route is home page (landing page)
@@ -22,6 +45,9 @@ function AppContent() {
   const isRecipePage = location.pathname === '/recipe';
   // Check if current route is auth page
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  
+  // Show sidebar only when user is authenticated and not on auth pages
+  const showSidebar = token && !isAuthPage;
 
   return (
     <div className="app">
@@ -37,12 +63,11 @@ function AppContent() {
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            {/* Landing/Home Page */}
-            <Route path="/" element={<Home />} />
-            {/* Feed Page */}
-            <Route path="/feed" element={<Feed />} />
-            {/* Recipe Page */}
-            <Route path="/recipe" element={<Recipe />} />
+            {/* Landing/Home Page - redirects to feed if logged in */}
+            <Route path="/" element={<HomeRoute />} />
+            {/* Protected Routes */}
+            <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
+            <Route path="/recipe" element={<ProtectedRoute><Recipe /></ProtectedRoute>} />
             {/* Fallback Route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

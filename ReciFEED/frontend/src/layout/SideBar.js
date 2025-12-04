@@ -21,25 +21,6 @@ const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
 
   const navItems = [
     {
-      path: '/',
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      ),
-      label: 'Home'
-    },
-    {
-      path: '/search',
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>
-          <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
-      ),
-      label: 'Search'
-    },
-    {
       path: '/feed',
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -53,8 +34,7 @@ const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
       path: '/recipe',
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
-          <path d="M7 7h10M7 12h10M7 17h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M12 2C10.4 2 9 3.4 9 5V6C9 6 6 10.5 6 12C6 14 6 18 6 18M12 2C13.6 2 15 3.4 15 5V6C15 6 18 10.5 18 12C18 14 18 18 18 18M12 2V22M6 18H18M6 18C6 19.66 7.34 21 9 21H15C16.66 21 18 19.66 18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
       label: 'Recipe'

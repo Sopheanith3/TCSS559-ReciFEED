@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components/Feed.css';
 import CreatePostModal from '../layout/CreatePostModal';
@@ -7,8 +7,9 @@ import { useAuth } from '../context/AuthContext';
 
 
 const Feed = () => {
-  const { user, token } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const profileDropdownRef = useRef(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,11 +20,13 @@ const Feed = () => {
     hasMore: false
   });
   const [commentInputs, setCommentInputs] = useState({}); // Track comment input per post
-  const [commentingOnPost, setCommentingOnPost] = useState(null); // Track which post is being commented on
   const [expandedComments, setExpandedComments] = useState({}); // Track which posts have expanded comments
 
   // Modal state for full image view
   const [modalImage, setModalImage] = useState(null);
+  
+  // Profile dropdown state
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   // Close modal on ESC
   React.useEffect(() => {
@@ -35,12 +38,30 @@ const Feed = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [modalImage]);
 
-  // Redirect to login if not authenticated
+  // Close dropdown when clicking outside
   useEffect(() => {
-    if (!token) {
-      navigate('/login');
+    const handleClickOutside = (event) => {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setShowProfileDropdown(false);
+      }
+    };
+    
+    if (showProfileDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
-  }, [token, navigate]);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showProfileDropdown]);
+
+  const handleLogout = () => {
+    logout();
+    // Small delay to ensure state is cleared before navigation
+    setTimeout(() => {
+      navigate('/', { replace: true });
+    }, 0);
+  };
 
   // Fetch feed posts from API
   const fetchFeed = useCallback(async (page = 1) => {
@@ -192,19 +213,12 @@ const Feed = () => {
         [postId]: ''
       }));
       
-      // Close comment input
-      setCommentingOnPost(null);
-      
       // Refresh feed to show new comment
       await fetchFeed(pagination.currentPage);
     } catch (err) {
       console.error('Error adding comment:', err);
       alert('Failed to add comment: ' + err.message);
     }
-  };
-
-  const toggleCommentInput = (postId) => {
-    setCommentingOnPost(commentingOnPost === postId ? null : postId);
   };
 
   const toggleExpandComments = (postId) => {
@@ -268,16 +282,69 @@ const Feed = () => {
             </button>
           </div>
           
-          {/* Right: User Profile Icon */}
-          <button 
-            className="feed-header__profile-btn"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
-            aria-label="Profile"
-          >
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: '600', fontSize: '1rem' }}>
-              {user?.username?.charAt(0).toUpperCase() || 'U'}
-            </div>
-          </button>
+          {/* Right: User Profile Icon with Dropdown */}
+          <div ref={profileDropdownRef} style={{ position: 'relative' }}>
+            <button 
+              className="feed-header__profile-btn"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+              aria-label="Profile"
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+            >
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: '600', fontSize: '1rem' }}>
+                {user?.username?.charAt(0).toUpperCase() || 'U'}
+              </div>
+            </button>
+            
+            {/* Dropdown Menu */}
+            {showProfileDropdown && (
+              <div style={{
+                position: 'absolute',
+                top: '50px',
+                right: '0',
+                backgroundColor: '#1a1a2e',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                minWidth: '200px',
+                overflow: 'hidden',
+                zIndex: 1000,
+                border: '1px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <p style={{ margin: 0, color: '#fff', fontWeight: '600', fontSize: '0.95rem' }}>
+                    {user?.username || 'User'}
+                  </p>
+                  <p style={{ margin: '4px 0 0', color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.85rem' }}>
+                    @{user?.username?.toLowerCase() || 'user'}
+                  </p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'none',
+                    border: 'none',
+                    color: '#ff6b6b',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    textAlign: 'left',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'background 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 107, 107, 0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </section>
       {/* Posts - single column, no container/grid */}

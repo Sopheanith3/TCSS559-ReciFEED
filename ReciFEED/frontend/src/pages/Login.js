@@ -65,8 +65,8 @@ const Login = () => {
       // Save login token and user ID to context
       login({ id, username }, token);
       
-      // On success, navigate to home
-      navigate('/');
+      // On success, navigate to feed
+      navigate('/feed');
     } catch (error) {
       setErrors({ submit: 'Invalid email or password' });
     } finally {
