@@ -21,6 +21,7 @@ const Feed = () => {
   });
   const [commentInputs, setCommentInputs] = useState({}); // Track comment input per post
   const [expandedComments, setExpandedComments] = useState({}); // Track which posts have expanded comments
+  const [commentDropdowns, setCommentDropdowns] = useState({}); // Track which comment dropdowns are open
 
   // Modal state for full image view
   const [modalImage, setModalImage] = useState(null);
@@ -72,7 +73,11 @@ const Feed = () => {
       
       if (response.status === 'success') {
         // Get current user ID for like checking
-        const currentUserId = user?.id || user?.userId;
+        let currentUserId = user?.id || user?.userId;
+        if (typeof currentUserId === 'object') {
+          currentUserId = currentUserId.id || currentUserId.userId || currentUserId._id;
+        }
+        currentUserId = String(currentUserId);
         
         // Transform API data to match component structure
         const transformedPosts = response.data.posts.map(post => {
@@ -141,7 +146,12 @@ const Feed = () => {
         return;
       }
       // Handle both id and userId properties for compatibility
-      const userId = user.id || user.userId;
+      // Extract userId as string, handling different user object structures
+      let userId = user.id || user.userId;
+      if (typeof userId === 'object') {
+        userId = userId.id || userId.userId || userId._id;
+      }
+      userId = String(userId);
       const username = user.username || 'user';
       
       // Find the post to check if already liked
@@ -150,10 +160,10 @@ const Feed = () => {
       
       const isLiked = post.isLikedByUser;
       
-      // Optimistic update
+      // Optimistically update UI immediately
       setPosts(posts.map(p => {
         if (p.id === postId) {
-          return {
+          const updatedPost = {
             ...p,
             stats: {
               ...p.stats,
@@ -161,22 +171,40 @@ const Feed = () => {
             },
             isLikedByUser: !isLiked
           };
+          
+          // Update rawData for consistency
+          if (isLiked) {
+            // Remove like from rawData
+            updatedPost.rawData = {
+              ...p.rawData,
+              likes: p.rawData.likes.filter(like => like.user_id.toString() !== userId)
+            };
+          } else {
+            // Add like to rawData
+            updatedPost.rawData = {
+              ...p.rawData,
+              likes: [...(p.rawData.likes || []), {
+                user_id: userId,
+                username: username,
+                created_at: new Date()
+              }]
+            };
+          }
+          
+          return updatedPost;
         }
         return p;
       }));
 
-      // API call - like or unlike based on current state
+      // API call in background - like or unlike based on current state
       if (isLiked) {
         await postService.unlikePost(postId, userId);
       } else {
         await postService.likePost(postId, userId, username);
       }
-      
-      // Refresh feed to get accurate data
-      await fetchFeed(pagination.currentPage);
     } catch (err) {
       console.error('Error toggling like:', err);
-      // Revert optimistic update on error
+      // Revert the optimistic update on error
       await fetchFeed(pagination.currentPage);
     }
   };
@@ -201,23 +229,53 @@ const Feed = () => {
         return;
       }
 
-      const userId = user.id || user.userId;
+      // Extract userId as string, handling different user object structures
+      let userId = user.id || user.userId;
+      if (typeof userId === 'object') {
+        userId = userId.id || userId.userId || userId._id;
+      }
+      userId = String(userId);
       const username = user.username || 'user';
 
-      // Call API to add comment
-      await postService.addComment(postId, commentText, userId, username);
+      // Create new comment object
+      const newComment = {
+        user_id: userId,
+        username: username,
+        created_at: new Date(),
+        text: commentText
+      };
+
+      // Optimistically update UI immediately
+      setPosts(posts.map(p => {
+        if (p.id === postId) {
+          return {
+            ...p,
+            stats: {
+              ...p.stats,
+              comments: p.stats.comments + 1
+            },
+            rawData: {
+              ...p.rawData,
+              comments: [...(p.rawData.comments || []), newComment]
+            }
+          };
+        }
+        return p;
+      }));
       
-      // Clear the comment input
+      // Clear the comment input immediately
       setCommentInputs(prev => ({
         ...prev,
         [postId]: ''
       }));
-      
-      // Refresh feed to show new comment
-      await fetchFeed(pagination.currentPage);
+
+      // Call API in background to add comment
+      await postService.addComment(postId, commentText, userId, username);
     } catch (err) {
       console.error('Error adding comment:', err);
       alert('Failed to add comment: ' + err.message);
+      // Refresh on error to get accurate state
+      await fetchFeed(pagination.currentPage);
     }
   };
 
@@ -226,6 +284,78 @@ const Feed = () => {
       ...prev,
       [postId]: !prev[postId]
     }));
+  };
+
+  const toggleCommentDropdown = (postId, commentIndex) => {
+    const key = `${postId}-${commentIndex}`;
+    setCommentDropdowns(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const handleDeleteComment = async (postId, commentIndex) => {
+    try {
+      if (!user) {
+        console.error('User not authenticated');
+        return;
+      }
+
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      const comment = post.rawData.comments[commentIndex];
+      if (!comment) return;
+
+      // Extract userId as string
+      let userId = user.id || user.userId;
+      if (typeof userId === 'object') {
+        userId = userId.id || userId.userId || userId._id;
+      }
+      userId = String(userId);
+
+      // Check if user owns this comment
+      if (comment.user_id.toString() !== userId) {
+        alert('You can only delete your own comments');
+        return;
+      }
+
+      // Close the dropdown
+      const key = `${postId}-${commentIndex}`;
+      setCommentDropdowns(prev => ({
+        ...prev,
+        [key]: false
+      }));
+
+      // Optimistically update UI immediately
+      setPosts(posts.map(p => {
+        if (p.id === postId) {
+          const updatedComments = [...p.rawData.comments];
+          updatedComments.splice(commentIndex, 1);
+          return {
+            ...p,
+            stats: {
+              ...p.stats,
+              comments: p.stats.comments - 1
+            },
+            rawData: {
+              ...p.rawData,
+              comments: updatedComments
+            }
+          };
+        }
+        return p;
+      }));
+
+      // Call API in background to delete comment
+      const commentId = comment._id;
+      await postService.deleteComment(postId, commentId);
+    } catch (err) {
+      console.error('Error deleting comment:', err);
+      alert('Failed to delete comment: ' + err.message);
+      // Refresh on error to get accurate state
+      await fetchFeed(pagination.currentPage);
+    }
   };
 
   return (
@@ -501,26 +631,108 @@ const Feed = () => {
                 paddingTop: '12px', 
                 borderTop: '1px solid rgba(255, 255, 255, 0.1)'
               }}>
-                {(expandedComments[post.id] ? post.rawData.comments : post.rawData.comments.slice(0, 2)).map((comment, idx) => (
-                  <div key={idx} style={{ 
-                    marginBottom: '8px', 
-                    padding: '8px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                    borderRadius: '6px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff' }}>
-                        {comment.username || 'Anonymous'}
-                      </span>
-                      <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)' }}>
-                        {formatTimestamp(comment.created_at)}
-                      </span>
+                {(expandedComments[post.id] ? post.rawData.comments : post.rawData.comments.slice(0, 2)).map((comment, idx) => {
+                  const commentKey = `${post.id}-${idx}`;
+                  // Extract userId as string
+                  let currentUserId = user?.id || user?.userId;
+                  if (typeof currentUserId === 'object') {
+                    currentUserId = currentUserId.id || currentUserId.userId || currentUserId._id;
+                  }
+                  currentUserId = String(currentUserId);
+                  const isOwnComment = comment.user_id.toString() === currentUserId;
+                  
+                  return (
+                    <div key={idx} style={{ 
+                      marginBottom: '8px', 
+                      padding: '8px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                      borderRadius: '6px',
+                      position: 'relative'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff' }}>
+                            {comment.username || 'Anonymous'}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)' }}>
+                            {formatTimestamp(comment.created_at)}
+                          </span>
+                        </div>
+                        {isOwnComment && (
+                          <div style={{ position: 'relative' }}>
+                            <button
+                              onClick={() => toggleCommentDropdown(post.id, idx)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                cursor: 'pointer',
+                                padding: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: '4px',
+                                transition: 'background 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="5" r="1.5" fill="currentColor"/>
+                                <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                                <circle cx="12" cy="19" r="1.5" fill="currentColor"/>
+                              </svg>
+                            </button>
+                            {commentDropdowns[commentKey] && (
+                              <div style={{
+                                position: 'absolute',
+                                top: '28px',
+                                right: '0',
+                                backgroundColor: '#1a1a2e',
+                                borderRadius: '6px',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                minWidth: '120px',
+                                overflow: 'hidden',
+                                zIndex: 100,
+                                border: '1px solid rgba(255, 255, 255, 0.1)'
+                              }}>
+                                <button
+                                  onClick={() => handleDeleteComment(post.id, idx)}
+                                  style={{
+                                    width: '100%',
+                                    padding: '10px 14px',
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#ff6b6b',
+                                    cursor: 'pointer',
+                                    fontSize: '0.85rem',
+                                    fontWeight: '500',
+                                    textAlign: 'left',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    transition: 'background 0.2s ease',
+                                    fontFamily: 'inherit'
+                                  }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 107, 107, 0.1)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                        {comment.text}
+                      </p>
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.9)' }}>
-                      {comment.text}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
                 {post.rawData.comments.length > 2 && (
                   <button
                     onClick={() => toggleExpandComments(post.id)}
