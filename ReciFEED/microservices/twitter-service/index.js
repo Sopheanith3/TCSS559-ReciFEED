@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const authRouter = require('./routes/auth');
-const postRouter = require('./routes/post');
+const authRouter = require('./routes/authRoutes');
+const postRouter = require('./routes/postRoutes');
 const connectDB = require('./database/connection');
 
 // Load environment variables
@@ -38,8 +38,8 @@ const validateToken = (req, res, next) => {
 };
 
 // Get routes
-app.use('/twitter/auth', validateToken, authRouter);
-app.use('/twitter/post', validateToken, postRouter);
+app.use('/auth', validateToken, authRouter);
+app.use('/post', validateToken, postRouter);
 
 // Start server
 const PORT = process.env.PORT || 3084;

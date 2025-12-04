@@ -1,0 +1,49 @@
+// ----------------------------------------------
+// TCSS 559: Autumn 2025
+// Backend MongoDB Schema
+// ----------------------------------------------
+// Use Mongoose to create MongoDB Schema
+// ----------------------------------------------
+
+const mongoose = require('mongoose');
+
+// Create schema for analytics event
+const event = new mongoose.Schema({
+  type: { 
+    type: String, 
+    required: true, 
+    enum: [
+      'login',
+      'create_post',
+      'create_recipe',
+      'recipe_view',
+      'post_interaction',
+      'user_view',
+      'search'
+    ]
+  },
+  userId: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now(), required: true},
+  content: {
+    id: { type: String }, // ID of interacted with content (post, recipe, user)
+    text: { type: String }, // For search event
+    filters: { type: [String], default: []} // For search event
+  }
+}, { collection: 'event'});
+
+// ----------------------------------------------
+// Indeces
+// ----------------------------------------------
+
+// Filter by type + time
+event.index({ type: 1, timestamp: -1 });
+// Filter by userId
+event.index({ userId: 1, timestamp: -1 });
+// For recipe views
+event.index({ "data.recipeId": 1, timestamp: -1 });
+// For post interactions
+event.index({ "data.postId": 1, timestamp: -1 });
+
+const Event = mongoose.model('Event', event);
+
+module.exports = Event;

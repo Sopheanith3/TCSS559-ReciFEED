@@ -1,4 +1,4 @@
-const express = require("express")
+const express = require("express");
 const axios = require("axios");
 const OAuth = require("oauth-1.0a");
 const crypto = require("crypto");
@@ -56,7 +56,7 @@ const getOAuthTokens = async () => {
 }
 
 /**
- * GET /twitter/auth/
+ * GET /auth/
  * Retrieves if current user is authenticated for Twitter
  */
 router.get('/', async (req, res) => {
@@ -97,7 +97,7 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * GET twitter/auth/start
+ * GET /auth/start
  * Get a redirect link to start the auth process for this user
  */
 router.get('/start', async (req, res) => {
@@ -126,7 +126,7 @@ router.get('/start', async (req, res) => {
 });
 
 /**
- * POST /twitter/auth/complete
+ * POST /auth/complete
  * Completes user authentication process using the pin from their redirect
  */
 router.post('/complete', async (req, res) => {

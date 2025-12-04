@@ -94,10 +94,10 @@ const uploadMediaToBsky = async (accessJwt, buffer, mimetype) => {
  */
 
 /**
- * GET /bsky/validate
+ * GET /validate
  * Validates if requesting user is autheticated for the app
  */
-app.get('/bsky/validate', validateToken, async (req, res) => {
+app.get('/validate', validateToken, async (req, res) => {
   try {
     const { did } = await refreshSession(req.user.id);
     if (!did) {
@@ -114,10 +114,10 @@ app.get('/bsky/validate', validateToken, async (req, res) => {
 });
 
 /**
- * POST /bsky/auth
+ * POST /auth
  * Uses identifier and password to auth requesting user for this app
  */
-app.post('/bsky/auth', validateToken, async (req, res) => {
+app.post('/auth', validateToken, async (req, res) => {
   const { id } = req.user;
 
   const { identifier, password } = req.body;
@@ -146,10 +146,10 @@ app.post('/bsky/auth', validateToken, async (req, res) => {
 })
 
 /**
- * POST /bsky/post
+ * POST /post
  * Make a post for the current user, should be authenticated for Bsky already
  */
-app.post('/bsky/post', upload.array('images', 4), validateToken, async (req, res) => {
+app.post('/post', upload.array('images', 4), validateToken, async (req, res) => {
   const { id } = req.user;
 
   const text = req.body.text || '';
