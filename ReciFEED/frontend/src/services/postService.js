@@ -28,7 +28,29 @@ const getAuthHeaders = () => {
 // 2. Post Service Object
 export const postService = {
 
-  // 3. Get Feed - retrieve paginated posts
+  // 3. Create Post
+  createPost: async ({ content, images = [], userId, username, recipeId = null }) => {
+    const response = await fetch(`${API_BASE}/posts`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ 
+        content, 
+        images, 
+        userId, 
+        username,
+        ...(recipeId && { recipeId })
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create post");
+    }
+    
+    return response.json();
+  },
+
+  // 4. Get Feed - retrieve paginated posts
   getFeed: async (page = 1, limit = 20, sortBy = 'created_at', order = 'desc') => {
     const response = await fetch(
       `${API_BASE}/posts/feed?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${order}`,
