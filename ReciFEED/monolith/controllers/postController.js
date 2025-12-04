@@ -14,6 +14,7 @@ const createPost = asyncHandler(async (req, res, next) => {
 
   const postData = {
     user_id: userId,
+    username: username || 'Anonymous',
     body: content,
     image_urls: images || [],
     created_at: new Date()
