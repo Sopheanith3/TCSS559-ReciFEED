@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const postSchema = new mongoose.Schema({
   created_at: { type: Date, required: true },
   user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  username: { type: String },
   recipe_id: { type: mongoose.Schema.Types.ObjectId },
   body: { type: String, required: true },
   image_urls: { type: [String], default: [] },

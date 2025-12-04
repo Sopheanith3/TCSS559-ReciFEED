@@ -1,3 +1,4 @@
+// 1. API Configuration
 const API_URL = 'http://localhost:5050/api';
 
 // Helper function to get auth headers

@@ -1,103 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../components/Feed.css';
 import CreatePostModal from '../layout/CreatePostModal';
+import { postService } from '../services/postService';
+import { useAuth } from '../context/AuthContext';
 
 const Feed = () => {
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      user: {
-        name: 'Lamine Yamal',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100',
-        username: '@lamineyamal'
-      },
-      content: {
-        text: 'Chicken/Keema/Seafood/Mushroom/Vegetable/Spinach And Cheese/Lamb',
-        images: [
-          'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500',
-          'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500'
-        ]
-      },
-      stats: {
-        likes: 23,
-        comments: 5
-      },
-      timestamp: '2 hours ago'
-    },
-    {
-      id: 2,
-      user: {
-        name: 'Hong Piao',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
-        username: '@hongpiao'
-      },
-      content: {
-        text: 'Mushroom Curry & tortilla',
-        images: [
-          'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500'
-        ]
-      },
-      stats: {
-        likes: 12,
-        comments: 3
-      },
-      timestamp: '4 hours ago'
-    },
-    {
-      id: 3,
-      user: {
-        name: 'Sarah Chen',
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
-        username: '@sarahchen'
-      },
-      content: {
-        text: 'Homemade Ramen Bowl 🍜',
-        images: [
-          'https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=500'
-        ]
-      },
-      stats: {
-        likes: 45,
-        comments: 8
-      },
-      timestamp: '6 hours ago'
-    },
-    {
-      id: 4,
-      user: {
-        name: 'Marco Rossi',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100',
-        username: '@marcorossi'
-      },
-      content: {
-        text: 'Classic Margherita Pizza from scratch!',
-        images: [
-          'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500',
-          'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500'
-        ]
-      },
-      stats: {
-        likes: 67,
-        comments: 12
-      },
-      timestamp: '8 hours ago'
-    }
-  ]);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    hasMore: false
+  });
+  const [commentInputs, setCommentInputs] = useState({}); // Track comment input per post
+  const [commentingOnPost, setCommentingOnPost] = useState(null); // Track which post is being commented on
 
-  const handleLike = (postId) => {
-    setPosts(posts.map(post => {
-      if (post.id === postId) {
-        return {
-          ...post,
-          stats: {
-            ...post.stats,
-            likes: post.stats.likes + 1
-          }
-        };
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!token) {
+      navigate('/login');
+    }
+  }, [token, navigate]);
+
+  // Fetch feed posts from API
+  const fetchFeed = useCallback(async (page = 1) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await postService.getFeed(page, 20, 'created_at', 'desc');
+      
+      if (response.status === 'success') {
+        // Get current user ID for like checking
+        const currentUserId = user?.id || user?.userId;
+        
+        // Transform API data to match component structure
+        const transformedPosts = response.data.posts.map(post => {
+          // Check if current user has liked this post
+          const userHasLiked = post.likes?.some(
+            like => like.user_id.toString() === currentUserId
+          ) || false;
+          
+          return {
+            id: post._id,
+            user: {
+              name: post.username || 'Anonymous User',
+              avatar: `https://images.unsplash.com/photo-${Math.random() > 0.5 ? '1535713875002-d1d0cf377fde' : '1494790108377-be9c29b29330'}?w=100`,
+              username: `@${post.username || 'anonymous'}`.toLowerCase()
+            },
+            content: {
+              text: post.body,
+              images: post.image_urls || []
+            },
+            stats: {
+              likes: post.likes?.length || 0,
+              comments: post.comments?.length || 0
+            },
+            timestamp: formatTimestamp(post.created_at),
+            isLikedByUser: userHasLiked,
+            rawData: post // Keep original data for API operations
+          };
+        });
+
+        setPosts(transformedPosts);
+        setPagination(response.data.pagination);
       }
-      return post;
+    } catch (err) {
+      console.error('Error fetching feed:', err);
+      setError(err.message || 'Failed to load feed');
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchFeed();
+  }, [fetchFeed]);
+
+  // Format timestamp to relative time
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString();
+  };
+
+  const handleLike = async (postId) => {
+    try {
+      // Get actual userId from auth context
+      if (!user) {
+        console.error('User not authenticated');
+        return;
+      }
+      // Handle both id and userId properties for compatibility
+      const userId = user.id || user.userId;
+      const username = user.username || 'user';
+      
+      // Find the post to check if already liked
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+      
+      const isLiked = post.isLikedByUser;
+      
+      // Optimistic update
+      setPosts(posts.map(p => {
+        if (p.id === postId) {
+          return {
+            ...p,
+            stats: {
+              ...p.stats,
+              likes: isLiked ? p.stats.likes - 1 : p.stats.likes + 1
+            },
+            isLikedByUser: !isLiked
+          };
+        }
+        return p;
+      }));
+
+      // API call - like or unlike based on current state
+      if (isLiked) {
+        await postService.unlikePost(postId, userId);
+      } else {
+        await postService.likePost(postId, userId, username);
+      }
+      
+      // Refresh feed to get accurate data
+      await fetchFeed(pagination.currentPage);
+    } catch (err) {
+      console.error('Error toggling like:', err);
+      // Revert optimistic update on error
+      await fetchFeed(pagination.currentPage);
+    }
+  };
+
+  const handleCommentChange = (postId, value) => {
+    setCommentInputs(prev => ({
+      ...prev,
+      [postId]: value
     }));
+  };
+
+  const handleAddComment = async (postId) => {
+    try {
+      if (!user) {
+        console.error('User not authenticated');
+        return;
+      }
+
+      const commentText = commentInputs[postId]?.trim();
+      if (!commentText) {
+        console.log('Comment text is empty');
+        return;
+      }
+
+      const userId = user.id || user.userId;
+      const username = user.username || 'user';
+
+      // Call API to add comment
+      await postService.addComment(postId, commentText, userId, username);
+      
+      // Clear the comment input
+      setCommentInputs(prev => ({
+        ...prev,
+        [postId]: ''
+      }));
+      
+      // Close comment input
+      setCommentingOnPost(null);
+      
+      // Refresh feed to show new comment
+      await fetchFeed(pagination.currentPage);
+    } catch (err) {
+      console.error('Error adding comment:', err);
+      alert('Failed to add comment: ' + err.message);
+    }
+  };
+
+  const toggleCommentInput = (postId) => {
+    setCommentingOnPost(commentingOnPost === postId ? null : postId);
   };
 
   return (
@@ -133,7 +225,43 @@ const Feed = () => {
       </section>
       {/* Posts - single column, no container/grid */}
       <div className="feed-main" style={{ maxWidth: '700px', margin: '32px auto', padding: '0 16px' }}>
-        {posts.map((post) => (
+        {/* Loading State */}
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
+            <p>Loading feed...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#ff6b6b' }}>
+            <p>Error: {error}</p>
+            <button 
+              onClick={() => fetchFeed()} 
+              style={{ 
+                marginTop: '16px', 
+                padding: '8px 16px', 
+                backgroundColor: '#007bff', 
+                color: '#fff', 
+                border: 'none', 
+                borderRadius: '6px', 
+                cursor: 'pointer' 
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && posts.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
+            <p>No posts yet. Be the first to share!</p>
+          </div>
+        )}
+
+        {/* Posts List */}
+        {!loading && !error && posts.map((post) => (
           <article key={post.id} className="post-card">
             {/* Post Header */}
             <div className="post-card__header">
@@ -165,7 +293,7 @@ const Feed = () => {
                   <div key={index} className="post-card__image-wrapper">
                     <img 
                       src={image} 
-                      alt={`Post image ${index + 1}`} 
+                      alt={`Post content ${index + 1}`} 
                       className="post-card__image"
                     />
                   </div>
@@ -177,13 +305,17 @@ const Feed = () => {
               <button 
                 className="post-card__action-btn"
                 onClick={() => handleLike(post.id)}
+                style={{ color: post.isLikedByUser ? '#ff4458' : 'rgba(255, 255, 255, 0.6)' }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={post.isLikedByUser ? '#ff4458' : 'none'}>
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <span>{post.stats.likes}</span>
               </button>
-              <button className="post-card__action-btn">
+              <button 
+                className="post-card__action-btn"
+                onClick={() => toggleCommentInput(post.id)}
+              >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -200,6 +332,88 @@ const Feed = () => {
                 </svg>
               </button>
             </div>
+
+            {/* Comment Input Section */}
+            {commentingOnPost === post.id && (
+              <div style={{ 
+                marginTop: '12px', 
+                paddingTop: '12px', 
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                  <input
+                    type="text"
+                    placeholder="Write a comment..."
+                    value={commentInputs[post.id] || ''}
+                    onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleAddComment(post.id);
+                      }
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '8px 12px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '0.9rem',
+                      fontFamily: 'inherit',
+                      outline: 'none'
+                    }}
+                  />
+                  <button
+                    onClick={() => handleAddComment(post.id)}
+                    disabled={!commentInputs[post.id]?.trim()}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: commentInputs[post.id]?.trim() ? '#007bff' : 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: commentInputs[post.id]?.trim() ? 'pointer' : 'not-allowed',
+                      fontSize: '0.9rem',
+                      fontWeight: '600',
+                      fontFamily: 'inherit'
+                    }}
+                  >
+                    Post
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Display Comments */}
+            {post.rawData.comments && post.rawData.comments.length > 0 && (
+              <div style={{ 
+                marginTop: '12px', 
+                paddingTop: '12px', 
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                {post.rawData.comments.map((comment, idx) => (
+                  <div key={idx} style={{ 
+                    marginBottom: '8px', 
+                    padding: '8px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '6px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff' }}>
+                        {comment.username || 'Anonymous'}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)' }}>
+                        {formatTimestamp(comment.created_at)}
+                      </span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                      {comment.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </article>
         ))}
       </div>
