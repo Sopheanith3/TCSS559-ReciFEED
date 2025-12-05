@@ -7,6 +7,7 @@ import Feed from './pages/Feed';
 import Recipe from './pages/Recipe';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Profile from './pages/Profile';
 import './components/Main.css';
 
 // Protected Route Component
@@ -43,6 +44,8 @@ function AppContent() {
   const isFeedPage = location.pathname === '/feed';
   // Check if current route is recipe page
   const isRecipePage = location.pathname === '/recipe';
+  // Check if current route is profile page
+  const isProfilePage = location.pathname === '/profile';
   // Check if current route is auth page
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
@@ -58,7 +61,7 @@ function AppContent() {
             isCollapsed={isSidebarCollapsed}
           />
         )}
-        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isFeedPage ? 'feed-page' : ''} ${isRecipePage ? 'recipe-page' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
+        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isFeedPage ? 'feed-page' : ''} ${isRecipePage ? 'recipe-page' : ''} ${isProfilePage ? 'profile-page' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
@@ -68,6 +71,7 @@ function AppContent() {
             {/* Protected Routes */}
             <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
             <Route path="/recipe" element={<ProtectedRoute><Recipe /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             {/* Fallback Route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

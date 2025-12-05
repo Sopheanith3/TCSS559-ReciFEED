@@ -30,6 +30,7 @@
   background-color: rgba(0, 0, 0, 0.1);
   transition: padding 0.3s ease-in-out;
   min-height: 90px;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
 }
 
 .sidebar--collapsed .sidebar__logo-container {
@@ -43,6 +44,7 @@
   height: auto;
   object-fit: contain;
   transition: all 0.3s ease-in-out;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
 }
 
 .sidebar--collapsed .sidebar__logo-image {
@@ -91,6 +93,7 @@
   overflow: hidden;
   white-space: nowrap;
   min-height: 36px;
+   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
 }
 
 .sidebar--collapsed .sidebar__nav-link {
@@ -194,6 +197,7 @@
   white-space: nowrap;
   flex: 1;
     min-height: 36px;
+   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
 }
 
 .sidebar--collapsed .sidebar__profile-link {
@@ -239,15 +243,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
-  filter: grayscale(1) brightness(8);
 }
 
 .sidebar--collapsed .sidebar__profile-icon {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
 }
 
 .sidebar__profile-label {

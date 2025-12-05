@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const Post = require('../models/post');
+const Recipe = require('../models/recipe');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
@@ -87,11 +89,44 @@ const updateUser = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('User not found', 404));
   }
 
+  const oldUsername = user.username;
+  const userId = user._id.toString();
+
   // Update fields
   if (email) user.email = email;
   if (username) user.username = username;
 
   await user.save();
+
+  // If username changed, update all posts, comments, and likes
+  if (username && username !== oldUsername) {
+    // Update all posts by this user
+    await Post.updateMany(
+      { user_id: userId },
+      { $set: { username: username } }
+    );
+
+    // Update all likes by this user across all posts
+    await Post.updateMany(
+      { 'likes.user_id': userId },
+      { $set: { 'likes.$[elem].username': username } },
+      { arrayFilters: [{ 'elem.user_id': userId }] }
+    );
+
+    // Update all comments by this user across all posts
+    await Post.updateMany(
+      { 'comments.user_id': userId },
+      { $set: { 'comments.$[elem].username': username } },
+      { arrayFilters: [{ 'elem.user_id': userId }] }
+    );
+
+    // Update all reviews by this user across all recipes
+    await Recipe.updateMany(
+      { 'reviews.user_id': userId },
+      { $set: { 'reviews.$[elem].username': username } },
+      { arrayFilters: [{ 'elem.user_id': userId }] }
+    );
+  }
 
   // Remove password from response
   const userResponse = user.toObject();

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
 import logo from '../assets/ReciFEED-logo.png';
 import icon from '../assets/ReciFEED-icon.png';
 
 const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
   const location = useLocation();
+  const { user } = useAuth();
   const [internalIsCollapsed, setInternalIsCollapsed] = useState(true);
   
   // Use external state if provided, otherwise use internal state
@@ -77,15 +79,33 @@ const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
         <Link
           to="/profile"
           className={`sidebar__profile-link ${isActive('/profile') ? 'sidebar__profile-link--active' : ''}`}
-          title={isCollapsed ? 'Profile' : ''}
+          title={isCollapsed ? user?.username || 'Profile' : ''}
         >
           <span className="sidebar__profile-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
-            </svg>
+            <div style={{ 
+              width: '28px', 
+              height: '28px', 
+              borderRadius: '50%', 
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              color: '#fff', 
+              fontWeight: '600', 
+              fontSize: '0.85rem',
+              flexShrink: 0
+            }}>
+              {user?.username?.charAt(0).toUpperCase() || 'U'}
+            </div>
           </span>
-          <span className="sidebar__profile-label">Profile</span>
+          <span className="sidebar__profile-label" style={{ 
+            marginLeft: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0'
+          }}>
+            {user?.username || 'Profile'}
+          </span>
         </Link>
 
         {/* Hamburger Menu Button */}
