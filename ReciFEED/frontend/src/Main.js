@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import Sidebar from './layout/SideBar';
+import Side_Bar from './layout/Side_Bar';
 import Analytics from './pages/Analytics';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
@@ -60,7 +60,7 @@ function AppContent() {
     <div className="app">
       <div className="app-content">
         {!isAuthPage && showSidebar && (
-          <Sidebar 
+          <Side_Bar 
             onToggleCollapse={setIsSidebarCollapsed}
             isCollapsed={isSidebarCollapsed}
           />

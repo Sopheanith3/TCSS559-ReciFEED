@@ -201,8 +201,8 @@ TCSS559-RECIFEED/
       ├─ layout/
       │  ├─ Navbar.css
       │  ├─ Navbar.js
-      │  ├─ Sidebar.css
-      │  └─ Sidebar.js
+      │  ├─ Side_Bar.css
+      │  └─ Side_Bar.js
       └─ pages/
          ├─ Feed.js
          ├─ Home.js

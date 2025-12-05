@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../styles/layout/Sidebar.css';
+import '../styles/layout/Side_Bar.css';
 import logo from '../assets/ReciFEED-logo.png';
 import icon from '../assets/ReciFEED-icon.png';
 
-const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
+const Side_Bar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
   const location = useLocation();
   const { user } = useAuth();
   const [internalIsCollapsed, setInternalIsCollapsed] = useState(true);
-  
-  // Use external state if provided, otherwise use internal state
   const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;
 
   const toggleSidebar = () => {
@@ -147,4 +145,4 @@ const Sidebar = ({ onToggleCollapse, isCollapsed: externalIsCollapsed }) => {
   );
 };
 
-export default Sidebar;
+export default Side_Bar;
