@@ -95,7 +95,7 @@ TWITTER_CONSUMER_KEY=I7XuoARJzdlP1OZjqKqbnMscG
 TWITTER_CONSUMER_SECRET=c6BMACuw7vQnXOQr0MrV5A0mHK1yl8hWJeXOlMPOh2TVI7qyPS
 
 # MongoDB connection URI (recifeed_db)
-MONGODB_URI=mongodb+srv://recifeed_dev_db_user:xyInl7KWe3vRzmQV@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
 
 # JWT Secret - MUST MATCH MONOLITH
 JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
@@ -108,9 +108,22 @@ JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f
 PORT=3082
 
 # MongoDB connection URI (recifeed_db)
-MONGODB_URI=mongodb+srv://recifeed_dev_db_user:xyInl7KWe3vRzmQV@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
 
-# JWT Secret
+# JWT Secret - MUST MATCH MONOLITH
+JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
+```
+
+### 5) Create `microservices/analytics-service/.env`
+
+```bash
+# Analytics Service port
+PORT=3081
+
+# MongoDB connection URI (recifeed_db)
+MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
+
+# JWT Secret - MUST MATCH MONOLITH
 JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
 ```
 
@@ -144,6 +157,14 @@ TCSS559-RECIFEED/
 │
 ├─ microservices/
 │  ├─ analytics-service/
+|  |  ├─ database/
+│  |  │  └─ connection.js
+|  |  ├─ models/
+│  |  │  └─ event.js
+|  |  ├─ routes/
+|  |  |  |─ eventRoutes.js
+|  |  |  |─ popularRoutes.js
+│  |  │  └─ liveRoutes.js
 |  |  |─ .env             # NOT committed - use provided
 │  │  └─ index.js
 │  ├─ recipe-query-service/
