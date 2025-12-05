@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { analyticsService } from '../services/analyticsService';
 
 // Register necessary Chart.js components
 ChartJS.register(
@@ -22,27 +23,11 @@ ChartJS.register(
   Legend
 );
 
-const getNextValue = async (type, lastValue) => {
-  const url = `http://localhost:3081/live?type=${type}`;
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    // Error retrieval, just keep last value
-    return lastValue;
-  }
-
-  const data = await response.json();
-
-  console.log(data)
-  return data.count;
-}
-
-const LiveLineChart = ({type}) => {
+const LiveLineChart = ({type, title, axis}) => {
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
       {
-        label: 'Live Data',
         data: [],
         borderColor: 'rgb(226, 117, 77)',
         tension: 0.1,
@@ -52,17 +37,20 @@ const LiveLineChart = ({type}) => {
 
   useEffect(() => {
     const fetchAndUpdate = async () => {
-      // Get the last value from current state
-      let lastValue = 0;
-      setChartData((prevData) => {
-        if (prevData.datasets && prevData.datasets[0]?.data.length > 0) {
-          lastValue = prevData.datasets[0].data[prevData.datasets[0].data.length - 1];
-        }
-        return prevData;
-      });
+      // Default 0 if no data received
+      let newDataPoint = 0;
+      try {
+        newDataPoint = await analyticsService.getLive(type);
+      } catch {
+        // If error, keep as last data value
+        setChartData((prevData) => {
+          if (prevData.datasets && prevData.datasets[0]?.data.length > 0) {
+            newDataPoint = prevData.datasets[0].data[prevData.datasets[0].data.length - 1];
+          }
+          return prevData;
+        });
+      }
 
-      // Fetch new data
-      const newDataPoint = await getNextValue(type, lastValue);
       const newLabel = new Date().toLocaleTimeString();
 
       // Update state with new data (synchronous)
@@ -100,12 +88,13 @@ const LiveLineChart = ({type}) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
-        text: 'Current Live Users',
+        text: title,
         font: {
-          size: 24,
+          size: 18,
         },
       },
       legend: {
@@ -117,16 +106,21 @@ const LiveLineChart = ({type}) => {
         title: {
           display: true,
           text: 'Time',
+          font: {
+            size: 14
+          }
         },
       },
       y: {
         title: {
           display: true,
-          text: 'Users',
+          text: axis,
+          font: {
+            size: 14
+          }
         },
         min: 0,
         ticks: {
-          // Force integer ticks
           stepSize: 1,
           callback: function (value) {
             return Number.isInteger(value) ? value : null;
@@ -137,8 +131,8 @@ const LiveLineChart = ({type}) => {
   };
 
   return (
-    <div style={{ width: '80%', margin: 'auto' }}>
-      <Line data={chartData} options={options} />
+    <div style={{ width: '80%', margin: 'auto', minHeight: '300px', maxWidth: '700px' }}>
+      <Line data={chartData} options={options}/>
     </div>
   );
 };

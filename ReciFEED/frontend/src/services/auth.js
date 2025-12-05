@@ -1,5 +1,5 @@
 /**
-* API SERVICE
+* AUTH SERVICE
 * Centralized service for user auth backend API calls.
 * Methods:
 * - login(email, password): User authentication

@@ -48,6 +48,8 @@ function AppContent() {
   const isRecipePage = location.pathname === '/recipe';
   // Check if current route is profile page
   const isProfilePage = location.pathname === '/profile';
+  // Check if current route is analytics page
+  const isAnalyticsPage = location.pathname === '/analytics';
   // Check if current route is auth page
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
@@ -63,7 +65,7 @@ function AppContent() {
             isCollapsed={isSidebarCollapsed}
           />
         )}
-        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isFeedPage ? 'feed-page' : ''} ${isRecipePage ? 'recipe-page' : ''} ${isProfilePage ? 'profile-page' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
+        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isFeedPage ? 'feed-page' : ''} ${isRecipePage ? 'recipe-page' : ''} ${isProfilePage ? 'profile-page' : ''} ${isAnalyticsPage ? 'analytics-page' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
