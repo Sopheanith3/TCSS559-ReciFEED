@@ -1,5 +1,5 @@
 /**
- * Routes for getting live (~10 seconds) analytics information
+ * Routes for getting live (very recent) analytics information
  */
 const express = require('express');
 const Event = require('../models/event');
