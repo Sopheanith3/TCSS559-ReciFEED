@@ -44,12 +44,11 @@ router.get('/', async (req, res) => {
         });
         break;
       case 'users':
-        const [{ user_count }] = await Event.aggregate([
-          { $match: { timestamp: { $gte: new Date(Date.now() - 60 * 1000) } } },
-          { $group: { _id: "$user_id" } },
-          { $count: "user_count" }
-        ]);
-        number = user_count || 0;
+        const users = await Event.distinct(
+          "user_id", 
+          { timestamp: { $gte: new Date(Date.now() - 60 * 1000) } }
+        );
+        count = users.length;
         break;
     }
 

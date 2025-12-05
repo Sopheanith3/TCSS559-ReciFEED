@@ -44,7 +44,7 @@ function validateContent(type, content) {
  * POST /event
  * Post an event to the analytics service
  */
-router.post('/event', async (req, res) => {
+router.post('/', async (req, res) => {
   const { type, content, userId } = req.body;
   if (!type || !eventTypes.includes(type)) {
     return res.status(400).json({ 

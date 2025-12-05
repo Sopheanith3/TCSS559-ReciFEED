@@ -38,7 +38,7 @@ const getTimeFrame = (range) => {
 const getPopularCount = async (timeframe, type) => {
   const results = await Event.aggregate([
     { $match: { type, timestamp: { $gte: timeframe } } },
-    { $group: { id: "$content.id", count: { $sum: 1 } } },
+    { $group: { _id: "$content.id", count: { $sum: 1 } } },
     { $sort: { count: -1 } },
     { $limit: 5 },
     { // Rename fields
@@ -107,24 +107,25 @@ router.get('/', async (req, res) => {
 
   let results = [];
 
+  const timeframe = getTimeFrame(range)
+
   try {
     switch (type) {
       case 'posts':
-        results = getPopularCount(getTimeFrame(), 'post_interaction');
+        results = await getPopularCount(timeframe, 'post_interaction');
         break;
       case 'recipes':
-        results = getPopularRecipes(getTimeFrame(), 'recipe_view');
+        results = await getPopularCount(timeframe, 'recipe_view');
         break;
       case 'users':
-        results = getPopularUsers(getTimeFrame(), 'user_view');
+        results = await getPopularCount(timeframe, 'user_view');
         break;
       case 'search':
-        results = getPopularSearchTerms(getTimeFrame());
+        results = await getPopularSearchTerms(timeframe);
     }
-
-    return res.status(200).json({ results })
+    return res.status(200).json({ results });
   } catch (error) {
-    return res.status(500).json({ error: 'Could not retrieve analytics.' })
+    return res.status(500).json({ error: 'Could not retrieve analytics.' });
   }
 });
 

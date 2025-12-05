@@ -27,7 +27,7 @@ const event = new mongoose.Schema({
   content: {
     id: { type: mongoose.Types.ObjectId }, // ID of interacted with content (post, recipe, user)
     text: { type: String }, // For search event
-    filters: { type: [String], default: []} // For search event
+    filters: { type: [String] } // For search event
   }
 }, { collection: 'event'});
 
