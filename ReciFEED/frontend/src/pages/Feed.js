@@ -470,20 +470,6 @@ const Feed = () => {
                 <path d="M5 10v10a1 1 0 0 0 1 1h4m4 0h4a1 1 0 0 0 1-1V10" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            
-            {/* Save/Bookmark Icon */}
-            <button 
-              className="feed-header__icon-btn"
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', borderRadius: '8px', transition: 'background 0.2s ease' }}
-              aria-label="Saved"
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-            
             {/* Create Post Icon */}
             <button 
               className="feed-header__icon-btn"
