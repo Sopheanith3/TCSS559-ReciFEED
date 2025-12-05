@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './Sidebar.css';
+import '../styles/layout/Sidebar.css';
 import logo from '../assets/ReciFEED-logo.png';
 import icon from '../assets/ReciFEED-icon.png';
 

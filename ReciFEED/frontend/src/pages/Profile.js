@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import EditProfileModal from '../layout/EditProfileModal';
+import EditProfileModal from '../components/EditProfileModal';
 import { postService } from '../services/postService';
-import '../components/Profile.css';
+import '../styles/components/Profile.css';
 
 const Profile = () => {
   const { user, logout } = useAuth();

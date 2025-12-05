@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/auth'
-import '../components/Login.css';
+import '../styles/components/Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
