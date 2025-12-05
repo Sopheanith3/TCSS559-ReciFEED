@@ -619,11 +619,21 @@ const Feed = () => {
                   onClick={() => navigate(`/user/${post.rawData?.user_id}`)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <img 
-                    src={post.user.avatar} 
-                    alt={post.user.name} 
-                    className="post-card__avatar"
-                  />
+                  <div style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    borderRadius: '50%', 
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    color: '#fff', 
+                    fontWeight: '600', 
+                    fontSize: '1rem',
+                    flexShrink: 0
+                  }}>
+                    {post.user.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
                   <div className="post-card__user-info">
                     <h3 className="post-card__username">{post.user.name}</h3>
                     <p className="post-card__timestamp">{post.timestamp}</p>
