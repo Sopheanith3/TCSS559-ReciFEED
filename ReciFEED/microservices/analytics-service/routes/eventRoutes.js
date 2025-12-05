@@ -20,8 +20,8 @@ const eventTypes = [
 function validateContent(type, content) {
   switch (type) {
     case 'search':
-      if (!content?.text || !content?.tags) {
-        return "Search text and tags required in content.";
+      if (!content?.text && !content?.tags) {
+        return "Search text or tags required in search event content.";
       }
       break;
 
