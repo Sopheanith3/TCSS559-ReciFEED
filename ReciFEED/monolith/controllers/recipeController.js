@@ -47,15 +47,21 @@ const getRecipeById = asyncHandler(async (req, res, next) => {
 });
 
 const createRecipe = asyncHandler(async (req, res, next) => {
-  const { title, tags, ingredients, instructions, images, userId } = req.body;
+  const { title, cooking_time, tags, ingredients, instructions, images, userId, username } = req.body;
 
   if (!title || !userId) {
     return next(new ErrorResponse('Please provide title and userId', 400));
   }
 
+  if (!username) {
+    return next(new ErrorResponse('Please provide username', 400));
+  }
+
   const recipeData = {
     user_id: userId,
+    username,
     title,
+    cooking_time: cooking_time || '',
     tags: tags || [],
     ingredients: ingredients || [],
     instructions: instructions || [],
@@ -72,7 +78,7 @@ const createRecipe = asyncHandler(async (req, res, next) => {
 });
 
 const updateRecipe = asyncHandler(async (req, res, next) => {
-  const { title, tags, ingredients, instructions, images } = req.body;
+  const { title, cooking_time, tags, ingredients, instructions, images } = req.body;
 
   const recipe = await Recipe.findById(req.params.id);
 
@@ -82,6 +88,7 @@ const updateRecipe = asyncHandler(async (req, res, next) => {
 
   // Update fields
   if (title) recipe.title = title;
+  if (cooking_time !== undefined) recipe.cooking_time = cooking_time;
   if (tags) recipe.tags = tags;
   if (ingredients) recipe.ingredients = ingredients;
   if (instructions) recipe.instructions = instructions;
@@ -203,6 +210,63 @@ const deleteReview = asyncHandler(async (req, res, next) => {
   });
 });
 
+const getFilterOptions = asyncHandler(async (req, res, next) => {
+  // Get all unique tags from recipes
+  const tagsResult = await Recipe.aggregate([
+    { $unwind: '$tags' },
+    { $group: { _id: null, tags: { $addToSet: '$tags' } } }
+  ]);
+
+  const tags = tagsResult.length > 0 ? tagsResult[0].tags.sort() : [];
+
+  // Get all unique cooking times from recipes
+  const cookingTimesResult = await Recipe.aggregate([
+    { $match: { cooking_time: { $ne: '' } } },
+    { $group: { _id: null, cookingTimes: { $addToSet: '$cooking_time' } } }
+  ]);
+
+  const cookingTimes = cookingTimesResult.length > 0 
+    ? cookingTimesResult[0].cookingTimes.sort() 
+    : [];
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tags,
+      cookingTimes
+    }
+  });
+});
+
+const filterRecipes = asyncHandler(async (req, res, next) => {
+  const { tags, cooking_time } = req.query;
+
+  const filter = {};
+
+  // Filter by tags (comma-separated)
+  if (tags) {
+    const tagArray = tags.split(',').map(t => t.trim()).filter(t => t);
+    if (tagArray.length > 0) {
+      filter.tags = { $in: tagArray };
+    }
+  }
+
+  // Filter by cooking time
+  if (cooking_time) {
+    filter.cooking_time = cooking_time;
+  }
+
+  const recipes = await Recipe.find(filter).sort({ created_at: -1 });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      recipes,
+      total: recipes.length
+    }
+  });
+});
+
 module.exports = {
   getAllRecipes,
   getRecipeById,
@@ -210,5 +274,7 @@ module.exports = {
   updateRecipe,
   deleteRecipe,
   addReview,
-  deleteReview
+  deleteReview,
+  getFilterOptions,
+  filterRecipes
 };

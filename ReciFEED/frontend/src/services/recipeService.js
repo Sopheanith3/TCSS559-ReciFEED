@@ -78,6 +78,47 @@ export const recipeService = {
     }
   },
 
+  // Update an existing recipe
+  updateRecipe: async (recipeId, recipeData) => {
+    try {
+      const response = await fetch(`${API_URL}/recipes/${recipeId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(recipeData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update recipe');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error updating recipe:', error);
+      throw error;
+    }
+  },
+
+  // Delete a recipe
+  deleteRecipe: async (recipeId) => {
+    try {
+      const response = await fetch(`${API_URL}/recipes/${recipeId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete recipe');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+      throw error;
+    }
+  },
+
   // Add a review to a recipe
   addReview: async (recipeId, rating, comment, userId, username) => {
     try {
@@ -117,6 +158,79 @@ export const recipeService = {
       return data;
     } catch (error) {
       console.error('Error deleting review:', error);
+      throw error;
+    }
+  },
+
+  // Search recipes by query and optional tags
+  searchRecipes: async (query, tags = null) => {
+    try {
+      let url = `${API_URL}/search/recipes?q=${encodeURIComponent(query)}`;
+      
+      if (tags && tags.length > 0) {
+        url += `&tags=${tags.join(',')}`;
+      }
+      
+      const response = await fetch(url, {
+        headers: getAuthHeaders(),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to search recipes');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error searching recipes:', error);
+      throw error;
+    }
+  },
+
+  // Get available filter options from backend
+  getFilterOptions: async () => {
+    try {
+      const response = await fetch(`${API_URL}/recipes/filters/options`, {
+        headers: getAuthHeaders(),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch filter options');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching filter options:', error);
+      throw error;
+    }
+  },
+
+  // Filter recipes by tags and cooking time
+  filterRecipes: async (filters) => {
+    try {
+      const params = new URLSearchParams();
+      
+      if (filters.tags && filters.tags.length > 0) {
+        params.append('tags', filters.tags.join(','));
+      }
+      
+      if (filters.cookingTime) {
+        params.append('cooking_time', filters.cookingTime);
+      }
+      
+      const response = await fetch(`${API_URL}/recipes/filter?${params.toString()}`, {
+        headers: getAuthHeaders(),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to filter recipes');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error filtering recipes:', error);
       throw error;
     }
   },

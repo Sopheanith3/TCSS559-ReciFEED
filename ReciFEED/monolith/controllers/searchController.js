@@ -49,47 +49,71 @@ const searchAll = asyncHandler(async (req, res, next) => {
 
 const searchRecipes = asyncHandler(async (req, res, next) => {
   const query = req.query.q;
-  const tags = req.query.tags ? req.query.tags.split(',') : null;
+  const tags = req.query.tags ? req.query.tags.split(',').map(t => t.trim()) : null;
+  const cookingTime = req.query.cookingTime;
 
-  if (!query && !tags) {
-    return next(new ErrorResponse('Please provide a search query or tags', 400));
-  }
+  // Build search criteria
+  let searchCriteria = [];
 
-  const searchRegex = query ? new RegExp(query, 'i') : null;
-
-  let searchCriteria = {};
-
-  if (searchRegex && tags) {
-    searchCriteria = {
-      $and: [
-        {
-          $or: [
-            { title: searchRegex },
-            { tags: searchRegex },
-            { ingredients: searchRegex }
-          ]
-        },
-        { tags: { $in: tags } }
-      ]
-    };
-  } else if (searchRegex) {
-    searchCriteria = {
+  // Add text search if query provided
+  if (query) {
+    const searchRegex = new RegExp(query, 'i');
+    searchCriteria.push({
       $or: [
         { title: searchRegex },
         { tags: searchRegex },
         { ingredients: searchRegex }
       ]
-    };
-  } else if (tags) {
-    searchCriteria = { tags: { $in: tags } };
+    });
   }
 
-  const recipes = await Recipe.find(searchCriteria).limit(50);
+  // Add tag filter if tags provided
+  if (tags && tags.length > 0) {
+    searchCriteria.push({
+      tags: { $in: tags.map(tag => new RegExp(tag, 'i')) }
+    });
+  }
+
+  // Add cooking time filter if provided
+  if (cookingTime) {
+    const timeRegex = /(\d+)/;
+    
+    if (cookingTime === '0-15') {
+      // Match recipes with cooking time less than 15 minutes
+      searchCriteria.push({
+        cooking_time: { $regex: /^([0-9]|1[0-4])\s*(min|mins|minute|minutes)/i }
+      });
+    } else if (cookingTime === '15-30') {
+      searchCriteria.push({
+        cooking_time: { $regex: /(1[5-9]|2[0-9]|30)\s*(min|mins|minute|minutes)/i }
+      });
+    } else if (cookingTime === '30-45') {
+      searchCriteria.push({
+        cooking_time: { $regex: /(3[0-9]|4[0-5])\s*(min|mins|minute|minutes)/i }
+      });
+    } else if (cookingTime === '45-60') {
+      searchCriteria.push({
+        cooking_time: { $regex: /(4[5-9]|5[0-9]|60)\s*(min|mins|minute|minutes)/i }
+      });
+    } else if (cookingTime === '60+') {
+      searchCriteria.push({
+        cooking_time: { $regex: /([6-9][0-9]|[1-9][0-9]{2,})\s*(min|mins|minute|minutes)/i }
+      });
+    }
+  }
+
+  // If no criteria, return all recipes
+  const finalCriteria = searchCriteria.length > 0 ? { $and: searchCriteria } : {};
+
+  const recipes = await Recipe.find(finalCriteria).limit(50);
 
   res.status(200).json({
     status: 'success',
-    query: query || 'tag filter',
-    filters: tags || [],
+    query: query || 'filtered',
+    filters: {
+      tags: tags || [],
+      cookingTime: cookingTime || null
+    },
     data: {
       recipes,
       totalResults: recipes.length
