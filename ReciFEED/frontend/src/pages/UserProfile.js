@@ -583,21 +583,10 @@ const UserProfile = () => {
                                       <div key={idx} className="comment">
                                         <div className="comment__header">
                                           <div className="comment__user">
-                                            <div style={{
-                                              width: '32px',
-                                              height: '32px',
-                                              borderRadius: '50%',
-                                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                              display: 'flex',
-                                              alignItems: 'center',
-                                              justifyContent: 'center',
-                                              color: '#fff',
-                                              fontWeight: '600',
-                                              fontSize: '0.85rem'
-                                            }}>
+                                            <div className="comment__user-avatar">
                                               {(comment.username || 'U').charAt(0).toUpperCase()}
                                             </div>
-                                            <div>
+                                            <div className="comment__user-info">
                                               <span className="comment__username">{comment.username || 'Anonymous'}</span>
                                               <span className="comment__timestamp">{formatTimestamp(comment.created_at)}</span>
                                             </div>
@@ -607,21 +596,28 @@ const UserProfile = () => {
                                               <button
                                                 onClick={() => toggleCommentDropdown(postId, idx)}
                                                 style={{
-                                                  background: 'transparent',
+                                                  background: commentDropdowns[`${postId}-${idx}`] ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
                                                   border: 'none',
-                                                  color: 'rgba(255, 255, 255, 0.5)',
+                                                  color: commentDropdowns[`${postId}-${idx}`] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
                                                   cursor: 'pointer',
-                                                  padding: '4px',
-                                                  borderRadius: '4px',
-                                                  transition: 'all 0.2s'
+                                                  padding: '6px 8px',
+                                                  borderRadius: '6px',
+                                                  transition: 'all 0.2s ease',
+                                                  display: 'flex',
+                                                  alignItems: 'center',
+                                                  justifyContent: 'center'
                                                 }}
                                                 onMouseOver={(e) => {
-                                                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                                                  if (!commentDropdowns[`${postId}-${idx}`]) {
+                                                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                                                  }
                                                   e.currentTarget.style.color = '#ffffff';
                                                 }}
                                                 onMouseOut={(e) => {
-                                                  e.currentTarget.style.backgroundColor = 'transparent';
-                                                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)';
+                                                  if (!commentDropdowns[`${postId}-${idx}`]) {
+                                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)';
+                                                  }
                                                 }}
                                               >
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -633,32 +629,46 @@ const UserProfile = () => {
                                               {commentDropdowns[`${postId}-${idx}`] && (
                                                 <div style={{
                                                   position: 'absolute',
-                                                  top: '100%',
+                                                  top: 'calc(100% + 4px)',
                                                   right: '0',
                                                   backgroundColor: '#1a1a2e',
                                                   borderRadius: '8px',
-                                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                                                  padding: '8px',
-                                                  minWidth: '150px',
-                                                  zIndex: 1000
+                                                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                                                  padding: '4px',
+                                                  minWidth: '160px',
+                                                  zIndex: 1000,
+                                                  border: '1px solid rgba(255, 255, 255, 0.1)'
                                                 }}>
                                                   <button
                                                     onClick={() => handleDeleteComment(postId, idx)}
                                                     style={{
                                                       width: '100%',
-                                                      padding: '10px 16px',
+                                                      padding: '10px 14px',
                                                       backgroundColor: 'transparent',
-                                                      color: '#ff4444',
+                                                      color: '#ff6b6b',
                                                       border: 'none',
                                                       borderRadius: '6px',
                                                       cursor: 'pointer',
                                                       fontSize: '0.9rem',
+                                                      fontWeight: '500',
                                                       textAlign: 'left',
-                                                      transition: 'background-color 0.2s'
+                                                      transition: 'all 0.2s ease',
+                                                      display: 'flex',
+                                                      alignItems: 'center',
+                                                      gap: '8px'
                                                     }}
-                                                    onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(255, 68, 68, 0.1)'}
-                                                    onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
+                                                    onMouseOver={(e) => {
+                                                      e.target.style.backgroundColor = 'rgba(255, 107, 107, 0.15)';
+                                                      e.target.style.color = '#ff4444';
+                                                    }}
+                                                    onMouseOut={(e) => {
+                                                      e.target.style.backgroundColor = 'transparent';
+                                                      e.target.style.color = '#ff6b6b';
+                                                    }}
                                                   >
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
                                                     Delete Comment
                                                   </button>
                                                 </div>
