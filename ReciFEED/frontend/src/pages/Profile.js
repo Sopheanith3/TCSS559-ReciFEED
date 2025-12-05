@@ -558,7 +558,10 @@ const Profile = () => {
                   <article key={postId} className="post-card">
                     {/* Post Header */}
                     <div className="post-card__header">
-                      <div className="post-card__user">
+                      <div className="post-card__user"
+                        onClick={() => navigate(`/user/${post.user_id}`)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         <div style={{ 
                           width: '40px', 
                           height: '40px', 
@@ -659,60 +662,39 @@ const Profile = () => {
                         </svg>
                         <span>{post.stats?.likes || 0}</span>
                       </button>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                        <button 
-                          className="post-card__action-btn"
-                          style={{ display: 'flex', alignItems: 'center' }}
-                          tabIndex={-1}
-                          disabled
-                        >
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                          <span>{post.stats?.comments || 0}</span>
-                        </button>
-                        <input
-                          type="text"
-                          placeholder="Write a comment..."
-                          value={commentInputs[postId] || ''}
-                          onChange={(e) => handleCommentChange(postId, e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
-                              e.preventDefault();
-                              handleAddComment(postId);
-                            }
-                          }}
-                          style={{
-                            flex: 1,
-                            minWidth: 0,
-                            padding: '8px 12px',
-                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            borderRadius: '8px',
-                            color: '#fff',
-                            fontSize: '0.9rem',
-                            fontFamily: 'inherit',
-                            outline: 'none'
-                          }}
-                        />
-                        <button
-                          onClick={() => handleAddComment(postId)}
-                          disabled={!commentInputs[postId]?.trim()}
-                          style={{
-                            padding: '8px 16px',
-                            backgroundColor: commentInputs[postId]?.trim() ? '#007bff' : 'rgba(255, 255, 255, 0.1)',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '8px',
-                            cursor: commentInputs[postId]?.trim() ? 'pointer' : 'not-allowed',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            fontFamily: 'inherit'
-                          }}
-                        >
-                          Post
-                        </button>
-                      </div>
+                      <button 
+                        className="post-card__action-btn"
+                        style={{ display: 'flex', alignItems: 'center' }}
+                        tabIndex={-1}
+                        disabled
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>{post.stats?.comments || 0}</span>
+                      </button>
+                    </div>
+
+                    {/* Add Comment Input */}
+                    <div className="post-card__comment-input">
+                      <input
+                        type="text"
+                        placeholder="Write a comment..."
+                        value={commentInputs[postId] || ''}
+                        onChange={(e) => handleCommentChange(postId, e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleAddComment(postId);
+                          }
+                        }}
+                      />
+                      <button
+                        onClick={() => handleAddComment(postId)}
+                        disabled={!commentInputs[postId]?.trim()}
+                      >
+                        Post
+                      </button>
                     </div>
 
                     {/* Display Comments */}
@@ -732,113 +714,102 @@ const Profile = () => {
                           const isOwnComment = comment.user_id.toString() === currentUserId;
 
                           return (
-                            <div key={idx} style={{ 
-                              display: 'flex', 
-                              gap: '8px', 
-                              padding: '8px 0',
-                              position: 'relative'
-                            }}>
-                              <div style={{ 
-                                width: '32px', 
-                                height: '32px', 
-                                borderRadius: '50%', 
-                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'center', 
-                                color: '#fff', 
-                                fontWeight: '600', 
-                                fontSize: '0.85rem',
-                                flexShrink: 0
-                              }}>
-                                {comment.username?.charAt(0).toUpperCase() || 'U'}
-                              </div>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ 
-                                  backgroundColor: 'rgba(255, 255, 255, 0.05)', 
-                                  padding: '8px 12px', 
-                                  borderRadius: '12px',
-                                  position: 'relative'
-                                }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '4px' }}>
-                                    <p style={{ 
-                                      margin: 0, 
-                                      fontWeight: '600', 
-                                      fontSize: '0.9rem', 
-                                      color: 'rgba(255, 255, 255, 0.9)'
-                                    }}>
-                                      {comment.username}
-                                    </p>
-                                    {isOwnComment && (
-                                      <div style={{ position: 'relative' }} data-comment-dropdown>
+                            <div key={idx} className="comment">
+                              <div className="comment__header">
+                                <div className="comment__user">
+                                  <div className="comment__user-avatar">
+                                    {comment.username?.charAt(0).toUpperCase() || 'U'}
+                                  </div>
+                                  <div className="comment__user-info">
+                                    <span className="comment__username">{comment.username}</span>
+                                    <span className="comment__timestamp">{formatTimestamp(comment.created_at)}</span>
+                                  </div>
+                                </div>
+                                {isOwnComment && (
+                                  <div style={{ position: 'relative' }} data-comment-dropdown>
+                                    <button
+                                      onClick={() => toggleCommentDropdown(postId, idx)}
+                                      style={{
+                                        background: commentDropdowns[commentKey] ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                                        border: 'none',
+                                        color: commentDropdowns[commentKey] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                                        cursor: 'pointer',
+                                        padding: '6px 8px',
+                                        borderRadius: '6px',
+                                        transition: 'all 0.2s ease',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '1rem',
+                                        lineHeight: 1
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        if (!commentDropdowns[commentKey]) {
+                                          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                                        }
+                                        e.currentTarget.style.color = '#ffffff';
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        if (!commentDropdowns[commentKey]) {
+                                          e.currentTarget.style.backgroundColor = 'transparent';
+                                          e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)';
+                                        }
+                                      }}
+                                    >
+                                      ⋯
+                                    </button>
+                                    {commentDropdowns[commentKey] && (
+                                      <div style={{
+                                        position: 'absolute',
+                                        top: 'calc(100% + 4px)',
+                                        right: '0',
+                                        backgroundColor: '#1a1a2e',
+                                        borderRadius: '8px',
+                                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                                        minWidth: '160px',
+                                        overflow: 'hidden',
+                                        zIndex: 1000,
+                                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                                        padding: '4px'
+                                      }}>
                                         <button
-                                          onClick={() => toggleCommentDropdown(postId, idx)}
+                                          onClick={() => handleDeleteComment(postId, idx)}
                                           style={{
-                                            background: 'none',
+                                            width: '100%',
+                                            padding: '10px 14px',
+                                            backgroundColor: 'transparent',
                                             border: 'none',
-                                            color: 'rgba(255, 255, 255, 0.5)',
+                                            color: '#ff6b6b',
                                             cursor: 'pointer',
-                                            padding: '0 4px',
-                                            fontSize: '1.2rem',
-                                            lineHeight: 1
+                                            textAlign: 'left',
+                                            fontSize: '0.9rem',
+                                            fontWeight: '500',
+                                            transition: 'all 0.2s ease',
+                                            borderRadius: '6px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px'
+                                          }}
+                                          onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'rgba(255, 107, 107, 0.15)';
+                                            e.currentTarget.style.color = '#ff4444';
+                                          }}
+                                          onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                            e.currentTarget.style.color = '#ff6b6b';
                                           }}
                                         >
-                                          ⋯
+                                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                          </svg>
+                                          Delete Comment
                                         </button>
-                                        {commentDropdowns[commentKey] && (
-                                          <div style={{
-                                            position: 'absolute',
-                                            top: '100%',
-                                            right: '0',
-                                            backgroundColor: '#1a1a2e',
-                                            borderRadius: '8px',
-                                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                                            minWidth: '120px',
-                                            overflow: 'hidden',
-                                            zIndex: 1000,
-                                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                                            marginTop: '4px'
-                                          }}>
-                                            <button
-                                              onClick={() => handleDeleteComment(postId, idx)}
-                                              style={{
-                                                width: '100%',
-                                                padding: '8px 12px',
-                                                backgroundColor: 'transparent',
-                                                border: 'none',
-                                                color: '#ff4458',
-                                                cursor: 'pointer',
-                                                textAlign: 'left',
-                                                fontSize: '0.85rem',
-                                                transition: 'background-color 0.2s'
-                                              }}
-                                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 68, 88, 0.1)'}
-                                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                            >
-                                              Delete
-                                            </button>
-                                          </div>
-                                        )}
                                       </div>
                                     )}
                                   </div>
-                                  <p style={{ 
-                                    margin: 0, 
-                                    fontSize: '0.9rem', 
-                                    color: 'rgba(255, 255, 255, 0.8)', 
-                                    wordBreak: 'break-word'
-                                  }}>
-                                    {comment.text}
-                                  </p>
-                                </div>
-                                <p style={{ 
-                                  margin: '4px 0 0 12px', 
-                                  fontSize: '0.75rem', 
-                                  color: 'rgba(255, 255, 255, 0.4)'
-                                }}>
-                                  {formatTimestamp(comment.created_at)}
-                                </p>
+                                )}
                               </div>
+                              <p className="comment__text">{comment.text}</p>
                             </div>
                           );
                         })}

@@ -8,6 +8,7 @@ import Recipe from './pages/Recipe';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import UserProfile from './pages/UserProfile';
 import './components/Main.css';
 
 // Protected Route Component
@@ -72,6 +73,7 @@ function AppContent() {
             <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
             <Route path="/recipe" element={<ProtectedRoute><Recipe /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/user/:userId" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             {/* Fallback Route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
