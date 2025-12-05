@@ -105,7 +105,7 @@ router.get('/', async (req, res) => {
     });
   }
 
-  let results;
+  let results = [];
 
   try {
     switch (type) {
