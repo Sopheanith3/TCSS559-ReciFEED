@@ -20,7 +20,7 @@ const types = [
   'users'
 ];
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const { type } = req.query;
   if (!type) {
     return res.status(400).json({ error: "Must provide the 'type' query value." });
@@ -32,39 +32,36 @@ router.get('/', (req, res) => {
     });
   }
 
-  let number = 0;
+  let count = 0;
 
-  switch (type) {
-    case 'post-interactions':
-      const postInteractions = Event.find({ 
-        type: 'post_interaction', 
-        timestamp: { $gte: getTenSecondAgo() }
-      });
-      if (!postInteractions) break;
-      number = postInteractions.length;
-      break;
-    case 'recipe-views':
-      const recipeViews = Event.find({ 
-        type: 'post_interaction', 
-        timestamp: { $gte: getTenSecondAgo() }
-      });
-      number = recipeViews.length;
-      break;
-    case '':
+  try {
+    switch (type) {
+      case 'post-interactions':
+        count = await Event.countDocuments({ 
+          type: 'post_interaction', 
+          timestamp: { $gte: getTenSecondAgo() }
+        });
+        break;
+      case 'recipe-views':
+        count = await Event.countDocuments({ 
+          type: 'recipe_view', 
+          timestamp: { $gte: getTenSecondAgo() }
+        });
+        break;
+      case 'users':
+        const [{ user_count }] = await Event.aggregate([
+          { $match: { timestamp: { $gte: getMinuteAgo() } } },
+          { $group: { _id: "$userId" } },
+          { $count: "user_count" }
+        ]);
+        number = user_count || 0;
+        break;
+    }
+
+    return res.status(200).json({ count })
+  } catch (error) {
+    return res.status(500).json({ error: 'Could not retrieve analytics.' })
   }
-
-  
 });
-
-
-
-// GET /live type=post-interactions/recipe-views/users
-
-// Live Users
-// SEE BELOW
-// Live Recipe Views
-// Recipe View Event { userId, recipeId, datetime }
-// Live Post Interactions
-// Post Interaction Event { userId, postId, datetime }
 
 module.exports = router;
