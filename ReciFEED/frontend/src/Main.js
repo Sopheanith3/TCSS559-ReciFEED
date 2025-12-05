@@ -9,7 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
-import './components/Main.css';
+import './styles/components/Main.css';
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
