@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Sidebar from './layout/SideBar';
+import Analytics from './pages/Analytics';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 import Recipe from './pages/Recipe';
@@ -70,6 +71,7 @@ function AppContent() {
             {/* Landing/Home Page - redirects to feed if logged in */}
             <Route path="/" element={<HomeRoute />} />
             {/* Protected Routes */}
+            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
             <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
             <Route path="/recipe" element={<ProtectedRoute><Recipe /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

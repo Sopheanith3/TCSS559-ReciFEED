@@ -23,7 +23,6 @@ const event = new mongoose.Schema({
     ]
   },
   user_id: { type: mongoose.Types.ObjectId, required: true },
-  username: { type: String, required: true },
   timestamp: { type: Date, default: Date.now(), required: true},
   content: {
     id: { type: mongoose.Types.ObjectId }, // ID of interacted with content (post, recipe, user)
