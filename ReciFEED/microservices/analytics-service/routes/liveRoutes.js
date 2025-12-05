@@ -34,19 +34,21 @@ router.get('/', async (req, res) => {
       case 'post-interactions':
         count = await Event.countDocuments({ 
           type: 'post_interaction', 
-          timestamp: { $gte: new Date(Date.now() - 10 * 1000) }
+          timestamp: { $gte: new Date(Date.now() - 3 * 1000) }
         });
         break;
       case 'recipe-views':
         count = await Event.countDocuments({ 
           type: 'recipe_view', 
-          timestamp: { $gte: new Date(Date.now() - 10 * 1000) }
+          timestamp: { $gte: new Date(Date.now() - 3 * 1000) }
         });
         break;
       case 'users':
         const users = await Event.distinct(
           "user_id", 
-          { timestamp: { $gte: new Date(Date.now() - 60 * 1000) } }
+          // Uses 30s as an assumption that users may not interact actively
+          // but still be viewing content for this period
+          { timestamp: { $gte: new Date(Date.now() - 30 * 1000) } }
         );
         count = users.length;
         break;

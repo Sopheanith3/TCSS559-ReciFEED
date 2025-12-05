@@ -1,0 +1,68 @@
+.analytics-page {
+  min-height: 100vh;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.analytics-container {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 48px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.aggregate-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.header {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255);
+  margin: 0 0 4px 0;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+}
+
+@media (max-width: 768px) {
+  .analytics-page {
+    padding-bottom: 80px; /* Account for bottom navigation */
+  }
+}
+
+.analytics-header {
+  background-color: #0a0a0a; /* Match feed-page background */
+  padding: 24px 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-size: larger;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+
+.live-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.popularity-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

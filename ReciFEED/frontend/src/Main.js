@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import Sidebar from './layout/SideBar';
+import Sidebar from './layout/Sidebar';
+import Analytics from './pages/Analytics';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 import Recipe from './pages/Recipe';
@@ -47,6 +48,8 @@ function AppContent() {
   const isRecipePage = location.pathname === '/recipe';
   // Check if current route is profile page
   const isProfilePage = location.pathname === '/profile';
+  // Check if current route is analytics page
+  const isAnalyticsPage = location.pathname === '/analytics';
   // Check if current route is auth page
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
@@ -62,7 +65,7 @@ function AppContent() {
             isCollapsed={isSidebarCollapsed}
           />
         )}
-        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isFeedPage ? 'feed-page' : ''} ${isRecipePage ? 'recipe-page' : ''} ${isProfilePage ? 'profile-page' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
+        <main className={`main-content ${!isAuthPage && showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'with-sidebar--collapsed' : ''} ${isHomePage ? 'home-landing' : ''} ${isFeedPage ? 'feed-page' : ''} ${isRecipePage ? 'recipe-page' : ''} ${isProfilePage ? 'profile-page' : ''} ${isAnalyticsPage ? 'analytics-page' : ''} ${isAuthPage ? 'auth-page' : ''}`}>
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
@@ -70,6 +73,7 @@ function AppContent() {
             {/* Landing/Home Page - redirects to feed if logged in */}
             <Route path="/" element={<HomeRoute />} />
             {/* Protected Routes */}
+            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
             <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
             <Route path="/recipe" element={<ProtectedRoute><Recipe /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

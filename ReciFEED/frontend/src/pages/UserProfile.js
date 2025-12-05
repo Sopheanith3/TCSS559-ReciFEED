@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
 import '../styles/components/Profile.css';
+import { analyticsService } from '../services/analyticsService';
 
 const UserProfile = () => {
   const { userId } = useParams(); // Get userId from URL
@@ -48,6 +49,9 @@ const UserProfile = () => {
         const data = await response.json();
         console.log('User details received:', data);
         setUserDetails(data.data);
+
+        // Log user analytics event
+        await analyticsService.log('user_view', { id: userId, label: data.data.username });
       } catch (err) {
         console.error('Error fetching user details:', err);
         setError(err.message);

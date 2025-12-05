@@ -4,6 +4,7 @@ import '../styles/components/Feed.css';
 import CreatePostModal from '../components/CreatePostModal';
 import { postService } from '../services/postService';
 import { useAuth } from '../context/AuthContext';
+import { analyticsService } from '../services/analyticsService';
 
 
 const Feed = () => {
@@ -168,7 +169,8 @@ const Feed = () => {
     return date.toLocaleDateString();
   };
 
-  const handleLike = async (postId) => {
+  const handleLike = async (post) => {
+    const { id } = post
     try {
       // Get actual userId from auth context
       if (!user) {
@@ -185,14 +187,14 @@ const Feed = () => {
       const username = user.username || 'user';
       
       // Find the post to check if already liked
-      const post = posts.find(p => p.id === postId);
+      const post = posts.find(p => p.id === id);
       if (!post) return;
       
       const isLiked = post.isLikedByUser;
       
       // Optimistically update UI immediately
       setPosts(posts.map(p => {
-        if (p.id === postId) {
+        if (p.id === id) {
           const updatedPost = {
             ...p,
             stats: {
@@ -228,10 +230,16 @@ const Feed = () => {
 
       // API call in background - like or unlike based on current state
       if (isLiked) {
-        await postService.unlikePost(postId, userId);
+        await postService.unlikePost(id, userId);
       } else {
-        await postService.likePost(postId, userId, username);
+        await postService.likePost(id, userId, username);
       }
+
+      // Log user analytics event
+      await analyticsService.log('post_interaction', { 
+        id, 
+        label: `${post.user.name} (${post.timestamp})`
+      });
     } catch (err) {
       console.error('Error toggling like:', err);
       // Revert the optimistic update on error
@@ -246,14 +254,15 @@ const Feed = () => {
     }));
   };
 
-  const handleAddComment = async (postId) => {
+  const handleAddComment = async (post) => {
+    const { id } = post
     try {
       if (!user) {
         console.error('User not authenticated');
         return;
       }
 
-      const commentText = commentInputs[postId]?.trim();
+      const commentText = commentInputs[id]?.trim();
       if (!commentText) {
         console.log('Comment text is empty');
         return;
@@ -277,7 +286,7 @@ const Feed = () => {
 
       // Optimistically update UI immediately
       setPosts(posts.map(p => {
-        if (p.id === postId) {
+        if (p.id === id) {
           return {
             ...p,
             stats: {
@@ -296,11 +305,17 @@ const Feed = () => {
       // Clear the comment input immediately
       setCommentInputs(prev => ({
         ...prev,
-        [postId]: ''
+        [id]: ''
       }));
 
       // Call API in background to add comment
-      await postService.addComment(postId, commentText, userId, username);
+      await postService.addComment(id, commentText, userId, username);
+
+      // Log user analytics event
+      await analyticsService.log('post_interaction', { 
+        id, 
+        label: `${post.user.name} (${post.timestamp})`
+      });
     } catch (err) {
       console.error('Error adding comment:', err);
       alert('Failed to add comment: ' + err.message);
@@ -696,7 +711,7 @@ const Feed = () => {
             <div className="post-card__actions" style={{ alignItems: 'center', gap: '8px', display: 'flex', flexWrap: 'wrap' }}>
               <button 
                 className="post-card__action-btn"
-                onClick={() => handleLike(post.id)}
+                onClick={() => handleLike(post)}
                 style={{ color: post.isLikedByUser ? '#ff4458' : 'rgba(255, 255, 255, 0.6)' }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill={post.isLikedByUser ? '#ff4458' : 'none'}>
@@ -724,7 +739,7 @@ const Feed = () => {
                   onKeyPress={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
-                      handleAddComment(post.id);
+                      handleAddComment(post);
                     }
                   }}
                   style={{
@@ -741,7 +756,7 @@ const Feed = () => {
                   }}
                 />
                 <button
-                  onClick={() => handleAddComment(post.id)}
+                  onClick={() => handleAddComment(post)}
                   disabled={!commentInputs[post.id]?.trim()}
                   style={{
                     padding: '8px 16px',
