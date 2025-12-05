@@ -502,7 +502,8 @@ const Profile = () => {
               Posts
               <span className="profile-tab-count">{userPosts.length}</span>
             </button>
-            <button 
+            {/* Recipes tab disabled for now */}
+            {/* <button 
               className={`profile-tab ${activeTab === 'recipes' ? 'profile-tab--active' : ''}`}
               onClick={() => setActiveTab('recipes')}
             >
@@ -511,7 +512,7 @@ const Profile = () => {
               </svg>
               Recipes
               <span className="profile-tab-count">0</span>
-            </button>
+            </button> */}
           </div>
 
           {/* Tab Content */}
