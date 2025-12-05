@@ -11,26 +11,27 @@ const Recipe = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   // Fetch recipes from backend
   useEffect(() => {
     fetchRecipes();
   }, []);
 
-  // Filter recipes when search query changes
+  // Debounce search to avoid too many API calls
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredRecipes(recipes);
-    } else {
-      const query = searchQuery.toLowerCase();
-      const filtered = recipes.filter(recipe => 
-        recipe.title.toLowerCase().includes(query) ||
-        recipe.tags?.some(tag => tag.toLowerCase().includes(query)) ||
-        recipe.ingredients?.some(ingredient => ingredient.toLowerCase().includes(query))
-      );
-      setFilteredRecipes(filtered);
+      setIsSearching(false);
+      return;
     }
-  }, [searchQuery, recipes]);
+
+    const timeoutId = setTimeout(() => {
+      handleSearch(searchQuery);
+    }, 500); // Wait 500ms after user stops typing
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
 
   const fetchRecipes = async () => {
     try {
@@ -73,6 +74,46 @@ const Recipe = () => {
     }
   };
 
+  const handleSearch = async (query) => {
+    try {
+      setIsSearching(true);
+      const response = await recipeService.searchRecipes(query);
+      
+      if (response.status === 'success') {
+        // Transform search results to match frontend structure
+        const transformedRecipes = response.data.recipes.map((recipe, index) => ({
+          id: recipe._id,
+          title: recipe.title,
+          image: recipe.image_urls && recipe.image_urls.length > 0 
+            ? recipe.image_urls[0] 
+            : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',
+          cookingTime: recipe.cooking_time || '0 mins',
+          servings: recipe.servings,
+          level: recipe.difficulty_level,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions,
+          tags: recipe.tags,
+          reviews: recipe.reviews || [],
+          averageRating: recipe.reviews && recipe.reviews.length > 0
+            ? recipe.reviews.reduce((acc, r) => acc + r.rating, 0) / recipe.reviews.length
+            : 0,
+          totalReviews: recipe.reviews ? recipe.reviews.length : 0,
+          username: recipe.username,
+          created_at: recipe.created_at,
+          size: index % 7 === 0 ? 'large' : index % 3 === 0 ? 'small' : 'medium'
+        }));
+        
+        setFilteredRecipes(transformedRecipes);
+      }
+    } catch (err) {
+      console.error('Error searching recipes:', err);
+      // On error, fall back to showing all recipes
+      setFilteredRecipes(recipes);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const handleRecipeClick = (recipe) => {
     setSelectedRecipe(recipe);
     setShowRecipeModal(true);
@@ -94,6 +135,7 @@ const Recipe = () => {
 
   const handleSearchClear = () => {
     setSearchQuery('');
+    setFilteredRecipes(recipes);
   };
   
   return (
@@ -154,9 +196,9 @@ const Recipe = () => {
       </div>
 
       {/* Loading State */}
-      {loading && (
+      {(loading || isSearching) && (
         <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
-          <p>Loading recipes...</p>
+          <p>{isSearching ? 'Searching recipes...' : 'Loading recipes...'}</p>
         </div>
       )}
 
@@ -182,7 +224,7 @@ const Recipe = () => {
       )}
 
       {/* Recipe Grid */}
-      {!loading && !error && (
+      {!loading && !isSearching && !error && (
         <>
           {filteredRecipes.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px 20px', color: 'rgba(255, 255, 255, 0.6)' }}>

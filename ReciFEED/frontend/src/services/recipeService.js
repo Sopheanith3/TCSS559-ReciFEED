@@ -120,4 +120,29 @@ export const recipeService = {
       throw error;
     }
   },
+
+  // Search recipes by query and optional tags
+  searchRecipes: async (query, tags = null) => {
+    try {
+      let url = `${API_URL}/search/recipes?q=${encodeURIComponent(query)}`;
+      
+      if (tags && tags.length > 0) {
+        url += `&tags=${tags.join(',')}`;
+      }
+      
+      const response = await fetch(url, {
+        headers: getAuthHeaders(),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to search recipes');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error searching recipes:', error);
+      throw error;
+    }
+  },
 };
