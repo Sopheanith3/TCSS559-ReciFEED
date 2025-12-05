@@ -615,7 +615,10 @@ const Feed = () => {
             <article key={post.id} className="post-card">
               {/* Post Header */}
               <div className="post-card__header">
-                <div className="post-card__user">
+                <div className="post-card__user" 
+                  onClick={() => navigate(`/user/${post.rawData?.user_id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <img 
                     src={post.user.avatar} 
                     alt={post.user.name} 

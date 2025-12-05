@@ -558,7 +558,10 @@ const Profile = () => {
                   <article key={postId} className="post-card">
                     {/* Post Header */}
                     <div className="post-card__header">
-                      <div className="post-card__user">
+                      <div className="post-card__user"
+                        onClick={() => navigate(`/user/${post.user_id}`)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         <div style={{ 
                           width: '40px', 
                           height: '40px', 
