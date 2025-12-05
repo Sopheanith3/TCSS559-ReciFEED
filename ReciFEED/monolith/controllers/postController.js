@@ -3,7 +3,7 @@ const User = require('../models/user');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const createPost = asyncHandler(async (req, res, next) => {
-  const { content, images, recipeId, userId, username } = req.body;
+  const { content, images, recipe_id, userId, username } = req.body;
 
   if (!content) {
     return next(new ErrorResponse('Please provide post content', 400));
@@ -18,12 +18,9 @@ const createPost = asyncHandler(async (req, res, next) => {
     username: username || 'Anonymous',
     body: content,
     image_urls: images || [],
+    recipe_id: recipe_id || '000000000000000000000000',
     created_at: new Date()
   };
-
-  if (recipeId) {
-    postData.recipe_id = recipeId;
-  }
 
   const post = await Post.create(postData);
 

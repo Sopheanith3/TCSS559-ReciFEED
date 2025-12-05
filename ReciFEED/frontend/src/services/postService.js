@@ -29,7 +29,7 @@ const getAuthHeaders = () => {
 export const postService = {
 
   // 3. Create Post
-  createPost: async ({ content, images = [], userId, username, recipeId = null }) => {
+  createPost: async ({ content, images = [], userId, username, recipe_id = '000000000000000000000000' || null }) => {
     const response = await fetch(`${API_BASE}/posts`, {
       method: "POST",
       headers: getAuthHeaders(),
@@ -38,7 +38,7 @@ export const postService = {
         images, 
         userId, 
         username,
-        ...(recipeId && { recipeId })
+        recipe_id
       })
     });
 
