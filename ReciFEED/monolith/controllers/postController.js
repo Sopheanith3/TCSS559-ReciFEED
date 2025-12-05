@@ -132,6 +132,32 @@ const getPostsByUser = asyncHandler(async (req, res, next) => {
   });
 });
 
+const updatePost = asyncHandler(async (req, res, next) => {
+  const { content, images } = req.body;
+
+  const post = await Post.findById(req.params.id);
+
+  if (!post) {
+    return next(new ErrorResponse('Post not found', 404));
+  }
+
+  // Update fields if provided
+  if (content !== undefined) {
+    post.body = content;
+  }
+  if (images !== undefined) {
+    post.image_urls = images;
+  }
+
+  await post.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Post successfully updated',
+    data: post
+  });
+});
+
 const deletePost = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
 
@@ -291,6 +317,7 @@ module.exports = {
   getFeed,
   getPostById,
   getPostsByUser,
+  updatePost,
   deletePost,
   likePost,
   unlikePost,

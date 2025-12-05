@@ -1,45 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
-import { recipeService } from '../services/recipeService';
-import '../styles/layout/CreatePostModal.css';
+import '../styles/layout/CreatePostModal.css'; // Reuse the same CSS
 import { analyticsService } from '../services/analyticsService';
 
-const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
+const EditPostModal = ({ isOpen, onClose, onPostUpdated, post }) => {
   const { user } = useAuth();
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState(''); // Always initialized as empty string
   const [uploadMethod, setUploadMethod] = useState('upload'); // 'upload' or 'url'
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [recipes, setRecipes] = useState([]);
-  const [selectedRecipeId, setSelectedRecipeId] = useState('');
-  const [loadingRecipes, setLoadingRecipes] = useState(false);
 
-  // Fetch recipes when modal opens
+  // Populate form when post changes
   useEffect(() => {
-    if (isOpen) {
-      fetchRecipes();
-    }
-  }, [isOpen]);
-
-  const fetchRecipes = async () => {
-    try {
-      setLoadingRecipes(true);
-      const response = await recipeService.getAllRecipes(1, 100);
-      if (response.status === 'success') {
-        setRecipes(response.data.recipes || []);
+    if (post) {
+      setContent(post.rawData?.body || post.content?.text || '');
+      
+      const postImages = post.rawData?.image_urls || post.content?.images || [];
+      setImages(postImages);
+      
+      if (postImages.length > 0) {
+        const firstImage = postImages[0];
+        setImagePreview(firstImage);
+        
+        // Check if it's a URL or base64
+        if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
+          setUploadMethod('url');
+          setImageUrl(firstImage);
+        } else {
+          setUploadMethod('upload');
+          setImageUrl('');
+        }
+      } else {
+        setImagePreview(null);
+        setImageUrl('');
+        setUploadMethod('upload');
       }
-    } catch (err) {
-      console.error('Error fetching recipes:', err);
-    } finally {
-      setLoadingRecipes(false);
     }
-  };
+  }, [post]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !post) return null;
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -150,33 +153,22 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
     }
 
     if (!user) {
-      setError('You must be logged in to create a post');
+      setError('You must be logged in to edit a post');
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Extract userId as string
-      let userId = user.id || user.userId;
-      if (typeof userId === 'object') {
-        userId = userId.id || userId.userId || userId._id;
-      }
-      userId = String(userId);
-      const username = user.username || 'Anonymous';
-
-      // Create post via API
-      await postService.createPost({
+      // Update post via API
+      await postService.updatePost(post.id, {
         content: content.trim(),
-        images: images,
-        userId: userId,
-        username: username,
-        recipe_id: selectedRecipeId || '000000000000000000000000'
+        images: images
       });
 
-      // Log analytics event (don't let this fail the post creation)
+      // Log analytics event (don't let this fail the update)
       try {
-        await analyticsService.log('create_post');
+        await analyticsService.log('edit_post');
       } catch (analyticsErr) {
         console.warn('Analytics logging failed:', analyticsErr);
       }
@@ -187,19 +179,18 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
       setImagePreview(null);
       setImageUrl('');
       setUploadMethod('upload');
-      setSelectedRecipeId('');
       setError('');
 
       // Notify parent component to refresh feed
-      if (onPostCreated) {
-        onPostCreated();
+      if (onPostUpdated) {
+        onPostUpdated();
       }
 
       // Close modal
       onClose();
     } catch (err) {
-      console.error('Error creating post:', err);
-      setError(err.message || 'Failed to create post. Please try again.');
+      console.error('Error updating post:', err);
+      setError(err.message || 'Failed to update post. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -207,13 +198,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setContent('');
-      setImages([]);
-      setImagePreview(null);
-      setImageUrl('');
-      setUploadMethod('upload');
-      setSelectedRecipeId('');
-      setError('');
+      // Don't reset form on close to preserve state if modal reopens
       onClose();
     }
   };
@@ -222,7 +207,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
     <div className="create-post-modal__overlay" onClick={handleClose}>
       <div className="create-post-modal__container" onClick={(e) => e.stopPropagation()}>
         <div className="create-post-modal__header">
-          <h2 className="create-post-modal__title">Create Post</h2>
+          <h2 className="create-post-modal__title">Edit Post</h2>
           <button 
             className="create-post-modal__close" 
             onClick={handleClose}
@@ -243,51 +228,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
             required
           />
 
-          <label className="create-post-modal__label">Link to Recipe (Optional):</label>
-          <select
-            value={selectedRecipeId}
-            onChange={(e) => setSelectedRecipeId(e.target.value)}
-            disabled={isSubmitting || loadingRecipes}
-            style={{
-              width: '100%',
-              padding: '14px 16px',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '10px',
-              color: '#fff',
-              fontSize: '0.95rem',
-              fontFamily: 'inherit',
-              marginBottom: '20px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              outline: 'none'
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = '#667eea';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)';
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
-          >
-            <option value="" style={{ backgroundColor: '#1a1a2e', color: '#fff' }}>
-              {loadingRecipes ? 'Loading recipes...' : 'None - No recipe linked'}
-            </option>
-            {recipes.map((recipe) => (
-              <option 
-                key={recipe._id} 
-                value={recipe._id}
-                style={{ backgroundColor: '#1a1a2e', color: '#fff' }}
-              >
-                {recipe.title} {recipe.username ? `(by ${recipe.username})` : ''}
-              </option>
-            ))}
-          </select>
-
-          <label className="create-post-modal__label">Add Photo (Optional):</label>
+          <label className="create-post-modal__label">Update Photo (Optional):</label>
           
           {/* Toggle between Upload and URL */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
@@ -446,13 +387,13 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
               <>
                 <input 
                   type="file" 
-                  id="upload-photo" 
+                  id="edit-upload-photo" 
                   accept="image/*"
                   onChange={handleImageChange}
                   disabled={isSubmitting}
                   style={{ display: 'none' }} 
                 />
-                <label htmlFor="upload-photo" className="create-post-modal__upload-label">
+                <label htmlFor="edit-upload-photo" className="create-post-modal__upload-label">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
                     <path d="M12 16V4M12 4l-5 5M12 4l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <rect x="3" y="16" width="18" height="4" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/>
@@ -482,7 +423,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
             className="create-post-modal__post-btn"
             disabled={isSubmitting || !content.trim()}
           >
-            {isSubmitting ? 'Posting...' : 'Post'}
+            {isSubmitting ? 'Updating...' : 'Update Post'}
           </button>
         </form>
       </div>
@@ -490,4 +431,4 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
   );
 };
 
-export default CreatePostModal;
+export default EditPostModal;
