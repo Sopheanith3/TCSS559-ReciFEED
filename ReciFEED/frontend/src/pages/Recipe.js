@@ -6,6 +6,7 @@ import CreateRecipeModal from '../layout/CreateRecipeModal';
 import EditRecipeModal from '../layout/EditRecipeModal';
 import FilterModal from '../layout/FilterModal';
 import { recipeService } from '../services/recipeService';
+import { searchService } from '../services/searchService';
 import { useAuth } from '../context/AuthContext';
 
 const Recipe = () => {
@@ -119,7 +120,7 @@ const Recipe = () => {
   const handleSearch = async (query) => {
     try {
       setIsSearching(true);
-      const response = await recipeService.searchRecipes(query);
+      const response = await searchService.searchRecipes(query);
       
       if (response.status === 'success') {
         // Transform search results to match frontend structure
@@ -200,7 +201,7 @@ const Recipe = () => {
 
   const fetchFilterOptions = async () => {
     try {
-      const response = await recipeService.getFilterOptions();
+      const response = await searchService.getFilterOptions();
       if (response.status === 'success') {
         setAvailableTags(response.data.tags || []);
         setAvailableCookingTimes(response.data.cookingTimes || []);
@@ -222,7 +223,7 @@ const Recipe = () => {
     // Apply filters
     try {
       setIsSearching(true);
-      const response = await recipeService.filterRecipes(filters);
+      const response = await searchService.filterRecipes(filters);
       
       if (response.status === 'success') {
         const transformedRecipes = response.data.recipes.map((recipe, index) => ({
