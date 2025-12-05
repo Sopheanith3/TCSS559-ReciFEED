@@ -12,6 +12,9 @@ const types = [
   'users'
 ];
 
+/**
+ * GET /live?type=[type]
+ */
 router.get('/', async (req, res) => {
   const { type } = req.query;
   if (!type) {
@@ -43,7 +46,7 @@ router.get('/', async (req, res) => {
       case 'users':
         const [{ user_count }] = await Event.aggregate([
           { $match: { timestamp: { $gte: new Date(Date.now() - 60 * 1000) } } },
-          { $group: { _id: "$userId" } },
+          { $group: { _id: "$user_id" } },
           { $count: "user_count" }
         ]);
         number = user_count || 0;

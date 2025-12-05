@@ -44,9 +44,8 @@ function validateContent(type, content) {
  * POST /event
  * Post an event to the analytics service
  */
-router.post('/event', validateToken, async (req, res) => {
-  const { id } = req.user;
-  const { type, content } = req.body;
+router.post('/event', async (req, res) => {
+  const { type, content, userId } = req.body;
   if (!type || !eventTypes.includes(type)) {
     return res.status(400).json({ 
       error: `Must have a valid event type: ${eventTypes.toString()}` 
@@ -62,11 +61,11 @@ router.post('/event', validateToken, async (req, res) => {
   try {
     const event = await Event.create({
       type,
-      userId: id,
+      user_id: userId,
       timestamp: new Date(),
       content
     });
-    return res.status(201).json({ message: 'Event logged successfully.', data: event});
+    return res.status(201).json({ message: 'Event logged successfully.', data: event });
   } catch (error) {
     return res.status(500).json({ error: 'Internal error, could not log event.' });
   }

@@ -84,6 +84,9 @@ const getPopularSearchTerms = async (timeframe) => {
   return popular.slice(0, 5);
 }
 
+/**
+ * GET /popular?type=[type]&range=[time]
+ */
 router.get('/', async (req, res) => {
   const { type, range } = req.query;
   if (!type || !range) {

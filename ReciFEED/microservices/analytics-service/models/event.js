@@ -22,10 +22,10 @@ const event = new mongoose.Schema({
       'search'
     ]
   },
-  userId: { type: String, required: true },
+  user_id: { type: mongoose.Types.ObjectId, required: true },
   timestamp: { type: Date, default: Date.now(), required: true},
   content: {
-    id: { type: String }, // ID of interacted with content (post, recipe, user)
+    id: { type: mongoose.Types.ObjectId }, // ID of interacted with content (post, recipe, user)
     text: { type: String }, // For search event
     filters: { type: [String], default: []} // For search event
   }
