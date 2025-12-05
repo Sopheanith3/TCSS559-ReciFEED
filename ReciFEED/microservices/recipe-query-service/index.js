@@ -1,3 +1,9 @@
+/**
+ * Service to query an LLM about a recipe
+ * 
+ * Uses wrapper package provided by Mistral to query their API 
+ * via their HTTP endpoints
+ */
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');

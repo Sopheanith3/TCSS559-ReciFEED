@@ -46,7 +46,7 @@ async function uploadMediaToTwitter(access_token, access_secret, buffer) {
 }
 
 /**
- * POST /twitter/post
+ * POST /post
  * Posts a post to Twitter under the current user
  */
 router.post('/', upload.array('images', 4), async (req, res) => {

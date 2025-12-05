@@ -1,5 +1,5 @@
 {
-  "name": "twitter-service",
+  "name": "analytics-service",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,11 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.0",
     "nodemon": "^3.1.11"
   }
 }
