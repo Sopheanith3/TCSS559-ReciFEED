@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './RadioSelector.css';
+import '../styles/components/RadioSelector.css';
 
 const RadioSelector = ({ selected, setSelected, options }) => {
   const [indicatorStyle, setIndicatorStyle] = useState({});

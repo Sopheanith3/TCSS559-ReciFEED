@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../components/Analytics.css';
+import '../styles/components/Analytics.css';
 import LiveLineChart from '../components/LiveLineChart';
 import PopularityChart from '../components/PopularityChart';
 import RadioSelector from '../components/RadioSelector';

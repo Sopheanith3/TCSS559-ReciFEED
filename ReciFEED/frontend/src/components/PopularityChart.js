@@ -92,13 +92,23 @@ const PopularityChart = ({ type, range, title, axis }) => {
       y: {
         font: {
           size: 14
+        },
+        ticks: {
+          callback: function(value) {
+            const label = this.getLabelForValue(value);
+            const maxLen = 15;
+
+            return label.length > maxLen
+              ? label.substring(0, maxLen) + "..."
+              : label;
+          }
         }
       }
     },
   };
 
   return (
-    <div style={{ width: '80%', margin: 'auto', minHeight: '225px', maxWidth: '600px' }}>
+    <div style={{ width: '80%', margin: 'auto', minHeight: '275px', maxWidth: '600px' }}>
       <Bar data={chartData} options={options} />
     </div>
   );
