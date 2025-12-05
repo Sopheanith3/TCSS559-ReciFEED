@@ -1,5 +1,3 @@
-// GET /popular/posts/day type=post-interactions/recipe-views/users range=day/week/month
-
 /**
  * Routes for getting aggregate popularity analytics
  */
