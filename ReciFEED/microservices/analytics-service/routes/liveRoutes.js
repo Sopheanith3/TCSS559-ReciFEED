@@ -6,14 +6,6 @@ const Event = require('../models/event');
 
 const router = express.Router();
 
-const getMinuteAgo = () => {
-  return new Date(Date.now() - 60 * 1000);
-}
-
-const getTenSecondAgo = () => {
-  return new Date(Date.now() - 10 * 1000);
-}
-
 const types = [
   'post-interactions',
   'recipe-views',
@@ -39,18 +31,18 @@ router.get('/', async (req, res) => {
       case 'post-interactions':
         count = await Event.countDocuments({ 
           type: 'post_interaction', 
-          timestamp: { $gte: getTenSecondAgo() }
+          timestamp: { $gte: new Date(Date.now() - 10 * 1000) }
         });
         break;
       case 'recipe-views':
         count = await Event.countDocuments({ 
           type: 'recipe_view', 
-          timestamp: { $gte: getTenSecondAgo() }
+          timestamp: { $gte: new Date(Date.now() - 10 * 1000) }
         });
         break;
       case 'users':
         const [{ user_count }] = await Event.aggregate([
-          { $match: { timestamp: { $gte: getMinuteAgo() } } },
+          { $match: { timestamp: { $gte: new Date(Date.now() - 60 * 1000) } } },
           { $group: { _id: "$userId" } },
           { $count: "user_count" }
         ]);
