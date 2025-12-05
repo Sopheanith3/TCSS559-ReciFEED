@@ -11,7 +11,9 @@ const mongoose = require('mongoose');
 const recipeSchema = new mongoose.Schema({
   created_at: { type: Date, required: true },
   user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  username: { type: String, required: true },
   title: { type: String, required: true },
+  cooking_time: { type: String, default: '' }, 
   tags: { type: [String], default: [] },
   ingredients: { type: [String], default: [] },
   instructions: { type: [String], default: [] },

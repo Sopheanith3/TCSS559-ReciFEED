@@ -3,7 +3,7 @@ import './RecipeModal.css';
 import { recipeService } from '../services/recipeService';
 import { useAuth } from '../context/AuthContext';
 
-const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
+const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded, onEditRecipe }) => {
   const { user } = useAuth();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
@@ -13,6 +13,7 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
   const [localReviews, setLocalReviews] = useState(recipe?.reviews || []);
   const [localTotalReviews, setLocalTotalReviews] = useState(recipe?.totalReviews || 0);
   const [localAverageRating, setLocalAverageRating] = useState(recipe?.averageRating || 0);
+  const [showMenu, setShowMenu] = useState(false);
 
   // Update local state when recipe changes
   React.useEffect(() => {
@@ -22,6 +23,22 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
       setLocalAverageRating(recipe.averageRating || 0);
     }
   }, [recipe]);
+
+  const handleDeleteRecipe = async () => {
+    if (window.confirm('Are you sure you want to delete this recipe?')) {
+      try {
+        await recipeService.deleteRecipe(recipe.id);
+        onClose();
+        if (onReviewAdded) {
+          onReviewAdded(); // Refresh the recipe list
+        }
+      } catch (err) {
+        console.error('Error deleting recipe:', err);
+        alert('Failed to delete recipe');
+      }
+    }
+    setShowMenu(false);
+  };
 
   if (!isOpen || !recipe) return null;
 
@@ -179,11 +196,116 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
         {/* Modal Header */}
         <div className="recipe-modal__header">
           <h2 className="recipe-modal__title">{recipe.title}</h2>
-          <button className="recipe-modal__close" onClick={onClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Show three-dot menu if user owns this recipe */}
+            {user && recipe.username === user.username && onEditRecipe && (
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setShowMenu(!showMenu)}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    width: '36px',
+                    height: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: '#fff',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="5" r="1.5" fill="currentColor"/>
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                    <circle cx="12" cy="19" r="1.5" fill="currentColor"/>
+                  </svg>
+                </button>
+                {showMenu && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '45px',
+                    right: '0',
+                    background: '#1a1a2e',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
+                    minWidth: '140px',
+                    overflow: 'hidden',
+                    zIndex: 100
+                  }}>
+                    <button
+                      onClick={() => {
+                        onEditRecipe(recipe);
+                        setShowMenu(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        background: 'none',
+                        border: 'none',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        fontWeight: '500',
+                        textAlign: 'left',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        transition: 'background 0.2s ease',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Edit
+                    </button>
+                    <button
+                      onClick={handleDeleteRecipe}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        background: 'none',
+                        border: 'none',
+                        color: '#ff6b6b',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        fontWeight: '500',
+                        textAlign: 'left',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        transition: 'background 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 107, 107, 0.1)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            <button className="recipe-modal__close" onClick={onClose}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* User/Author Container Above Image */}
@@ -342,8 +464,14 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
             </h3>
 
             {/* Add Review Form */}
-            <div className="review-form">
-              <h4 className="review-form__title">Write a Review</h4>
+            <div className="review-form" style={{
+              background: 'rgba(255, 255, 255, 0.04)',
+              borderRadius: '14px',
+              padding: '20px',
+              marginBottom: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.08)'
+            }}>
+              <h4 className="review-form__title" style={{ marginBottom: '16px', fontSize: '1.1rem', fontWeight: '600' }}>Write a Review</h4>
               
               {!user ? (
                 <div style={{
@@ -378,17 +506,30 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmitReview}>
-                  <div className="review-form__rating">
-                    <label>Your Rating:</label>
+                  <div className="review-form__rating" style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.95rem', fontWeight: '500' }}>Your Rating:</label>
                     {renderStars(rating, true)}
                   </div>
-                  <div className="review-form__comment">
+                  <div className="review-form__comment" style={{ marginBottom: '16px' }}>
                     <textarea
                       placeholder="Share your experience with this recipe..."
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                       rows="4"
                       disabled={isSubmitting}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        fontSize: '0.95rem',
+                        fontFamily: 'inherit',
+                        resize: 'vertical',
+                        minHeight: '100px',
+                        boxSizing: 'border-box'
+                      }}
                     />
                   </div>
                   
@@ -410,6 +551,19 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
                     type="submit" 
                     className="review-form__submit"
                     disabled={isSubmitting || !comment.trim()}
+                    style={{
+                      width: '100%',
+                      padding: '12px 24px',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      cursor: isSubmitting || !comment.trim() ? 'not-allowed' : 'pointer',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      opacity: isSubmitting || !comment.trim() ? 0.6 : 1,
+                      transition: 'all 0.2s ease'
+                    }}
                   >
                     {isSubmitting ? 'Submitting...' : 'Submit Review'}
                   </button>
@@ -418,7 +572,14 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
             </div>
 
             {/* Reviews List */}
-            <div className="reviews-list">
+            <div className="reviews-list" style={{
+              background: 'rgba(255, 255, 255, 0.04)',
+              borderRadius: '14px',
+              padding: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              maxHeight: '400px',
+              overflowY: 'auto'
+            }}>
               {localReviews && localReviews.length > 0 ? (
                 localReviews.map((review, index) => {
                   // Check if current user owns this review
@@ -430,15 +591,47 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
                   const isOwnReview = user && review.user_id?.toString() === currentUserId;
 
                   return (
-                    <div key={review._id || index} className="review-item">
-                      <div className="review-item__header">
-                        <div className="review-item__user">
-                          <div className="review-item__avatar">
+                    <div key={review._id || index} className="review-item" style={{
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      borderRadius: '10px',
+                      padding: '16px',
+                      marginBottom: '12px',
+                      border: '1px solid rgba(255, 255, 255, 0.05)'
+                    }}>
+                      <div className="review-item__header" style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'flex-start',
+                        marginBottom: '12px',
+                        flexWrap: 'wrap',
+                        gap: '12px'
+                      }}>
+                        <div className="review-item__user" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div className="review-item__avatar" style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1rem',
+                            fontWeight: '600',
+                            color: '#fff'
+                          }}>
                             {review.username.charAt(0).toUpperCase()}
                           </div>
                           <div className="review-item__info">
-                            <span className="review-item__username">{review.username}</span>
-                            <span className="review-item__date">
+                            <span className="review-item__username" style={{ 
+                              display: 'block', 
+                              fontWeight: '600', 
+                              fontSize: '0.95rem',
+                              color: '#fff'
+                            }}>{review.username}</span>
+                            <span className="review-item__date" style={{
+                              fontSize: '0.85rem',
+                              color: 'rgba(255, 255, 255, 0.6)'
+                            }}>
                               {new Date(review.created_at).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'short',
@@ -447,7 +640,7 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
                             </span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                           {renderStars(review.rating)}
                           {isOwnReview && (
                             <button
@@ -475,13 +668,25 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded }) => {
                           )}
                         </div>
                       </div>
-                      <p className="review-item__comment">{review.comment}</p>
+                      <p className="review-item__comment" style={{
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        fontSize: '0.95rem',
+                        lineHeight: '1.6',
+                        margin: 0,
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word'
+                      }}>{review.comment}</p>
                     </div>
                   );
                 })
               ) : (
-                <div className="reviews-empty">
-                  <p>No reviews yet. Be the first to review this recipe!</p>
+                <div className="reviews-empty" style={{
+                  textAlign: 'center',
+                  padding: '40px 20px',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  fontSize: '0.95rem'
+                }}>
+                  <p style={{ margin: 0 }}>No reviews yet. Be the first to review this recipe!</p>
                 </div>
               )}
             </div>
