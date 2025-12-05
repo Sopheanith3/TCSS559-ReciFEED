@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './CreateRecipeModal.css';
 import { recipeService } from '../services/recipeService';
 import { useAuth } from '../context/AuthContext';
+import { analyticsService } from '../services/analyticsService';
 
 const CreateRecipeModal = ({ isOpen, onClose, onRecipeCreated }) => {
   const { user } = useAuth();
@@ -80,6 +81,9 @@ const CreateRecipeModal = ({ isOpen, onClose, onRecipeCreated }) => {
       if (onRecipeCreated) {
         onRecipeCreated();
       }
+
+      // Log user analytics event
+      await analyticsService.log('create_recipe');
 
       onClose();
     } catch (err) {

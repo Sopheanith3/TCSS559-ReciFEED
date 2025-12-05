@@ -8,6 +8,7 @@ import FilterModal from '../layout/FilterModal';
 import { recipeService } from '../services/recipeService';
 import { searchService } from '../services/searchService';
 import { useAuth } from '../context/AuthContext';
+import { analyticsService } from '../services/analyticsService';
 
 const Recipe = () => {
   const { user, logout } = useAuth();
@@ -149,6 +150,8 @@ const Recipe = () => {
         
         setFilteredRecipes(transformedRecipes);
       }
+      // Log analytics event
+      await analyticsService.log('search', { text: query });
     } catch (err) {
       console.error('Error searching recipes:', err);
       // On error, fall back to showing all recipes
@@ -158,9 +161,13 @@ const Recipe = () => {
     }
   };
 
-  const handleRecipeClick = (recipe) => {
+  const handleRecipeClick = async (recipe) => {
     setSelectedRecipe(recipe);
     setShowRecipeModal(true);
+    try {
+      // Log analytics event, no need for error in case of one
+      await analyticsService.log('recipe_view', { id: recipe.id, label: recipe.title });
+    } catch {}
   };
 
   const handleCloseModal = () => {

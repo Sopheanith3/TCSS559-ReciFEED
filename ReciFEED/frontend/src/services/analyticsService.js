@@ -33,19 +33,14 @@ export const analyticsService = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Event log failed.");
+      // Do not throw error, just log (analytics should not disrupt user flow)
+      console.error(error.message || "Event log failed.");
     }
-    
-    return await response.json();
   },
 
   // 4. Get popular events endpoint
   getPopular: async (type, range) => {
     const response = await fetch(`${API_BASE}/popular?type=${type}&range=${range}`);
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch chart data');
-    }
 
     if (!response.ok) {
       const error = await response.json();

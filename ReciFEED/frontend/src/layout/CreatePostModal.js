@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
 import './CreatePostModal.css';
+import { analyticsService } from '../services/analyticsService';
 
 const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
   const { user } = useAuth();
@@ -146,6 +147,9 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
         userId: userId,
         username: username
       });
+
+      // Log analytics event
+      await analyticsService.log('create_post');
 
       // Reset form
       setContent('');
