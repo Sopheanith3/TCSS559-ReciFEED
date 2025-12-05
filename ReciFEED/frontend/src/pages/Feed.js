@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/components/Feed.css';
 import CreatePostModal from '../components/CreatePostModal';
+import EditPostModal from '../components/EditPostModal';
 import RecipeModal from '../components/RecipeModal';
 import { postService } from '../services/postService';
 import { recipeService } from '../services/recipeService';
@@ -14,6 +15,8 @@ const Feed = () => {
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -100,6 +103,21 @@ const Feed = () => {
   const handlePostCreated = () => {
     // Refresh feed when a new post is created
     fetchFeed(1);
+  };
+
+  const handleEditPost = (post) => {
+    setEditingPost(post);
+    setShowEditModal(true);
+    // Close the dropdown
+    setPostDropdowns(prev => ({
+      ...prev,
+      [post.id]: false
+    }));
+  };
+
+  const handlePostUpdated = () => {
+    // Refresh feed when a post is updated
+    fetchFeed(pagination.currentPage);
   };
 
   const handleViewRecipe = async (recipeId) => {
@@ -522,6 +540,12 @@ const Feed = () => {
         onClose={() => setShowCreateModal(false)}
         onPostCreated={handlePostCreated}
       />
+      <EditPostModal 
+        isOpen={showEditModal} 
+        onClose={() => setShowEditModal(false)}
+        onPostUpdated={handlePostUpdated}
+        post={editingPost}
+      />
       <RecipeModal 
         isOpen={showRecipeModal} 
         onClose={handleCloseRecipeModal} 
@@ -755,6 +779,24 @@ const Feed = () => {
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           marginTop: '4px'
                         }}>
+                          <button
+                            onClick={() => handleEditPost(post)}
+                            style={{
+                              width: '100%',
+                              padding: '12px 16px',
+                              backgroundColor: 'transparent',
+                              border: 'none',
+                              color: '#667eea',
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              fontSize: '0.9rem',
+                              transition: 'background-color 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(102, 126, 234, 0.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                          >
+                            Edit Post
+                          </button>
                           <button
                             onClick={() => handleDeletePost(post.id)}
                             style={{

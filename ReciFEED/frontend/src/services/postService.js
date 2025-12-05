@@ -177,5 +177,21 @@ export const postService = {
     }
     
     return response.json();
+  },
+
+  // 11. Update Post
+  updatePost: async (postId, { content, images }) => {
+    const response = await fetch(`${API_BASE}/posts/${postId}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ content, images })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update post");
+    }
+    
+    return response.json();
   }
 };

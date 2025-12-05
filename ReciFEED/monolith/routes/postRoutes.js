@@ -5,6 +5,7 @@ const {
   getFeed,
   getPostById,
   getPostsByUser,
+  updatePost,
   deletePost,
   likePost,
   unlikePost,
@@ -19,6 +20,7 @@ router.get('/:id', getPostById);
 
 // Post routes (no auth for now - add later)
 router.post('/', createPost);
+router.put('/:id', updatePost);
 router.delete('/:id', deletePost);
 
 // Like/Unlike routes
