@@ -31,7 +31,12 @@ function validateContent(type, content) {
       // No content, currently only logs of user activity
       break;
 
-    default:
+    case 'recipe_view':
+    case 'post_interaction':
+    case 'user_view':
+      if (!content?.label) {
+        return "Label required for recipes, posts, users."
+      }
       if (!content?.id) {
         return "Content ID required.";
       }
@@ -45,7 +50,8 @@ function validateContent(type, content) {
  * Post an event to the analytics service
  */
 router.post('/', async (req, res) => {
-  const { type, content, userId } = req.body;
+  const { id } = req.user;
+  const { type, content } = req.body;
   if (!type || !eventTypes.includes(type)) {
     return res.status(400).json({ 
       error: `Must have a valid event type: ${eventTypes.toString()}` 
@@ -61,7 +67,7 @@ router.post('/', async (req, res) => {
   try {
     const event = await Event.create({
       type,
-      user_id: userId,
+      user_id: id,
       timestamp: new Date(),
       content
     });

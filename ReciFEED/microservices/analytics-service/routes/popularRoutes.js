@@ -38,13 +38,14 @@ const getTimeFrame = (range) => {
 const getPopularCount = async (timeframe, type) => {
   const results = await Event.aggregate([
     { $match: { type, timestamp: { $gte: timeframe } } },
-    { $group: { _id: "$content.id", count: { $sum: 1 } } },
+    { $group: { _id: "$content.id", count: { $sum: 1 }, label: { $first: "$content.label" } } },
     { $sort: { count: -1 } },
     { $limit: 5 },
     { // Rename fields
       $project: {
         contentId: "$_id",
-        interactions: "$count",
+        count: "$count",
+        label: 1,
         _id: 0
       }
     }
