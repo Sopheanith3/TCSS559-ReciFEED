@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/auth'
-import '../components/Login.css';
-import { analyticsService } from '../services/analyticsService';
+import '../styles/components/Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -60,9 +59,6 @@ const Login = () => {
     try {
       // Call login endpoint
       const response = await authService.login(formData.email, formData.password);
-
-      // Log event
-      await analyticsService.log('login');
 
       const { id, username, token } = response;
       

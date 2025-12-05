@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import './EditProfileModal.css';
+import '../styles/layout/EditProfileModal.css';
 
 const EditProfileModal = ({ isOpen, onClose, user, onProfileUpdated }) => {
   const { updateUser } = useAuth();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
-import './CreatePostModal.css';
+import '../styles/layout/CreatePostModal.css';
 import { analyticsService } from '../services/analyticsService';
 
 const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {

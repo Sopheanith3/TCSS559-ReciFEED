@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './RecipeModal.css';
+import '../styles/layout/RecipeModal.css';
 import { recipeService } from '../services/recipeService';
 import { useAuth } from '../context/AuthContext';
 

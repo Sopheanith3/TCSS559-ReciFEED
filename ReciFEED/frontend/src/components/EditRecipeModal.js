@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './CreateRecipeModal.css'; // Reuse the same CSS
+import '../styles/layout/CreateRecipeModal.css'; // Reuse the same CSS
 import { recipeService } from '../services/recipeService';
 import { useAuth } from '../context/AuthContext';
 

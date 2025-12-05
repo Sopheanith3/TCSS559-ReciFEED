@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './FilterModal.css';
+import '../styles/layout/FilterModal.css';
 
 const FilterModal = ({ isOpen, onClose, onApplyFilters, currentFilters, availableTags, availableCookingTimes }) => {
   const [selectedTags, setSelectedTags] = useState(currentFilters.tags || []);

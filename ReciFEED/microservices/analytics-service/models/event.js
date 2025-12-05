@@ -13,7 +13,6 @@ const event = new mongoose.Schema({
     type: String, 
     required: true, 
     enum: [
-      'login',
       'create_post',
       'create_recipe',
       'recipe_view',

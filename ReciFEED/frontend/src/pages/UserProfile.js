@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
-import '../components/Profile.css';
+import '../styles/components/Profile.css';
 import { analyticsService } from '../services/analyticsService';
 
 const UserProfile = () => {

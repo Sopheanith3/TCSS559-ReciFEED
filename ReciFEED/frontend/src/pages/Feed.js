@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../components/Feed.css';
-import CreatePostModal from '../layout/CreatePostModal';
+import '../styles/components/Feed.css';
+import CreatePostModal from '../components/CreatePostModal';
 import { postService } from '../services/postService';
 import { useAuth } from '../context/AuthContext';
 import { analyticsService } from '../services/analyticsService';

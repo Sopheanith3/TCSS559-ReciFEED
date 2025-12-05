@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../components/Recipe.css';
-import RecipeModal from '../layout/RecipeModal';
-import CreateRecipeModal from '../layout/CreateRecipeModal';
-import EditRecipeModal from '../layout/EditRecipeModal';
-import FilterModal from '../layout/FilterModal';
+import '../styles/components/Recipe.css';
+import RecipeModal from '../components/RecipeModal';
+import CreateRecipeModal from '../components/CreateRecipeModal';
+import EditRecipeModal from '../components/EditRecipeModal';
+import FilterModal from '../components/FilterModal';
 import { recipeService } from '../services/recipeService';
 import { searchService } from '../services/searchService';
 import { useAuth } from '../context/AuthContext';

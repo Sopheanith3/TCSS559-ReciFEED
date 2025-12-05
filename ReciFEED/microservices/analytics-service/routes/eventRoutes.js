@@ -7,7 +7,6 @@ const Event = require('../models/event');
 const router = express.Router();
 
 const eventTypes = [
-  'login',
   'create_post',
   'create_recipe',
   'recipe_view',
@@ -25,7 +24,6 @@ function validateContent(type, content) {
       }
       break;
 
-    case 'login':
     case 'create_post':
     case 'create_recipe':
       // No content, currently only logs of user activity
