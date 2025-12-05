@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/components/Feed.css';
 import CreatePostModal from '../components/CreatePostModal';
+import RecipeModal from '../components/RecipeModal';
 import { postService } from '../services/postService';
+import { recipeService } from '../services/recipeService';
 import { useAuth } from '../context/AuthContext';
 import { analyticsService } from '../services/analyticsService';
 
@@ -27,6 +29,11 @@ const Feed = () => {
 
   // Modal state for full image view
   const [modalImage, setModalImage] = useState(null);
+  
+  // Recipe modal state
+  const [showRecipeModal, setShowRecipeModal] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [loadingRecipe, setLoadingRecipe] = useState(false);
   
   // Profile dropdown state
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -93,6 +100,58 @@ const Feed = () => {
   const handlePostCreated = () => {
     // Refresh feed when a new post is created
     fetchFeed(1);
+  };
+
+  const handleViewRecipe = async (recipeId) => {
+    try {
+      setLoadingRecipe(true);
+      const response = await recipeService.getRecipeById(recipeId);
+      
+      if (response.status === 'success' && response.data) {
+        const recipe = response.data;
+        // Transform to match the structure expected by RecipeModal
+        const transformedRecipe = {
+          id: recipe._id,
+          title: recipe.title,
+          image: recipe.image_urls && recipe.image_urls.length > 0 
+            ? recipe.image_urls[0] 
+            : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',
+          image_urls: recipe.image_urls || [],
+          cookingTime: recipe.cooking_time || '0 mins',
+          servings: recipe.servings,
+          level: recipe.difficulty_level,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions,
+          tags: recipe.tags,
+          reviews: recipe.reviews || [],
+          averageRating: recipe.reviews && recipe.reviews.length > 0
+            ? recipe.reviews.reduce((acc, r) => acc + r.rating, 0) / recipe.reviews.length
+            : 0,
+          totalReviews: recipe.reviews ? recipe.reviews.length : 0,
+          username: recipe.username,
+          created_at: recipe.created_at
+        };
+        
+        setSelectedRecipe(transformedRecipe);
+        setShowRecipeModal(true);
+      } else {
+        alert('This recipe no longer exists or has been deleted.');
+      }
+    } catch (err) {
+      console.error('Error fetching recipe:', err);
+      if (err.message && err.message.includes('404')) {
+        alert('This recipe no longer exists or has been deleted.');
+      } else {
+        alert('Failed to load recipe. Please try again.');
+      }
+    } finally {
+      setLoadingRecipe(false);
+    }
+  };
+
+  const handleCloseRecipeModal = () => {
+    setShowRecipeModal(false);
+    setSelectedRecipe(null);
   };
 
   // Fetch feed posts from API
@@ -463,6 +522,12 @@ const Feed = () => {
         onClose={() => setShowCreateModal(false)}
         onPostCreated={handlePostCreated}
       />
+      <RecipeModal 
+        isOpen={showRecipeModal} 
+        onClose={handleCloseRecipeModal} 
+        recipe={selectedRecipe}
+        onReviewAdded={() => {}} // No need to refresh feed when reviewing from here
+      />
       {/* Sticky Header */}
       <section className="feed-header">
         <div className="feed-header__content" style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
@@ -640,54 +705,79 @@ const Feed = () => {
                     <p className="post-card__timestamp">{post.timestamp}</p>
                   </div>
                 </div>
-                {isOwnPost && (
-                  <div style={{ position: 'relative' }} data-post-dropdown>
-                    <button 
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* Recipe Icon Button - Only show if recipe exists */}
+                  {post.rawData.recipe_id && 
+                   post.rawData.recipe_id.trim() !== '' && 
+                   post.rawData.recipe_id !== '000000000000000000000000' && (
+                    <button
                       className="post-card__menu-btn"
-                      onClick={() => togglePostDropdown(post.id)}
+                      onClick={() => handleViewRecipe(post.rawData.recipe_id)}
+                      disabled={loadingRecipe}
+                      style={{
+                        background: 'none',
+                        opacity: loadingRecipe ? 0.7 : 1,
+                        cursor: loadingRecipe ? 'wait' : 'pointer'
+                      }}
+                      title="View Recipe"
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="5" r="1.5" fill="currentColor"/>
-                        <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-                        <circle cx="12" cy="19" r="1.5" fill="currentColor"/>
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M8 7h8M8 11h8" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    {postDropdowns[post.id] && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '100%',
-                        right: '0',
-                        backgroundColor: '#1a1a2e',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                        minWidth: '150px',
-                        overflow: 'hidden',
-                        zIndex: 1000,
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        marginTop: '4px'
-                      }}>
-                        <button
-                          onClick={() => handleDeletePost(post.id)}
-                          style={{
-                            width: '100%',
-                            padding: '12px 16px',
-                            backgroundColor: 'transparent',
-                            border: 'none',
-                            color: '#ff4458',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            fontSize: '0.9rem',
-                            transition: 'background-color 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 68, 88, 0.1)'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                        >
-                          Delete Post
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
+                  )}
+                  {/* 3-dot menu - Only show for own posts */}
+                  {isOwnPost && (
+                    <div style={{ position: 'relative' }} data-post-dropdown>
+                      <button 
+                        className="post-card__menu-btn"
+                        onClick={() => togglePostDropdown(post.id)}
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="5" r="1.5" fill="currentColor"/>
+                          <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                          <circle cx="12" cy="19" r="1.5" fill="currentColor"/>
+                        </svg>
+                      </button>
+                      {postDropdowns[post.id] && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '100%',
+                          right: '0',
+                          backgroundColor: '#1a1a2e',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                          minWidth: '150px',
+                          overflow: 'hidden',
+                          zIndex: 1000,
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          marginTop: '4px'
+                        }}>
+                          <button
+                            onClick={() => handleDeletePost(post.id)}
+                            style={{
+                              width: '100%',
+                              padding: '12px 16px',
+                              backgroundColor: 'transparent',
+                              border: 'none',
+                              color: '#ff4458',
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              fontSize: '0.9rem',
+                              transition: 'background-color 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 68, 88, 0.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                          >
+                            Delete Post
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
               {/* Post Content */}
               <div className="post-card__content">

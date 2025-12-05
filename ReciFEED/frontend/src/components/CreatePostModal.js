@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
+import { recipeService } from '../services/recipeService';
 import '../styles/layout/CreatePostModal.css';
 import { analyticsService } from '../services/analyticsService';
 
@@ -13,6 +14,30 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
   const [uploadMethod, setUploadMethod] = useState('upload'); // 'upload' or 'url'
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [recipes, setRecipes] = useState([]);
+  const [selectedRecipeId, setSelectedRecipeId] = useState('');
+  const [loadingRecipes, setLoadingRecipes] = useState(false);
+
+  // Fetch recipes when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      fetchRecipes();
+    }
+  }, [isOpen]);
+
+  const fetchRecipes = async () => {
+    try {
+      setLoadingRecipes(true);
+      const response = await recipeService.getAllRecipes(1, 100);
+      if (response.status === 'success') {
+        setRecipes(response.data.recipes || []);
+      }
+    } catch (err) {
+      console.error('Error fetching recipes:', err);
+    } finally {
+      setLoadingRecipes(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -145,7 +170,8 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
         content: content.trim(),
         images: images,
         userId: userId,
-        username: username
+        username: username,
+        recipe_id: selectedRecipeId || '000000000000000000000000'
       });
 
       // Log analytics event
@@ -157,6 +183,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
       setImagePreview(null);
       setImageUrl('');
       setUploadMethod('upload');
+      setSelectedRecipeId('');
       setError('');
 
       // Notify parent component to refresh feed
@@ -181,6 +208,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
       setImagePreview(null);
       setImageUrl('');
       setUploadMethod('upload');
+      setSelectedRecipeId('');
       setError('');
       onClose();
     }
@@ -210,6 +238,50 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
             disabled={isSubmitting}
             required
           />
+
+          <label className="create-post-modal__label">Link to Recipe (Optional):</label>
+          <select
+            value={selectedRecipeId}
+            onChange={(e) => setSelectedRecipeId(e.target.value)}
+            disabled={isSubmitting || loadingRecipes}
+            style={{
+              width: '100%',
+              padding: '14px 16px',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '10px',
+              color: '#fff',
+              fontSize: '0.95rem',
+              fontFamily: 'inherit',
+              marginBottom: '20px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              outline: 'none'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = '#667eea';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <option value="" style={{ backgroundColor: '#1a1a2e', color: '#fff' }}>
+              {loadingRecipes ? 'Loading recipes...' : 'None - No recipe linked'}
+            </option>
+            {recipes.map((recipe) => (
+              <option 
+                key={recipe._id} 
+                value={recipe._id}
+                style={{ backgroundColor: '#1a1a2e', color: '#fff' }}
+              >
+                {recipe.title} {recipe.username ? `(by ${recipe.username})` : ''}
+              </option>
+            ))}
+          </select>
 
           <label className="create-post-modal__label">Add Photo (Optional):</label>
           
