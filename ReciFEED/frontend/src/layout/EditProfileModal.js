@@ -70,6 +70,8 @@ const EditProfileModal = ({ isOpen, onClose, user, onProfileUpdated }) => {
       setTimeout(() => {
         onClose();
         setSuccess('');
+        // Refresh the page to load updated posts with new username
+        window.location.reload();
       }, 1500);
     } catch (err) {
       console.error('Error updating profile:', err);
