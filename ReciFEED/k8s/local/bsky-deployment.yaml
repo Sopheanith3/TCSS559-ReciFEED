@@ -42,10 +42,10 @@ spec:
         - name: MONGODB_URI
           valueFrom:
             secretKeyRef:
-              name: bsky-secret
+              name: api-secret
               key: MONGODB_URI
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: bsky-secret
+              name: api-secret
               key: JWT_SECRET
