@@ -20,8 +20,8 @@ router.get('/filter', filterRecipes);
 // Recipe routes
 router.get('/', getAllRecipes);
 router.get('/:id', getRecipeById);
-router.post('/', upload.array('images', 5), createRecipe);
-router.put('/:id', upload.array('images', 5), updateRecipe);
+router.post('/', upload.array('images', 4), createRecipe);
+router.put('/:id', upload.array('images', 4), updateRecipe);
 router.delete('/:id', deleteRecipe);
 
 // Review routes

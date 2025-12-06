@@ -20,8 +20,8 @@ router.get('/user/:userId', getPostsByUser);
 router.get('/:id', getPostById);
 
 // Post routes (no auth for now - add later)
-router.post('/', upload.array('images', 5), createPost);
-router.put('/:id', upload.array('images', 5), updatePost);
+router.post('/', upload.array('images', 4), createPost);
+router.put('/:id', upload.array('images', 4), updatePost);
 router.delete('/:id', deletePost);
 
 // Like/Unlike routes
