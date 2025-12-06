@@ -180,19 +180,21 @@ eval $(minikube -p minikube docker-env)
 2. Create secret keys from the above `.env` in this environment.
 ```bash
 kubectl create secret generic api-secret \
---from-literal=MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority \
---from-literal=JWT_SECRET=<CRYPTOGRAPHIC_KEY>
+--from-literal="MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority" \
+--from-literal=JWT_SECRET="<CRYPTOGRAPHIC_KEY>"
+
 kubectl create secret generic recipe-query-secret \
---from-literal=MISTRAL_API_KEY=<KEY>
+--from-literal=MISTRAL_API_KEY="<KEY>"
+
 kubectl create secret generic twitter-secret \
---from-literal=TWITTER_CONSUMER_KEY=<KEY> \
---from-literal=TWITTER_CONSUMER_SECRET=<KEY>
+--from-literal=TWITTER_CONSUMER_KEY="<KEY>" \
+--from-literal=TWITTER_CONSUMER_SECRET="<KEY>"
 ```
 3. Build all Docker images
 
 ```bash
-docker build -t bsky-service:latest ./monolith
-cd microservices
+docker build -t monolith:latest ./ReciFEED/monolith
+cd ./ReciFEED/microservices
 docker build -t bsky-service:latest ./bsky-service
 docker build -t recipe-query-service:latest ./recipe-query-service
 docker build -t twitter-service:latest ./twitter-service
@@ -228,8 +230,15 @@ kubectl get ingress
 
 9. Use `assign4.example.com` as the base URL for all services.
 
-
 ## 3. External Services
+
+The project connects to the following external services.
+
+### Mistral
+
+### Twitter/X
+
+### Bluesky
 
 ## 4. API Documentation
 
