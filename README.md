@@ -214,7 +214,7 @@ kubectl apply -f k8s/local
 6. Pods should be running when you run:
 
 ```bash
-kubectl get pod
+kubectl get pods
 ```
 
 7. Get Ingress External IP and use as the host of all services

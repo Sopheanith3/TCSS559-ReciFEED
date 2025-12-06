@@ -15,7 +15,6 @@ const getAuthHeaders = () => {
 };
 
 // 1. API Configuration
-// TODO: Replace with non-localhost kubernetes endpoint
 const API_BASE = "http://recifeed.example.com/recipe-query";
 
 // 2. API Service Object
