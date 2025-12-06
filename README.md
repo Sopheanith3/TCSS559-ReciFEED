@@ -180,7 +180,7 @@ eval $(minikube -p minikube docker-env)
 2. Create secret keys from the above `.env` in this environment.
 ```bash
 kubectl create secret generic api-secret \
---from-literal="MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority" \
+--from-literal=MONGODB_URI="mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority" \
 --from-literal=JWT_SECRET="<CRYPTOGRAPHIC_KEY>"
 
 kubectl create secret generic recipe-query-secret \
