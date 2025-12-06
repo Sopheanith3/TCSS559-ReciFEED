@@ -228,7 +228,7 @@ kubectl get ingress
 <INGRESS-IP> assign4.example.com
 ```
 
-9. Use `assign4.example.com` as the base URL for all services.
+9. Use `assign4.example.com` as the base URL for all services in the frontend (current repo uses).
 
 ## 3. External Services
 
