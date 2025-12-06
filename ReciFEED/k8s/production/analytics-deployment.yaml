@@ -28,13 +28,13 @@ spec:
             cpu: "600m"
         readinessProbe:
           httpGet:
-            path: /api/health
+            path: /health
             port: 3081
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /api/health
+            path: /health
             port: 3081
           initialDelaySeconds: 15
           periodSeconds: 20
