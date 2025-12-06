@@ -129,34 +129,105 @@ JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f
 
 ## 2. Running the Application on Kubernetes
 
-This procedure can run the application with its current request paths.
+Running on Kubernetes can run the application with its current request paths, which are not local the process above generates.
 
-### 1) Deploy `analytics-service` to GKE
+### Deploy `analytics-service` to GKE
 
-`analytics-service` in this current project implementation is the only microservice deployed on the cloud. To deploy this, follow the [Google Kubernetes tutorial for deploying a Docker project to GKE](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview), and replace all instances of the example `hello-app` from the demo with our ReciFEED project, building the Docker image in the `microservices/analytics-service` folder.
+`analytics-service` in this current project implementation is the only microservice deployed on the cloud, as seen in its external IP. Follow these steps to deploy the service to the cloud.
 
-Change the `image` name in `/k8s/production/analytics-deployment.yaml` to the docker image name built in this tutorial.
+1. Follow the [Google Kubernetes tutorial for deploying a Docker project to GKE](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview), and replace all instances of the example `hello-app` from the demo with our ReciFEED project, building the Docker image in the `microservices/analytics-service` folder, until you reach the  **Deploy the hello-app to GKE** step.
 
-Once you create the GKE cluster and reach the **Deploy the hello-app to GKE** step, instead of the remaining steps, run `kubectl apply -f k8s/production`, which cover those settings.
+2. Change the `image` name in `/k8s/production/analytics-deployment.yaml` to the docker image name built in this tutorial.
 
-Now, create needed environment secrets for this deployment, using the same `.env` values as the rest of the project for these two:
+3. Once you create the GKE cluster, to covers those settings to deploy the pods and start the service, instead of the remaining steps, run:
+
+```bash
+kubectl apply -f k8s/production
+```
+
+4. Create needed environment secrets for this deployment, using the same `.env` values as the rest of the project for these two:
 
 ```bash
 kubectl create secret generic analytics-secret \
-  --from-literal=MONGODB_URI="mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority" \
-  --from-literal=JWT_SECRET="5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932"
+  --from-literal=MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority \
+  --from-literal=JWT_SECRET=<CRYPTOGRAPHIC_KEY>
 ```
 
-Now the external IP of this service should be available when you run:
+5. Now when you should see `recipe-service` pods running when you run:
+
+```bash
+kubectl get pods
+```
+
+6. Now the external IP of this service should be available when you run:
 
 ```bash
 kubectl get service
 ```
-This is the IP being used in `frontend/src/services/analyticsService.js` to make calls to the analytics service. To use your IP, replace this one.
 
-### 2) Deploy all other services and monolith to your local machine.
+7. This is the IP being used in `frontend/src/services/analyticsService.js` to make calls to the analytics service. To use your IP, replace this one.
+
+### Deploy all other services and monolith to your local machine.
 
 On your local terminal, build and deploy all others to minikube Kubernetes.
+
+1. Start minikube and set to Docker environment.
+```bash
+minikube start --driver=docker
+eval $(minikube -p minikube docker-env)
+```
+
+2. Create secret keys from the above `.env` in this environment.
+```bash
+kubectl create secret generic api-secret \
+--from-literal=MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority \
+--from-literal=JWT_SECRET=<CRYPTOGRAPHIC_KEY>
+kubectl create secret generic recipe-query-secret \
+--from-literal=MISTRAL_API_KEY=<KEY>
+kubectl create secret generic twitter-secret \
+--from-literal=TWITTER_CONSUMER_KEY=<KEY> \
+--from-literal=TWITTER_CONSUMER_SECRET=<KEY>
+```
+3. Build all Docker images
+
+```bash
+docker build -t bsky-service:latest ./monolith
+cd microservices
+docker build -t bsky-service:latest ./bsky-service
+docker build -t recipe-query-service:latest ./recipe-query-service
+docker build -t twitter-service:latest ./twitter-service
+```
+
+4. Install and setup Ingress
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+```
+
+
+4. Apply all config files to deploy and get services
+
+```bash
+kubectl apply -f k8s/local
+```
+
+5. Pods should be running when you run:
+
+```bash
+kubectl get pod
+```
+
+## 3. External Services
+
+## 4. API Documentation
+
+## 5. Operations
+
+### Monitoring
+
+The analytics dashboard is available on the frontend at the route [http://localhost:3000/analytics]. It currently contains the following metrics for this application:
+-
+
+### Troubleshooting
 
 
 ## Project Structure
