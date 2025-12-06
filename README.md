@@ -198,23 +198,36 @@ docker build -t recipe-query-service:latest ./recipe-query-service
 docker build -t twitter-service:latest ./twitter-service
 ```
 
-4. Install and setup Ingress
+4. Install Ingress
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 ```
 
-
-4. Apply all config files to deploy and get services
+5. Apply all config files to deploy and get services
 
 ```bash
 kubectl apply -f k8s/local
 ```
 
-5. Pods should be running when you run:
+6. Pods should be running when you run:
 
 ```bash
 kubectl get pod
 ```
+
+7. Get Ingress External IP and use as the host of all services
+
+```bash
+kubectl get ingress
+```
+
+8. Update local hosts file to run IP on `recifeed.example.com`. Add to /etc/hosts:
+```bash
+<INGRESS-IP> assign4.example.com
+```
+
+9. Use `assign4.example.com` as the base URL for all services.
+
 
 ## 3. External Services
 
@@ -225,7 +238,12 @@ kubectl get pod
 ### Monitoring
 
 The analytics dashboard is available on the frontend at the route [http://localhost:3000/analytics]. It currently contains the following metrics for this application:
--
+- Current Active Users (unique users which have logged a meaningful interaction within the last minutes)
+- Live Post Interactions (number of comments and likes within the last 3 seconds)
+- Live Recipe Views (number within the last 3 seconds)
+- Most Popular User Pages (within the last 1d, 1w, 1m)
+- Most Popular Recipe Pages (within the last 1d, 1w, 1m)
+- Most Popular Search Terms (within the last 1d, 1w, 1m)
 
 ### Troubleshooting
 
