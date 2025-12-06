@@ -52,10 +52,10 @@ spec:
         - name: MONGODB_URI
           valueFrom:
             secretKeyRef:
-              name: monolith-secret
+              name: twitter-secret
               key: MONGODB_URI
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: monolith-secret
+              name: twitter-secret
               key: JWT_SECRET
