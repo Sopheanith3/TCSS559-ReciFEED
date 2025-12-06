@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: recipe-query-service
+spec:
+  selector:
+    app: recipe-query-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3083
+  type: LoadBalancer

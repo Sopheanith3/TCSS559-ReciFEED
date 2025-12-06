@@ -94,6 +94,16 @@ const uploadMediaToBsky = async (accessJwt, buffer, mimetype) => {
  */
 
 /**
+ * Health check endpoint
+ */
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    message: 'Bsky microservice is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
  * GET /validate
  * Validates if requesting user is autheticated for the app
  */
@@ -216,7 +226,7 @@ app.post('/post', upload.array('images', 4), validateToken, async (req, res) => 
 })
 
 // Start server
-const PORT = process.env.PORT || 3083;
+const PORT = process.env.PORT || 3082;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`🌐 API URL: http://localhost:${PORT}`);

@@ -19,6 +19,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+/**
+ * Health check endpoint
+ */
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    message: 'Recipe query microservice is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 const apiKey = process.env.MISTRAL_API_KEY;
 
 // Get Mistral client associated with key
@@ -89,6 +99,9 @@ const queryLLM = async (queryBody) => {
   return chatResponse;
 }
 
+/**
+ * Query the LLM
+ */
 app.post('/query', async (req, res) => {
   // Ensure that Content-Type is application/json
   if (!req.is('application/json')) {
