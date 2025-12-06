@@ -131,6 +131,13 @@ JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f
 
 This procedure can run the application with its current request paths.
 
+### 1) Deploy `analytics-service` to GKE
+
+`analytics-service` in this current project implementation is the only microservice deployed on the cloud. To deploy this, follow the [Google Kubernetes tutorial for deploying a Docker project to GKE](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview), and replace all instances of the example `hello-app` from the demo with our ReciFEED project, building the Docker image in the `microservices/analytics-service` folder.
+
+Change the `image` name in `/k8s/production/analytics-deployment.yaml` to the docker image name built in this tutorial.
+
+Once you create the GKE cluster and reach the **Deploy the hello-app to GKE** step, instead of the remaining steps, run `kubectl apply -f k8s/production`, which cover those settings.
 
 
 ## Project Structure

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: analytics-service
-        image: analytics-service:latest
+        image: us-west1-docker.pkg.dev/tcss559-au25-cbuendia/docker-repo/analytics-service:latest
         ports:
         - containerPort: 3081
         resources:
