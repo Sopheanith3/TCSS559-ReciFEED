@@ -38,6 +38,14 @@ const validateToken = (req, res, next) => {
   }
 };
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    message: 'Analytics microservice is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Get routes
 app.use('/event', validateToken, eventRouter);
 app.use('/live', liveRouter);

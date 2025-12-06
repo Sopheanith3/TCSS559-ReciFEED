@@ -1,6 +1,6 @@
 # ReciFEED - Social Recipe Sharing Platform
 
-## Quick Setup Guide
+## 1. Local Setup Guide
 
 ### Prerequisites
 - Node.js (v14 or higher)
@@ -127,7 +127,11 @@ MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongo
 JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
 ```
 
-### Project Structure
+## 2. Running the Application on Kubernetes
+
+
+
+## Project Structure
 ```
 TCSS559-RECIFEED/
 ├─ monolith/
@@ -211,15 +215,15 @@ TCSS559-RECIFEED/
          └─ Register.js
 ```
 
-### Technologies Used
+## Technologies Used
 - **Frontend**: React.js, Axios, React Router
 - **Backend**: Node.js, Express.js, MongoDB, JWT
 - **Authentication**: JWT tokens
 - **Image Upload**: Multer
 
-### Team Members
+## Team Members
 - Celestine Buendia 
 - Sopheanith Ny 
 
-### License
+## License
 MIT
