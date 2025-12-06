@@ -156,6 +156,7 @@ This is the IP being used in `frontend/src/services/analyticsService.js` to make
 
 ### 2) Deploy all other services and monolith to your local machine.
 
+On your local terminal, build and deploy all others to minikube Kubernetes.
 
 
 ## Project Structure

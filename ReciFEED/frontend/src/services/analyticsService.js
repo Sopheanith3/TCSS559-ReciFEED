@@ -18,7 +18,7 @@ const getAuthHeaders = () => {
 
 // 1. API Configuration
 // TODO: Replace with non-localhost kubernetes endpoint
-const API_BASE = "http://localhost:3081";
+const API_BASE = "http://136.118.133.196";
 
 // 2. API Service Object
 export const analyticsService = {
