@@ -237,7 +237,7 @@ kubectl get ingress
 
 ### Monitoring
 
-The analytics dashboard is available on the frontend at the route [http://localhost:3000/analytics]. It currently contains the following metrics for this application:
+The analytics dashboard is available on the frontend at the route http://localhost:3000/analytics. It currently contains the following metrics for this application:
 - Current Active Users (unique users which have logged a meaningful interaction within the last minutes)
 - Live Post Interactions (number of comments and likes within the last 3 seconds)
 - Live Recipe Views (number within the last 3 seconds)
