@@ -17,6 +17,7 @@ spec:
       containers:
       - name: bsky-service
         image: bsky-service:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 3082
         resources:

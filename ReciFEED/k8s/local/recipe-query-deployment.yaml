@@ -17,6 +17,7 @@ spec:
       containers:
       - name: recipe-query-service
         image: recipe-query-service:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 3083
         resources:

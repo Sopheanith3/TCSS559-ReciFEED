@@ -17,6 +17,7 @@ spec:
       containers:
       - name: monolith
         image: monolith:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 5050
         resources:
