@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ReciFEED API",
+    "description": "A hybrid microservices-monolith API forming the ReciFEED website app's backend.",
+    "version": "1.0.0",
+    "servers": [
+      { 
+        "url": "http://recifeed.example.app",
+        "description": "Recifeed API URL from Ingress"
+      }
+    ]
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Monolith"],
+        "summary": "Returns a base monolith API descriptor object.",
+        "responses": {
+          "200": {
+            "description": "Returns an informational JSON object as a base summary of API endpoints.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Welcome to ReciFEED API",
+                  "version": "1.0.0",
+                  "endpoints": {
+                    "health": "/api/health",
+                    "users": "/api/users",
+                    "recipes": "/api/recipes",
+                    "posts": "/api/posts",
+                    "search": "/api/search"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
