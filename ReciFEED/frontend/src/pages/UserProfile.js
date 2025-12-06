@@ -538,7 +538,7 @@ const UserProfile = () => {
                                   <div key={idx} className="post-card__image-wrapper">
                                     <img 
                                       src={imageUrl} 
-                                      alt={`Post image ${idx + 1}`}
+                                      alt={`Post ${idx + 1}`}
                                       className="post-card__image"
                                       onClick={() => setModalImage(imageUrl)}
                                     />
