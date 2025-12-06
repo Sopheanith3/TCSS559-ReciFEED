@@ -129,6 +129,8 @@ JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f
 
 ## 2. Running the Application on Kubernetes
 
+This procedure can run the application with its current request paths.
+
 
 
 ## Project Structure
