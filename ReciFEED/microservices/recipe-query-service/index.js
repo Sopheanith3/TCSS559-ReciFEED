@@ -128,7 +128,7 @@ app.post('/query', async (req, res) => {
 })
 
 // Start server
-const PORT = process.env.PORT || 3082;
+const PORT = process.env.PORT || 3083;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`🌐 API URL: http://localhost:${PORT}`);
