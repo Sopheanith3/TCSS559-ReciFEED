@@ -27,7 +27,7 @@ const EditPostModal = ({ isOpen, onClose, onPostUpdated, post }) => {
         setImagePreview(firstImage);
         
         // Check if it's a URL or base64
-        if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
+        if (typeof firstImage === 'string' && (firstImage.startsWith('http://') || firstImage.startsWith('https://'))) {
           setUploadMethod('url');
           setImageUrl(firstImage);
         } else {
@@ -59,50 +59,16 @@ const EditPostModal = ({ isOpen, onClose, onPostUpdated, post }) => {
         return;
       }
 
-      // Compress and resize image before converting to base64
+      // Store the actual File object (multer will handle it on backend)
+      setImages([file]);
+      
+      // Create preview for UI using FileReader
       const reader = new FileReader();
       reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          // Create canvas to resize image
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
-          // Set max dimensions
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 800;
-          
-          let width = img.width;
-          let height = img.height;
-          
-          // Calculate new dimensions while maintaining aspect ratio
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height = Math.round((height * MAX_WIDTH) / width);
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width = Math.round((width * MAX_HEIGHT) / height);
-              height = MAX_HEIGHT;
-            }
-          }
-          
-          canvas.width = width;
-          canvas.height = height;
-          
-          // Draw resized image
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          // Convert to base64 with compression (0.8 quality for JPEG)
-          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
-          
-          setImagePreview(compressedBase64);
-          setImages([compressedBase64]);
-        };
-        img.src = event.target.result;
+        setImagePreview(event.target.result);
       };
       reader.readAsDataURL(file);
+      setError('');
     }
   };
 

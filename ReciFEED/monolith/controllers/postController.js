@@ -1,9 +1,13 @@
 const Post = require('../models/post');
 const User = require('../models/user');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
+const { convertFilesToBase64 } = require('../utils/upload');
 
 const createPost = asyncHandler(async (req, res, next) => {
-  const { content, images, recipe_id, userId, username } = req.body;
+  const { content, recipe_id, userId, username } = req.body;
+
+  console.log('createPost - req.files:', req.files);
+  console.log('createPost - req.body:', req.body);
 
   if (!content) {
     return next(new ErrorResponse('Please provide post content', 400));
@@ -13,11 +17,15 @@ const createPost = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Please provide userId', 400));
   }
 
+  // In production, convert to public link using GCS, for now convert to base64
+  const imageUrls = convertFilesToBase64(req.files);
+  console.log('createPost - imageUrls:', imageUrls);
+
   const postData = {
     user_id: userId,
     username: username || 'Anonymous',
     body: content,
-    image_urls: images || [],
+    image_urls: imageUrls,
     recipe_id: recipe_id || '000000000000000000000000',
     created_at: new Date()
   };
@@ -133,7 +141,7 @@ const getPostsByUser = asyncHandler(async (req, res, next) => {
 });
 
 const updatePost = asyncHandler(async (req, res, next) => {
-  const { content, images } = req.body;
+  const { content } = req.body;
 
   const post = await Post.findById(req.params.id);
 
@@ -145,8 +153,10 @@ const updatePost = asyncHandler(async (req, res, next) => {
   if (content !== undefined) {
     post.body = content;
   }
-  if (images !== undefined) {
-    post.image_urls = images;
+
+  // In production, convert to public link using GCS, for now convert to base64
+  if (req.files && req.files.length > 0) {
+    post.image_urls = convertFilesToBase64(req.files);
   }
 
   await post.save();

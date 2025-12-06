@@ -82,7 +82,7 @@ export const twitterService = {
       const image = images[i];
       
       // If it's a base64 string, convert to blob
-      if (image.startsWith('data:image')) {
+      if (typeof image === 'string' && image.startsWith('data:image')) {
         const response = await fetch(image);
         const blob = await response.blob();
         formData.append('images', blob, `image${i}.jpg`);

@@ -1,5 +1,6 @@
 const Recipe = require('../models/recipe');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
+const { convertFilesToBase64 } = require('../utils/upload');
 
 const getAllRecipes = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -47,7 +48,10 @@ const getRecipeById = asyncHandler(async (req, res, next) => {
 });
 
 const createRecipe = asyncHandler(async (req, res, next) => {
-  const { title, cooking_time, tags, ingredients, instructions, images, userId, username } = req.body;
+  const { title, cooking_time, tags, ingredients, instructions, userId, username } = req.body;
+
+  console.log('createRecipe - req.files:', req.files);
+  console.log('createRecipe - req.body:', req.body);
 
   if (!title || !userId) {
     return next(new ErrorResponse('Please provide title and userId', 400));
@@ -57,15 +61,19 @@ const createRecipe = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Please provide username', 400));
   }
 
+  // In production, convert to public link using GCS, for now convert to base64
+  const imageUrls = convertFilesToBase64(req.files);
+  console.log('createRecipe - imageUrls:', imageUrls);
+
   const recipeData = {
     user_id: userId,
     username,
     title,
     cooking_time: cooking_time || '',
-    tags: tags || [],
-    ingredients: ingredients || [],
-    instructions: instructions || [],
-    image_urls: images || [],
+    tags: tags ? (typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags) : [],
+    ingredients: ingredients ? (typeof ingredients === 'string' ? JSON.parse(ingredients) : ingredients) : [],
+    instructions: instructions ? (typeof instructions === 'string' ? JSON.parse(instructions) : instructions) : [],
+    image_urls: imageUrls,
     created_at: new Date()
   };
 
@@ -78,7 +86,7 @@ const createRecipe = asyncHandler(async (req, res, next) => {
 });
 
 const updateRecipe = asyncHandler(async (req, res, next) => {
-  const { title, cooking_time, tags, ingredients, instructions, images } = req.body;
+  const { title, cooking_time, tags, ingredients, instructions } = req.body;
 
   const recipe = await Recipe.findById(req.params.id);
 
@@ -89,10 +97,14 @@ const updateRecipe = asyncHandler(async (req, res, next) => {
   // Update fields
   if (title) recipe.title = title;
   if (cooking_time !== undefined) recipe.cooking_time = cooking_time;
-  if (tags) recipe.tags = tags;
-  if (ingredients) recipe.ingredients = ingredients;
-  if (instructions) recipe.instructions = instructions;
-  if (images) recipe.image_urls = images;
+  if (tags) recipe.tags = typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags;
+  if (ingredients) recipe.ingredients = typeof ingredients === 'string' ? JSON.parse(ingredients) : ingredients;
+  if (instructions) recipe.instructions = typeof instructions === 'string' ? JSON.parse(instructions) : instructions;
+
+  // In production, convert to public link using GCS, for now convert to base64
+  if (req.files && req.files.length > 0) {
+    recipe.image_urls = convertFilesToBase64(req.files);
+  }
 
   await recipe.save();
 

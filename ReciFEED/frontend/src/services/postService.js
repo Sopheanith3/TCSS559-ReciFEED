@@ -27,18 +27,38 @@ const getAuthHeaders = () => {
 // 2. Post Service Object
 export const postService = {
 
-  // 3. Create Post
+  // 3. Create Post with file uploads
   createPost: async ({ content, images = [], userId, username, recipe_id = '000000000000000000000000' || null }) => {
+    const formData = new FormData();
+    
+    // Add form fields
+    formData.append('content', content);
+    formData.append('userId', userId);
+    formData.append('username', username);
+    formData.append('recipe_id', recipe_id);
+    
+    // Add image files (images can be File objects or base64 strings)
+    if (Array.isArray(images) && images.length > 0) {
+      images.forEach((image, index) => {
+        if (image instanceof File) {
+          // If it's a File object, append directly
+          formData.append('images', image);
+        }
+        // If it's a base64 string, we skip it since multer expects actual files
+        // The frontend will handle converting File objects to base64 on the backend
+      });
+    }
+    
+    const token = localStorage.getItem('token');
+    const headers = {
+      ...(token && { "Authorization": `Bearer ${token}` })
+      // Don't set Content-Type - browser will set it with multipart boundary
+    };
+    
     const response = await fetch(`${API_BASE}/posts`, {
       method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ 
-        content, 
-        images, 
-        userId, 
-        username,
-        recipe_id
-      })
+      headers: headers,
+      body: formData
     });
 
     if (!response.ok) {
@@ -178,12 +198,31 @@ export const postService = {
     return response.json();
   },
 
-  // 11. Update Post
+  // 11. Update Post with file uploads
   updatePost: async (postId, { content, images }) => {
+    const formData = new FormData();
+    
+    // Add form fields
+    formData.append('content', content);
+    
+    // Add image files
+    if (Array.isArray(images) && images.length > 0) {
+      images.forEach((image) => {
+        if (image instanceof File) {
+          formData.append('images', image);
+        }
+      });
+    }
+    
+    const token = localStorage.getItem('token');
+    const headers = {
+      ...(token && { "Authorization": `Bearer ${token}` })
+    };
+    
     const response = await fetch(`${API_BASE}/posts/${postId}`, {
       method: "PUT",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ content, images })
+      headers: headers,
+      body: formData
     });
 
     if (!response.ok) {

@@ -22,8 +22,16 @@ connectDB();
 
 // Middleware
 app.use(cors());
-// Increase payload size limit to 10MB for base64 images
-app.use(express.json({ limit: '10mb' }));
+
+// Custom middleware to parse JSON but skip for multipart/form-data (which multer handles)
+app.use((req, res, next) => {
+  // Skip body parsing for multipart/form-data - let multer handle it
+  if (req.is('multipart/form-data')) {
+    return next();
+  }
+  express.json({ limit: '10mb' })(req, res, next);
+});
+
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logging middleware
