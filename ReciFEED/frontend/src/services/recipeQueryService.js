@@ -15,8 +15,7 @@ const getAuthHeaders = () => {
 };
 
 // 1. API Configuration
-// TODO: Replace with non-localhost kubernetes endpoint
-const API_BASE = "http://localhost:3083";
+const API_BASE = "http://recifeed.example.com/recipe-query";
 
 // 2. API Service Object
 export const recipeQueryService = {
@@ -25,18 +24,18 @@ export const recipeQueryService = {
   askQuestion: async (recipe, query) => {
     // Format recipe data as a string
     const recipeText = `
-Title: ${recipe.title}
+      Title: ${recipe.title}
 
-Ingredients:
-${recipe.ingredients.map(ing => `- ${ing}`).join('\n')}
+      Ingredients:
+      ${recipe.ingredients.map(ing => `- ${ing}`).join('\n')}
 
-Instructions:
-${recipe.instructions.map((step, idx) => `${idx + 1}. ${step}`).join('\n')}
+      Instructions:
+      ${recipe.instructions.map((step, idx) => `${idx + 1}. ${step}`).join('\n')}
 
-Cooking Time: ${recipe.cookingTime}
-Servings: ${recipe.servings}
-Difficulty Level: ${recipe.level}
-${recipe.tags && recipe.tags.length > 0 ? `Tags: ${recipe.tags.join(', ')}` : ''}
+      Cooking Time: ${recipe.cookingTime}
+      Servings: ${recipe.servings}
+      Difficulty Level: ${recipe.level}
+      ${recipe.tags && recipe.tags.length > 0 ? `Tags: ${recipe.tags.join(', ')}` : ''}
     `.trim();
 
     const response = await fetch(`${API_BASE}/query`, {

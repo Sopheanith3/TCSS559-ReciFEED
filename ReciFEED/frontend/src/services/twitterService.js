@@ -18,8 +18,7 @@ const getAuthHeaders = () => {
 };
 
 // 1. API Configuration
-// TODO: Replace with non-localhost kubernetes endpoint
-const API_BASE = "http://localhost:3084";
+const API_BASE = "http://recifeed.example.com/twitter";
 
 // 2. API Service Object
 export const twitterService = {

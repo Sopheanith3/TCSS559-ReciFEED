@@ -13,8 +13,7 @@
  */
 
 // 1. API Configuration
-// TODO: Replace with non-localhost kubernetes endpoint?
-const API_BASE = "http://localhost:5050/api";
+const API_BASE = "http://recifeed.example.com/api";
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {

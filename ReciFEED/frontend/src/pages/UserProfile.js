@@ -31,7 +31,7 @@ const UserProfile = () => {
           throw new Error('User ID not found');
         }
         
-        const response = await fetch(`http://localhost:5050/api/users/${userId}`, {
+        const response = await fetch(`http://recifeed.example.com/api/users/${userId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
@@ -538,7 +538,7 @@ const UserProfile = () => {
                                   <div key={idx} className="post-card__image-wrapper">
                                     <img 
                                       src={imageUrl} 
-                                      alt={`Post image ${idx + 1}`}
+                                      alt={`Post ${idx + 1}`}
                                       className="post-card__image"
                                       onClick={() => setModalImage(imageUrl)}
                                     />

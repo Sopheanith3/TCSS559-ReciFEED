@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'http://localhost:5050/api';
+const API_URL = 'http://recifeed.example.com/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {

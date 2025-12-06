@@ -17,8 +17,7 @@ const getAuthHeaders = () => {
 };
 
 // 1. API Configuration
-// TODO: Replace with non-localhost kubernetes endpoint
-const API_BASE = "http://localhost:3082";
+const API_BASE = "http://recifeed.example.com/bsky";
 
 // 2. API Service Object
 export const bskyService = {

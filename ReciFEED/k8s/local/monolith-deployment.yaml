@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monolith
+  labels:
+    app: monolith
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: monolith
+  template:
+    metadata:
+      labels:
+        app: monolith
+    spec:
+      containers:
+      - name: monolith
+        image: monolith:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5050
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 5050
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 5050
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        env:
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: api-secret
+              key: MONGODB_URI
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: api-secret
+              key: JWT_SECRET
