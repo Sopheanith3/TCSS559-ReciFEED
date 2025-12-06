@@ -30,6 +30,7 @@
   padding: 32px;
   min-width: 500px;
   max-width: 600px;
+  max-height: 70vh;
   width: 90vw;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -38,6 +39,35 @@
   flex-direction: column;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   animation: slideUp 0.3s ease-out;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+.create-post-modal__container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.create-post-modal__container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+
+.create-post-modal__container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.create-post-modal__container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Firefox scrollbar */
+.create-post-modal__container {
+  scrollbar-width: thin;
+  scrollbar-color: #667eea rgba(255, 255, 255, 0.05);
 }
 
 @keyframes slideUp {
@@ -100,6 +130,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding-right: 12px;
 }
 
 .create-post-modal__label {

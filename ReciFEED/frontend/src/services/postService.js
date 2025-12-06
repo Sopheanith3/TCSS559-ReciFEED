@@ -14,7 +14,7 @@
 
 // 1. API Configuration
 // TODO: Replace with non-localhost kubernetes endpoint?
-const API_BASE = "http://localhost:5050/api";
+const API_BASE = "http://127.0.0.1:54014/api";
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -29,7 +29,7 @@ const getAuthHeaders = () => {
 export const postService = {
 
   // 3. Create Post
-  createPost: async ({ content, images = [], userId, username, recipeId = null }) => {
+  createPost: async ({ content, images = [], userId, username, recipe_id = '000000000000000000000000' || null }) => {
     const response = await fetch(`${API_BASE}/posts`, {
       method: "POST",
       headers: getAuthHeaders(),
@@ -38,7 +38,7 @@ export const postService = {
         images, 
         userId, 
         username,
-        ...(recipeId && { recipeId })
+        recipe_id
       })
     });
 
@@ -174,6 +174,22 @@ export const postService = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to delete post");
+    }
+    
+    return response.json();
+  },
+
+  // 11. Update Post
+  updatePost: async (postId, { content, images }) => {
+    const response = await fetch(`${API_BASE}/posts/${postId}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ content, images })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update post");
     }
     
     return response.json();

@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'http://localhost:5050/api';
+const API_URL = 'http://127.0.0.1:54014/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {

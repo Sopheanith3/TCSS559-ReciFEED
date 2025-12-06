@@ -8,7 +8,7 @@
 
 // 1. API Configuration
 // TODO: Replace with non-localhost kubernetes endpoint?
-const API_BASE = "http://localhost:5050/api";
+const API_BASE = "http://127.0.0.1:54014/api";
 
 // 2. API Service Object
 export const authService = {

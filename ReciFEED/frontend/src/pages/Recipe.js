@@ -538,7 +538,12 @@ const Recipe = () => {
           ) : (
             <div className="recipe__grid">
               {filteredRecipes.map((recipe) => (
-            <div key={recipe.id} className={`recipe__card recipe__card--${recipe.size}`} onClick={() => handleRecipeClick(recipe)}>
+            <div 
+              key={recipe.id} 
+              className={`recipe__card recipe__card--${recipe.size}`} 
+              onClick={() => handleRecipeClick(recipe)}
+              data-recipe-id={recipe.id}
+            >
               <div className="recipe__card-image" style={{backgroundImage: `url(${recipe.image})`}}>
                 {/* Difficulty badge (top left) */}
                 {recipe.difficulty && (

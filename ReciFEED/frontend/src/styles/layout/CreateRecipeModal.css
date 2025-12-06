@@ -106,23 +106,31 @@
   padding-right: 12px; /* Add gap between content and scrollbar */
 }
 
+/* Custom Scrollbar */
 .create-recipe-modal__form::-webkit-scrollbar {
   width: 8px;
-  margin-right: 8px; /* Add gap between scrollbar and edge */
 }
 
 .create-recipe-modal__form::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin: 8px 0;
 }
 
 .create-recipe-modal__form::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  transition: background 0.3s ease;
 }
 
 .create-recipe-modal__form::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Firefox scrollbar */
+.create-recipe-modal__form {
+  scrollbar-width: thin;
+  scrollbar-color: #667eea rgba(255, 255, 255, 0.05);
 }
 
 /* Error Message */

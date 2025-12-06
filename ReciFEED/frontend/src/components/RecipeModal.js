@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/layout/RecipeModal.css';
 import { recipeService } from '../services/recipeService';
+import { recipeQueryService } from '../services/recipeQueryService';
 import { useAuth } from '../context/AuthContext';
 
 const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded, onEditRecipe }) => {
@@ -14,6 +15,12 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded, onEditRecipe }) =
   const [localTotalReviews, setLocalTotalReviews] = useState(recipe?.totalReviews || 0);
   const [localAverageRating, setLocalAverageRating] = useState(recipe?.averageRating || 0);
   const [showMenu, setShowMenu] = useState(false);
+  
+  // Recipe Q&A state
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [isAsking, setIsAsking] = useState(false);
+  const [questionError, setQuestionError] = useState('');
 
   // Update local state when recipe changes
   React.useEffect(() => {
@@ -21,6 +28,10 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded, onEditRecipe }) =
       setLocalReviews(recipe.reviews || []);
       setLocalTotalReviews(recipe.totalReviews || 0);
       setLocalAverageRating(recipe.averageRating || 0);
+      // Reset Q&A when recipe changes
+      setQuestion('');
+      setAnswer('');
+      setQuestionError('');
     }
   }, [recipe]);
 
@@ -38,6 +49,27 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded, onEditRecipe }) =
       }
     }
     setShowMenu(false);
+  };
+
+  const handleAskQuestion = async (e) => {
+    e.preventDefault();
+    setQuestionError('');
+    
+    if (!question.trim()) {
+      setQuestionError('Please enter a question');
+      return;
+    }
+
+    try {
+      setIsAsking(true);
+      const response = await recipeQueryService.askQuestion(recipe, question);
+      setAnswer(response.response);
+    } catch (err) {
+      console.error('Error asking question:', err);
+      setQuestionError(err.message || 'Failed to get an answer. Please try again.');
+    } finally {
+      setIsAsking(false);
+    }
   };
 
   if (!isOpen || !recipe) return null;
@@ -452,6 +484,177 @@ const RecipeModal = ({ isOpen, onClose, recipe, onReviewAdded, onEditRecipe }) =
                 </li>
               )}
             </ol>
+          </div>
+
+          {/* Recipe Q&A Section */}
+          <div className="recipe-modal__section">
+            <h3 className="recipe-modal__section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
+              </svg>
+              Ask About This Recipe
+            </h3>
+            
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.04)',
+              borderRadius: '14px',
+              padding: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.08)'
+            }}>
+              <p style={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: '0.9rem',
+                marginBottom: '16px',
+                lineHeight: '1.5'
+              }}>
+                Have questions about this recipe? Ask our AI assistant about ingredients, cooking times, substitutions, or anything else!
+              </p>
+
+              {/* Answer Display */}
+              {answer && (
+                <div style={{
+                  background: 'rgba(102, 126, 234, 0.1)',
+                  border: '1px solid rgba(102, 126, 234, 0.3)',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  marginBottom: '16px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '10px'
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#667eea" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span style={{
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      color: '#667eea',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      AI Assistant
+                    </span>
+                  </div>
+                  <p style={{
+                    color: 'rgba(255, 255, 255, 0.95)',
+                    fontSize: '0.95rem',
+                    lineHeight: '1.6',
+                    margin: 0,
+                    whiteSpace: 'pre-wrap'
+                  }}>
+                    {answer}
+                  </p>
+                </div>
+              )}
+
+              {/* Question Form */}
+              <form onSubmit={handleAskQuestion}>
+                <div style={{ marginBottom: '12px' }}>
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="Ask a question about this recipe..."
+                    disabled={isAsking}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '10px',
+                      color: '#fff',
+                      fontSize: '0.95rem',
+                      outline: 'none',
+                      transition: 'all 0.2s ease',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                      e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.5)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    }}
+                  />
+                </div>
+
+                {questionError && (
+                  <div style={{
+                    color: '#ff6b6b',
+                    fontSize: '0.85rem',
+                    marginBottom: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                      <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    {questionError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isAsking || !question.trim()}
+                  style={{
+                    width: '100%',
+                    padding: '12px 20px',
+                    background: isAsking || !question.trim() 
+                      ? 'rgba(102, 126, 234, 0.3)' 
+                      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '10px',
+                    cursor: isAsking || !question.trim() ? 'not-allowed' : 'pointer',
+                    fontSize: '0.95rem',
+                    fontWeight: '600',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isAsking && question.trim()) {
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {isAsking ? (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{
+                        animation: 'spin 1s linear infinite'
+                      }}>
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeDasharray="60" strokeDashoffset="15" opacity="0.25"/>
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeDasharray="15" opacity="0.75"/>
+                      </svg>
+                      <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+                      Asking...
+                    </>
+                  ) : (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Ask Question
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
 
           {/* Reviews Section */}
