@@ -94,6 +94,16 @@ const uploadMediaToBsky = async (accessJwt, buffer, mimetype) => {
  */
 
 /**
+ * Health check endpoint
+ */
+app.get('/bsky/health', (req, res) => {
+  res.status(200).json({ 
+    message: 'Bsky microservice is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
  * GET /validate
  * Validates if requesting user is autheticated for the app
  */

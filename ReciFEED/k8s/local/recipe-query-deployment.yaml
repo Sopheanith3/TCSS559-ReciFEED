@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe-query-service
+  labels:
+    app: recipe-query-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: recipe-query-service
+  template:
+    metadata:
+      labels:
+        app: recipe-query-service
+    spec:
+      containers:
+      - name: recipe-query-service
+        image: recipe-query-service:latest
+        ports:
+        - containerPort: 3083
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "150m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3083
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3083
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        env:
+        - name: MISTRAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: recipe-query-secret
+              key: MISTRAL_API_KEY
