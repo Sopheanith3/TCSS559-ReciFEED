@@ -19,7 +19,7 @@ spec:
         image: twitter-service:latest
         imagePullPolicy: Never
         ports:
-        - containerPort: 3082
+        - containerPort: 3084
         resources:
           requests:
             memory: "128Mi"
@@ -30,13 +30,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /health
-            port: 3082
+            port: 3084
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /health
-            port: 3082
+            port: 3084
           initialDelaySeconds: 15
           periodSeconds: 20
         env:

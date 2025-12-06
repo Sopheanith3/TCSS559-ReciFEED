@@ -96,7 +96,7 @@ const uploadMediaToBsky = async (accessJwt, buffer, mimetype) => {
 /**
  * Health check endpoint
  */
-app.get('/bsky/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.status(200).json({ 
     message: 'Bsky microservice is running',
     timestamp: new Date().toISOString()
