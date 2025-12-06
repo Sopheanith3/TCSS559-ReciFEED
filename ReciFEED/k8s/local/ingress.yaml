@@ -10,13 +10,6 @@ spec:
   - host: recifeed.example.com
     http:
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: monolith
-            port:
-              number: 80
       - path: /bsky
         pathType: Prefix
         backend:
@@ -36,5 +29,12 @@ spec:
         backend:
           service:
             name: recipe-query-service
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: monolith
             port:
               number: 80

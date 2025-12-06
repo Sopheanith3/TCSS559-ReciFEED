@@ -96,7 +96,7 @@ const uploadMediaToBsky = async (accessJwt, buffer, mimetype) => {
 /**
  * Health check endpoint
  */
-app.get('/health', (req, res) => {
+app.get('/bsky/health', (req, res) => {
   res.status(200).json({ 
     message: 'Bsky microservice is running',
     timestamp: new Date().toISOString()
@@ -104,10 +104,10 @@ app.get('/health', (req, res) => {
 });
 
 /**
- * GET /validate
+ * GET /bsky/validate
  * Validates if requesting user is autheticated for the app
  */
-app.get('/validate', validateToken, async (req, res) => {
+app.get('/bsky/validate', validateToken, async (req, res) => {
   try {
     const { did } = await refreshSession(req.user.id);
     if (!did) {
@@ -124,10 +124,10 @@ app.get('/validate', validateToken, async (req, res) => {
 });
 
 /**
- * POST /auth
+ * POST /bsky/auth
  * Uses identifier and password to auth requesting user for this app
  */
-app.post('/auth', validateToken, async (req, res) => {
+app.post('/bsky/auth', validateToken, async (req, res) => {
   const { id } = req.user;
 
   const { identifier, password } = req.body;
@@ -156,10 +156,10 @@ app.post('/auth', validateToken, async (req, res) => {
 })
 
 /**
- * POST /post
+ * POST /bsky/post
  * Make a post for the current user, should be authenticated for Bsky already
  */
-app.post('/post', upload.array('images', 4), validateToken, async (req, res) => {
+app.post('/bsky/post', upload.array('images', 4), validateToken, async (req, res) => {
   const { id } = req.user;
 
   const text = req.body.text || '';

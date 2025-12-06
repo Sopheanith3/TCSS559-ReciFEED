@@ -38,7 +38,7 @@ const validateToken = (req, res, next) => {
 };
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/twitter/health', (req, res) => {
   res.status(200).json({ 
     message: 'Analytics microservice is running',
     timestamp: new Date().toISOString()
@@ -46,8 +46,8 @@ app.get('/health', (req, res) => {
 });
 
 // Get routes
-app.use('/auth', validateToken, authRouter);
-app.use('/post', validateToken, postRouter);
+app.use('/twitter/auth', validateToken, authRouter);
+app.use('/twitter/post', validateToken, postRouter);
 
 // Start server
 const PORT = process.env.PORT || 3084;
