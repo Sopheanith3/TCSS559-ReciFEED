@@ -62,13 +62,52 @@ export const recipeService = {
     }
   },
 
-  // Create a new recipe
+  // Create a new recipe with file uploads
   createRecipe: async (recipeData) => {
     try {
+      const formData = new FormData();
+      
+      // Add all recipe fields
+      formData.append('title', recipeData.title);
+      formData.append('cooking_time', recipeData.cooking_time || '');
+      
+      // Add tags as JSON string
+      if (Array.isArray(recipeData.tags)) {
+        formData.append('tags', JSON.stringify(recipeData.tags));
+      }
+      
+      // Add ingredients as JSON string
+      if (Array.isArray(recipeData.ingredients)) {
+        formData.append('ingredients', JSON.stringify(recipeData.ingredients));
+      }
+      
+      // Add instructions as JSON string
+      if (Array.isArray(recipeData.instructions)) {
+        formData.append('instructions', JSON.stringify(recipeData.instructions));
+      }
+      
+      formData.append('userId', recipeData.userId);
+      formData.append('username', recipeData.username);
+      
+      // Add image files
+      if (Array.isArray(recipeData.images) && recipeData.images.length > 0) {
+        recipeData.images.forEach((image) => {
+          if (image instanceof File) {
+            formData.append('images', image);
+          }
+        });
+      }
+      
+      const token = localStorage.getItem('token');
+      const headers = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const response = await fetch(`${API_URL}/recipes`, {
         method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(recipeData),
+        headers: headers,
+        body: formData,
       });
       
       if (!response.ok) {
@@ -83,13 +122,49 @@ export const recipeService = {
     }
   },
 
-  // Update an existing recipe
+  // Update an existing recipe with file uploads
   updateRecipe: async (recipeId, recipeData) => {
     try {
+      const formData = new FormData();
+      
+      // Add recipe fields
+      if (recipeData.title) formData.append('title', recipeData.title);
+      if (recipeData.cooking_time !== undefined) formData.append('cooking_time', recipeData.cooking_time);
+      
+      // Add tags as JSON string
+      if (Array.isArray(recipeData.tags)) {
+        formData.append('tags', JSON.stringify(recipeData.tags));
+      }
+      
+      // Add ingredients as JSON string
+      if (Array.isArray(recipeData.ingredients)) {
+        formData.append('ingredients', JSON.stringify(recipeData.ingredients));
+      }
+      
+      // Add instructions as JSON string
+      if (Array.isArray(recipeData.instructions)) {
+        formData.append('instructions', JSON.stringify(recipeData.instructions));
+      }
+      
+      // Add image files
+      if (Array.isArray(recipeData.images) && recipeData.images.length > 0) {
+        recipeData.images.forEach((image) => {
+          if (image instanceof File) {
+            formData.append('images', image);
+          }
+        });
+      }
+      
+      const token = localStorage.getItem('token');
+      const headers = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const response = await fetch(`${API_URL}/recipes/${recipeId}`, {
         method: 'PUT',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(recipeData),
+        headers: headers,
+        body: formData,
       });
       
       if (!response.ok) {

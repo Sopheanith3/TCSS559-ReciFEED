@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { upload } = require('../utils/upload');
 const {
   getAllRecipes,
   getRecipeById,
@@ -19,8 +20,8 @@ router.get('/filter', filterRecipes);
 // Recipe routes
 router.get('/', getAllRecipes);
 router.get('/:id', getRecipeById);
-router.post('/', createRecipe);
-router.put('/:id', updateRecipe);
+router.post('/', upload.array('images', 5), createRecipe);
+router.put('/:id', upload.array('images', 5), updateRecipe);
 router.delete('/:id', deleteRecipe);
 
 // Review routes
