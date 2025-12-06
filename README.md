@@ -139,6 +139,24 @@ Change the `image` name in `/k8s/production/analytics-deployment.yaml` to the do
 
 Once you create the GKE cluster and reach the **Deploy the hello-app to GKE** step, instead of the remaining steps, run `kubectl apply -f k8s/production`, which cover those settings.
 
+Now, create needed environment secrets for this deployment, using the same `.env` values as the rest of the project for these two:
+
+```bash
+kubectl create secret generic analytics-secret \
+  --from-literal=MONGODB_URI="mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority" \
+  --from-literal=JWT_SECRET="5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932"
+```
+
+Now the external IP of this service should be available when you run:
+
+```bash
+kubectl get service
+```
+This is the IP being used in `frontend/src/services/analyticsService.js` to make calls to the analytics service. To use your IP, replace this one.
+
+### 2) Deploy all other services and monolith to your local machine.
+
+
 
 ## Project Structure
 ```
