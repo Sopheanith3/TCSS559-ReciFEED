@@ -78,7 +78,7 @@ JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f
 
 ```bash
 # Recipe query service port
-PORT=3082
+PORT=3083
 
 # Mistral AI Key for querying LLM models
 MISTRAL_API_KEY=7QOauC1jWUCdIVZWstFclHuX058GwQIK
@@ -105,7 +105,7 @@ JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f
 
 ```bash
 # Bsky Service port
-PORT=3083
+PORT=3082
 
 # MongoDB connection URI (recifeed_db)
 MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongodb.net/recifeed_db?retryWrites=true&w=majority
