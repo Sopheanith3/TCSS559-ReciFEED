@@ -27,7 +27,7 @@ const EditPostModal = ({ isOpen, onClose, onPostUpdated, post }) => {
         setImagePreview(firstImage);
         
         // Check if it's a URL or base64
-        if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
+        if (typeof firstImage === 'string' && (firstImage.startsWith('http://') || firstImage.startsWith('https://'))) {
           setUploadMethod('url');
           setImageUrl(firstImage);
         } else {

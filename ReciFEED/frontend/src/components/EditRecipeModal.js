@@ -38,7 +38,7 @@ const EditRecipeModal = ({ isOpen, onClose, onRecipeUpdated, recipe }) => {
       // Check if existing images are URLs or base64
       const firstImage = recipe.image_urls && recipe.image_urls.length > 0 ? recipe.image_urls[0] : recipe.image;
       if (firstImage) {
-        if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
+        if (typeof image === 'string' && (firstImage.startsWith('http://') || firstImage.startsWith('https://'))) {
           setUploadMethod('url');
           setImagePreview(null);
           setUploadedImages([]);
