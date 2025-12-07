@@ -168,7 +168,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
   const user = await User.findOne({ email }); // Find user by email
 
-  // TODO: In production, check !(await bcrypt.compare(password, user.password)
+  // In production, would check !(await bcrypt.compare(password, user.password)
   if (!user || password !== user.password_hash) {
     return next(new ErrorResponse('Invalid email or password.', 401)); // Validate credentials
   }

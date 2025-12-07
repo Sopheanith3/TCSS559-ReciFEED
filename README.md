@@ -1,6 +1,15 @@
 # ReciFEED - Social Recipe Sharing Platform
 
+## Clone Repository
+
+```bash
+git clone <your-repo-url>
+cd ReciFEED
+```
+
 ## 1. Local Setup Guide
+
+The components of this project can be run locally, but be aware that the current repo version utilizes the **Kubernetes Deployment instructions (2)** for the endpoints of interaction between components, so, in this setup case, connection URLs must be changed to function.
 
 ### Prerequisites
 - Node.js (v14 or higher)
@@ -9,13 +18,7 @@
 
 ### Installation Steps
 
-#### 1. Clone the Repository
-```bash
-git clone <your-repo-url>
-cd ReciFEED
-```
-
-#### 2. Start Frontend Locally
+#### 1. Start Frontend
 ```bash
 # Create and setup frontend
 cd frontend
@@ -23,7 +26,7 @@ npm install
 npm start
 ```
 
-#### 3. Start Monolithic Core Locally
+#### 2. Start Monolithic Core
 ```bash
 # Setup monolith
 cd monolith
@@ -31,7 +34,7 @@ npm install
 npm start
 ```
 
-#### 4. Start Services Locally
+#### 3. Start Services
 ```bash
 # Setup analytics service
 cd services/analytics-service
@@ -61,7 +64,7 @@ npm start
 
 This project requires environment variables to connect to MongoDB and other external services.
 
-### 1) Create `monolith/.env`
+#### 1) Create `monolith/.env`
 
 ```bash
 # Monolith Port
@@ -74,7 +77,7 @@ MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongo
 JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
 ```
 
-### 2) Create `microservices/recipe-query-service/.env`
+#### 2) Create `microservices/recipe-query-service/.env`
 
 ```bash
 # Recipe query service port
@@ -84,7 +87,7 @@ PORT=3083
 MISTRAL_API_KEY=7QOauC1jWUCdIVZWstFclHuX058GwQIK
 ```
 
-### 3) Create `microservices/twitter-service/.env`
+#### 3) Create `microservices/twitter-service/.env`
 
 ```bash
 # Twitter Service port
@@ -101,7 +104,7 @@ MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongo
 JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
 ```
 
-### 4) Create `microservices/bsky-service/.env`
+#### 4) Create `microservices/bsky-service/.env`
 
 ```bash
 # Bsky Service port
@@ -114,7 +117,7 @@ MONGODB_URI=mongodb+srv://<username>:<password>@recifeed-cluster-0.yywkfdd.mongo
 JWT_SECRET=5e01f95b10e1688ad88a1ddd2d85f9fb7c8d8bb4ea977f507010b8682bd0604a7ae7f6481b648b898dfd612e83f9279d85b7911d2bb4fb07a6a7165a4e767932
 ```
 
-### 5) Create `microservices/analytics-service/.env`
+#### 5) Create `microservices/analytics-service/.env`
 
 ```bash
 # Analytics Service port
@@ -234,13 +237,31 @@ kubectl get ingress
 
 The project connects to the following external services.
 
-### Mistral
-
-### Twitter/X
-
-### Bluesky
+- [Mistral AI:](https://mistral.ai/): small LLMs called via HTTP, view linked documentation to setup account and receive above API keys.
+- [Twitter/X](https://developer.x.com/en/docs/x-api): authenticate with a Twitter user and gain control over actions, view linked documentation to gain both above developer keys.
+- [Bluesky](https://docs.bsky.app/): authenticate with a Bsky user and gain control over actions, view linked documentation to view API usage tutorials.
 
 ## 4. API Documentation
+
+To run documentation for this API, run the following commands:
+
+```bash
+cd ./api-docs/monolith
+npm install
+npm start
+```
+
+The monolith documentation will run on http://localhost:2020.
+
+In another terminal:
+
+```bash
+cd ./api-docs/monolith
+npm install
+npm start
+```
+
+The microservice documentation will run on http://localhost:2021.
 
 ## 5. Operations
 
@@ -255,7 +276,9 @@ The analytics dashboard is available on the frontend at the route http://localho
 - Most Popular Search Terms (within the last 1d, 1w, 1m)
 
 ### Troubleshooting
-
+Common Errors
+- **Kubernetes Deployment**: Ensure kubetcl environment is set to build in Docker. If they appear locally, they are wrong.
+- **Minikube Memory Error**: Current fix, create a new profile in Minikube and start commands there.
 
 ## Project Structure
 ```

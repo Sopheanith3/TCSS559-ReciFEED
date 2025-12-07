@@ -1,7 +1,6 @@
 const Post = require('../models/post');
 const Recipe = require('../models/recipe');
 const User = require('../models/user');
-const Search = require('../models/search');
 const { ErrorResponse, asyncHandler } = require('../utils/errorHandler');
 
 const searchAll = asyncHandler(async (req, res, next) => {
@@ -170,32 +169,9 @@ const searchPosts = asyncHandler(async (req, res, next) => {
   });
 });
 
-const saveSearch = asyncHandler(async (req, res, next) => {
-  const { query, filters } = req.body;
-
-  if (!query) {
-    return next(new ErrorResponse('Please provide a search query', 400));
-  }
-
-  const searchData = {
-    query,
-    filters: filters || [],
-    created_at: new Date()
-  };
-
-  const search = await Search.create(searchData);
-
-  res.status(201).json({
-    status: 'success',
-    message: 'Search saved successfully',
-    data: search
-  });
-});
-
 module.exports = {
   searchAll,
   searchRecipes,
   searchUsers,
-  searchPosts,
-  saveSearch
+  searchPosts
 };

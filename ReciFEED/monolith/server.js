@@ -67,7 +67,7 @@ const validateToken = (req, res, next) => {
 };
 
 // Root endpoint
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({
     message: 'Welcome to ReciFEED API',
     version: '1.0.0',
