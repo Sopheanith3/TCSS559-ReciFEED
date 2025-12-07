@@ -6,19 +6,19 @@
     "version": "1.0.0",
     "servers": [
       { 
-        "url": "http://recifeed.example.app",
+        "url": "http://recifeed.example.com",
         "description": "Recifeed API URL from Ingress"
       }
     ]
   },
   "paths": {
-    "/": {
+    "/api": {
       "get": {
         "tags": ["Monolith"],
         "summary": "Returns a base monolith API descriptor object.",
         "responses": {
           "200": {
-            "description": "Returns a static JSON object as a base summary of API endpoints.",
+            "description": "Returns a static object as a summary of API endpoints.",
             "content": {
               "application/json": {
                 "example": {
@@ -36,19 +36,27 @@
             }
           },
           "500": {
-            "description": "Returns an informational JSON object as a base summary of API endpoints.",
+            "description": "Internal error, returns appropriate error response.",
             "content": {
               "application/json": {
-                "example": {
-                  "message": "Welcome to ReciFEED API",
-                  "version": "1.0.0",
-                  "endpoints": {
-                    "health": "/api/health",
-                    "users": "/api/users",
-                    "recipes": "/api/recipes",
-                    "posts": "/api/posts",
-                    "search": "/api/search"
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
                   }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
                 }
               }
             }

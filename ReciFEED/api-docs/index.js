@@ -4,7 +4,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDoc = require('./swagger.json');
 
 // Force the server URL programmatically
-swaggerDoc.servers = [{ url: 'http://recifeed.example.app', description: 'Recifeed API URL from Ingress' }]
+swaggerDoc.servers = [{ url: 'http://recifeed.example.com', description: 'Recifeed API URL from Ingress' }]
 
 // Initialize Express application
 const app = express();
