@@ -18,7 +18,7 @@
         "summary": "Returns a base monolith API descriptor object.",
         "responses": {
           "200": {
-            "description": "Returns a static object as a summary of API endpoints.",
+            "description": "Returns a summary of API endpoints (static).",
             "content": {
               "application/json": {
                 "example": {
@@ -62,6 +62,1071 @@
             }
           }
         }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": ["Monolith"],
+        "summary": "Returns a health check of the monolith.",
+        "responses": {
+          "200": {
+            "description": "Returns a success message, with timestamp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "ReciFEED API is running",
+                  "timestamp": "2025-12-07T01:03:27.405Z"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error, returns appropriate error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": ["Monolith"],
+        "summary": "Returns a list of all users (sans passwords), paginated.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Returns a success message with time.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "number"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "email": {
+                                "type": "string"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "__v": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type":"number"
+                            },
+                            "totalPages": {
+                              "type":"number"
+                            },
+                            "totalUsers": {
+                              "type":"number"
+                            },
+                            "hasMore": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                      "users": [
+                        {
+                          "_id": "69348446b4d83ba7597b11c2",
+                          "created_at": "2025-12-06T19:30:14.698Z",
+                          "email": "cel@uw.edu",
+                          "username": "Celestine5",
+                          "__v": 0
+                        },
+                        {
+                          "_id": "693479a6b4d83ba7597b10c9",
+                          "created_at": "2025-12-06T18:44:54.591Z",
+                          "email": "john@gmail.com",
+                          "username": "JohnDoe",
+                          "__v": 0
+                        },
+                        { 
+                          "_id": "690f704d3fe0dd94aba6c981",
+                          "created_at": "2025-10-21T11:30:00.000Z",
+                          "email": "paul@example.com",
+                          "username": "paul"
+                        }
+                    ],
+                    "pagination": {
+                        "currentPage": 1,
+                        "totalPages": 2,
+                        "totalUsers": 21,
+                        "hasMore": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error, no valid bearer token, returns error object (static).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Unauthorized: Missing or invalid token."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error, returns appropriate error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/:id": {
+    "get": {
+      "tags": ["Monolith"],
+      "summary": "Returns a single user by ID (sans password).",
+      "security": [{ "bearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "User ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Returns user data without password.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "status": "success",
+                "data": {
+                  "_id": "69348446b4d83ba7597b11c2",
+                  "created_at": "2025-12-06T19:30:14.698Z",
+                  "email": "cel@uw.edu",
+                  "username": "Celestine5",
+                  "__v": 0
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Authentication error, no valid bearer token.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 401,
+                "message": "Unauthorized: Missing or invalid token."
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "User not found.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 404,
+                "message": "User not found"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 500,
+                "message": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "tags": ["Monolith"],
+      "summary": "Updates a user by ID. If username changes, cascades update to all posts, comments, likes, and reviews.",
+      "security": [{ "bearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "User ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "description": "New email address"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "New username"
+                }
+              }
+            },
+            "example": {
+              "email": "newemail@example.com",
+              "username": "NewUsername"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "User updated successfully.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "status": "success",
+                "message": "User updated successfully",
+                "data": {
+                  "_id": "69348446b4d83ba7597b11c2",
+                  "created_at": "2025-12-06T19:30:14.698Z",
+                  "email": "newemail@example.com",
+                  "username": "NewUsername",
+                  "__v": 0
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Authentication error, no valid bearer token.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 401,
+                "message": "Unauthorized: Missing or invalid token."
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "User not found.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 404,
+                "message": "User not found"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 500,
+                "message": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "delete": {
+      "tags": ["Monolith"],
+      "summary": "Deletes a user by ID.",
+      "security": [{ "bearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "User ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "User successfully deleted.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "userId": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "status": "success",
+                "message": "User successfully deleted",
+                "data": {
+                  "userId": "69348446b4d83ba7597b11c2"
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Authentication error, no valid bearer token.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 401,
+                "message": "Unauthorized: Missing or invalid token."
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "User not found.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 404,
+                "message": "User not found"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 500,
+                "message": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/api/users/login": {
+    "post": {
+      "tags": ["Monolith"],
+      "summary": "Authenticates a user with email and password, returns JWT token.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["email", "password"],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "description": "User email address"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "User password"
+                }
+              }
+            },
+            "example": {
+              "email": "john@gmail.com",
+              "password": "password123"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Login successful, returns JWT token and user info.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string",
+                    "description": "JWT bearer token"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "User ID"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username"
+                  }
+                }
+              },
+              "example": {
+                "message": "Login successful",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQ3OWE2YjRkODNiYTc1OTdiMTBjOSIsInVzZXJuYW1lIjoiSm9obkRvZSIsImlhdCI6MTYzMzA1NjAwMCwiZXhwIjoxNjMzMDk5MjAwfQ.abc123xyz",
+                "id": "693479a6b4d83ba7597b10c9",
+                "username": "JohnDoe"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Missing email or password.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 400,
+                "message": "Email and password required for login."
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Invalid credentials.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 401,
+                "message": "Invalid email or password."
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 500,
+                "message": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/api/users/validate": {
+    "get": {
+      "tags": ["Monolith"],
+      "summary": "Validates a JWT token and returns decoded user information.",
+      "requestBody": {
+        "required": false,
+        "description": "Token is passed via Authorization header, not request body."
+      },
+      "security": [{ "bearerAuth": [] }],
+      "responses": {
+        "200": {
+          "description": "Token is valid, returns decoded user data.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "valid": {
+                    "type": "boolean"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "User ID from token"
+                      },
+                      "username": {
+                        "type": "string",
+                        "description": "Username from token"
+                      },
+                      "iat": {
+                        "type": "number",
+                        "description": "Token issued at timestamp"
+                      },
+                      "exp": {
+                        "type": "number",
+                        "description": "Token expiration timestamp"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "valid": true,
+                "user": {
+                  "id": "693479a6b4d83ba7597b10c9",
+                  "username": "JohnDoe",
+                  "iat": 1633056000,
+                  "exp": 1633099200
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Missing, invalid, or expired token.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 401,
+                "message": "Unauthorized: Missing or invalid token."
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 500,
+                "message": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/api/users": {
+    "post": {
+      "tags": ["Monolith"],
+      "summary": "Creates a new user account.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["email", "password", "username"],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "description": "User email address"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "User password"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Username"
+                }
+              }
+            },
+            "example": {
+              "email": "newuser@example.com",
+              "password": "securepassword",
+              "username": "NewUser123"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "User created successfully.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "status": "success",
+                "data": {
+                  "_id": "69348446b4d83ba7597b11c3",
+                  "created_at": "2025-12-07T01:15:00.000Z",
+                  "email": "newuser@example.com",
+                  "username": "NewUser123",
+                  "__v": 0
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Missing required fields or user already exists.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "missingFields": {
+                  "value": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Please provide email, password, and username"
+                  }
+                },
+                "userExists": {
+                  "value": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "User with this email already exists"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "statusCode": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "status": "error",
+                "statusCode": 500,
+                "message": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Required for most all endpoints in this API (sans login, user create, user validate, checks). Received from a valid ```/login``` response."
       }
     }
   }
