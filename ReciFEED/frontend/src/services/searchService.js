@@ -44,7 +44,7 @@ export const searchService = {
   // Get available filter options from backend
   getFilterOptions: async () => {
     try {
-      const response = await fetch(`${API_URL}/recipes/filters/options`, {
+      const response = await fetch(`${API_URL}/recipes/filter/options`, {
         headers: getAuthHeaders(),
       });
       
