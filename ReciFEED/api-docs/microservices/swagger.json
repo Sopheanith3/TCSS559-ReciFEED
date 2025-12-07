@@ -1,0 +1,661 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ReciFEED API - Microservices",
+    "description": "The microservice part of a hybrid microservices-monolith API forming the ReciFEED website app's backend.",
+    "version": "1.0.0",
+    "servers": [
+      {
+        "url": "http://recifeed.example.com",
+        "description": "Recifeed API URL from Ingress"
+      }
+    ]
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "tags": ["Analytics Service"],
+        "responses": {
+          "200": {
+            "description": "Service is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "timestamp": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/event": {
+      "post": {
+        "tags": ["Analytics Service"],
+        "summary": "Log an analytics event",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type", "content"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "create_post",
+                      "create_recipe",
+                      "recipe_view",
+                      "post_interaction",
+                      "user_view",
+                      "search"
+                    ]
+                  },
+                  "content": {
+                    "type": "object",
+                    "description": "Event-specific content"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event logged successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/Event" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/live": {
+      "get": {
+        "summary": "Retrieve recent live analytics",
+        "tags": ["Analytics Service"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["post-interactions", "recipe-views", "users"]
+            },
+            "description": "Type of live analytic to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Live analytics count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid query" },
+          "500": { "description": "Error retrieving analytics" }
+        }
+      }
+    },
+    "/popular": {
+      "get": {
+        "summary": "Retrieve popular analytics",
+        "tags": ["Analytics Service"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["posts", "recipes", "users", "search"]
+            }
+          },
+          {
+            "name": "range",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["day", "week", "month"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Popular analytics results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "description": "For posts/recipes/users",
+                      "items": { "$ref": "#/components/schemas/PopularItem" }
+                    },
+                    {
+                      "type": "array",
+                      "description": "For search",
+                      "items": { "$ref": "#/components/schemas/SearchTerm" }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query params"
+          },
+          "500": {
+            "description": "Error retrieving analytics"
+          }
+        }
+      }
+    },
+    "/bsky/health": {
+      "get": {
+        "summary": "Health check",
+        "tags": ["Bluesky Service"],
+        "responses": {
+          "200": {
+            "description": "Service is running",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Bsky microservice is running",
+                  "timestamp": "2025-01-08T05:12:43.342Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bsky/validate": {
+      "get": {
+        "summary": "Validate if user is authenticated with Bsky",
+        "tags": ["Bluesky Service"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User is authenticated",
+            "content": {
+              "application/json": {
+                "example": { "authorized": true }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated",
+            "content": {
+              "application/json": {
+                "example": { "authorized": false }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "example": { "error": "Internal error, could not validate user auth." }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/bsky/auth": {
+      "post": {
+        "summary": "Authenticate user with Bluesky",
+        "tags": ["Bluesky Service"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["identifier", "password"],
+                "properties": {
+                  "identifier": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              },
+              "example": {
+                "identifier": "myuser.bsky.social",
+                "password": "correct-horse-battery-staple"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Successfully logged in Bsky user."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing identifier/password",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Must provide Bsky identifier and password."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Could not authenticate",
+            "content": {
+              "application/json": {
+                "example": { "error": "Internal error, could not validate user." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bsky/post": {
+      "post": {
+        "summary": "Create a Bluesky post for the current user",
+        "description": "Can include text, images (max 4), or both. Images must be < 1MB each.",
+        "security": [{ "bearerAuth": [] }],
+        "tags": ["Bluesky Service"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": { "type": "string" },
+                  "images": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              },
+              "example": {
+                "text": "Hello from the API!",
+                "images": ["(binary image 1)", "(binary image 2)"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post created",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "uri": "at://did:plc:xyz/app.bsky.feed.post/3kqexabc123",
+                    "cid": "bafyrei7bnxj223..."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "missing_content": {
+                    "value": { "error": "Must provide either text content or photos for post." }
+                  },
+                  "bad_file": {
+                    "value": { "error": "Only image files are allowed (1M byte size limit)." }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated with Bsky",
+            "content": {
+              "application/json": {
+                "example": { "error": "User not authorized for Bsky." }
+              }
+            }
+          },
+          "500": {
+            "description": "Error creating post",
+            "content": {
+              "application/json": {
+                "example": { "error": "Internal error, could not create Bsky post." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/twitter/health": {
+      "get": {
+        "tags": ["Twitter Service"],
+        "summary": "Health check endpoint",
+        "responses": {
+          "200": {
+            "description": "Service is running",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Analytics microservice is running",
+                  "timestamp": "2025-01-01T00:00:00.000Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/twitter/auth": {
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "tags": ["Twitter Service"],
+        "summary": "Check if user is authenticated for Twitter",
+        "responses": {
+          "200": {
+            "description": "User is authorized",
+            "content": {
+              "application/json": {
+                "example": { "authorized": true }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authenticated",
+            "content": {
+              "application/json": {
+                "example": { "authorized": false }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/twitter/auth/start": {
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "tags": ["Twitter Service"],
+        "summary": "Start Twitter OAuth authentication",
+        "responses": {
+          "200": {
+            "description": "OAuth start link returned",
+            "content": {
+              "application/json": {
+                "example": {
+                  "redirectLink": "https://api.x.com/oauth/authenticate?oauth_token=XXXX"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+
+    "/twitter/auth/complete": {
+      "post": {
+        "security": [{ "bearerAuth": [] }],
+        "tags": ["Twitter Service"],
+        "summary": "Complete Twitter OAuth using PIN",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["pin"],
+                "properties": {
+                  "pin": { "type": "string", "example": "1234567" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication completed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Successfully authenticated Twitter access for this user."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "PIN missing"
+          },
+          "401": {
+            "description": "User has not started auth process"
+          }
+        }
+      }
+    },
+
+    "/twitter/post": {
+      "post": {
+        "security": [{ "bearerAuth": [] }],
+        "tags": ["Twitter Service"],
+        "summary": "Post a tweet with text and optional images",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "Hello world!"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tweet successfully posted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Post successful.",
+                  "post": {
+                    "data": {
+                      "id": "1234567890",
+                      "text": "Hello world!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No text or photos supplied"
+          },
+          "401": {
+            "description": "User unauthorized for Twitter"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/recipe-query/health": {
+      "get": {
+        "summary": "Health check",
+        "tags": ["Recipe Query Service"],
+        "operationId": "recipeQueryHealth",
+        "responses": {
+          "200": {
+            "description": "Microservice health status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Recipe query microservice is running" },
+                    "timestamp": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe-query/query": {
+      "post": {
+        "summary": "Query the LLM with a recipe and user question",
+        "tags": ["Recipe Query Service"],
+        "operationId": "queryRecipeLLM",
+        "requestBody": {
+          "description": "Recipe string and user question for the LLM",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["recipe", "query"],
+                "properties": {
+                  "recipe": {
+                    "type": "string",
+                    "example": "Title: Sweet Scones\nIngredients:\n- 2 cups flour\n- 1 cup sugar\nSteps:\n1. Bake 25 minutes.\n2. Cool 10 minutes."
+                  },
+                  "query": {
+                    "type": "string",
+                    "example": "How long does this recipe take?"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "LLM response to the recipe question",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request – missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "Must provide recipe string and query string." }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error retrieving LLM response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "Internal error retrieving chat response." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Event": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "type": { "type": "string" },
+          "user_id": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "content": { "type": "object" }
+        }
+      },
+      "PopularItem": {
+        "type": "object",
+        "properties": {
+          "contentId": { "type": "string" },
+          "label": { "type": "string" },
+          "count": { "type": "integer" }
+        }
+      },
+      "SearchTerm": {
+        "type": "object",
+        "properties": {
+          "term": { "type": "string" },
+          "count": { "type": "integer" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Required for most all endpoints in this API (sans login, user create, user validate, checks). Received from a valid ```/login``` response."
+      }
+    }
+  }
+}

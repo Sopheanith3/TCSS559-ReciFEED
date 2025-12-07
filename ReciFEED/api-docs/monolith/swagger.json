@@ -1,0 +1,3295 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ReciFEED API - Monolith",
+    "description": "The monolith section of a hybrid microservices-monolith API forming the ReciFEED website app's backend.",
+    "version": "1.0.0",
+    "servers": [
+      {
+        "url": "http://recifeed.example.com",
+        "description": "Recifeed API URL from Ingress"
+      }
+    ]
+  },
+  "paths": {
+    "/api": {
+      "get": {
+        "tags": ["Monolith"],
+        "summary": "Returns a base monolith API descriptor object.",
+        "responses": {
+          "200": {
+            "description": "Returns a summary of API endpoints (static).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Welcome to ReciFEED API",
+                  "version": "1.0.0",
+                  "endpoints": {
+                    "health": "/api/health",
+                    "users": "/api/users",
+                    "recipes": "/api/recipes",
+                    "posts": "/api/posts",
+                    "search": "/api/search"
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": ["Monolith"],
+        "summary": "Returns a health check of the monolith.",
+        "responses": {
+          "200": {
+            "description": "Returns a success message, with timestamp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "ReciFEED API is running",
+                  "timestamp": "2025-12-07T01:03:27.405Z"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Returns a list of all users (sans passwords), paginated.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Returns a success message with time.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "users": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/User" }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "number"
+                            },
+                            "totalPages": {
+                              "type": "number"
+                            },
+                            "totalUsers": {
+                              "type": "number"
+                            },
+                            "hasMore": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "users": [
+                      {
+                        "_id": "69348446b4d83ba7597b11c2",
+                        "created_at": "2025-12-06T19:30:14.698Z",
+                        "email": "cel@uw.edu",
+                        "username": "Celestine5",
+                        "__v": 0
+                      },
+                      {
+                        "_id": "693479a6b4d83ba7597b10c9",
+                        "created_at": "2025-12-06T18:44:54.591Z",
+                        "email": "john@gmail.com",
+                        "username": "JohnDoe",
+                        "__v": 0
+                      },
+                      {
+                        "_id": "690f704d3fe0dd94aba6c981",
+                        "created_at": "2025-10-21T11:30:00.000Z",
+                        "email": "paul@example.com",
+                        "username": "paul"
+                      }
+                    ],
+                    "pagination": {
+                      "currentPage": 1,
+                      "totalPages": 2,
+                      "totalUsers": 21,
+                      "hasMore": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error, no valid bearer token, returns error object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Unauthorized: Missing or invalid token."
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/users/:id": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Returns a single user by ID (sans password).",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns user data without password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "_id": "69348446b4d83ba7597b11c2",
+                    "created_at": "2025-12-06T19:30:14.698Z",
+                    "email": "cel@uw.edu",
+                    "username": "Celestine5",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "User not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Updates a user by ID. If username changes, cascades update to all posts, comments, likes, and reviews.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "New email address"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "New username"
+                  }
+                }
+              },
+              "example": {
+                "email": "newemail@example.com",
+                "username": "NewUsername"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "User updated successfully",
+                  "data": {
+                    "_id": "69348446b4d83ba7597b11c2",
+                    "created_at": "2025-12-06T19:30:14.698Z",
+                    "email": "newemail@example.com",
+                    "username": "NewUsername",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "User not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Deletes a user by ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "User successfully deleted",
+                  "data": {
+                    "userId": "69348446b4d83ba7597b11c2"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "User not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Authenticates a user with email and password, returns JWT token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email address"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password"
+                  }
+                }
+              },
+              "example": {
+                "email": "john@gmail.com",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful, returns JWT token and user info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "JWT bearer token"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "User ID"
+                    },
+                    "username": {
+                      "type": "string",
+                      "description": "Username"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Login successful",
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQ3OWE2YjRkODNiYTc1OTdiMTBjOSIsInVzZXJuYW1lIjoiSm9obkRvZSIsImlhdCI6MTYzMzA1NjAwMCwiZXhwIjoxNjMzMDk5MjAwfQ.abc123xyz",
+                  "id": "693479a6b4d83ba7597b10c9",
+                  "username": "JohnDoe"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing email or password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 400,
+                  "message": "Email and password required for login."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Invalid email or password."
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/users/validate": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Validates a JWT token and returns decoded user information.",
+        "requestBody": {
+          "required": false,
+          "description": "Token is passed via Authorization header, not request body."
+        },
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Token is valid, returns decoded user data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "User ID from token"
+                        },
+                        "username": {
+                          "type": "string",
+                          "description": "Username from token"
+                        },
+                        "iat": {
+                          "type": "number",
+                          "description": "Token issued at timestamp"
+                        },
+                        "exp": {
+                          "type": "number",
+                          "description": "Token expiration timestamp"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "valid": true,
+                  "user": {
+                    "id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "iat": 1633056000,
+                    "exp": 1633099200
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid, or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Unauthorized: Missing or invalid token."
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Creates a new user account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password", "username"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email address"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username"
+                  }
+                }
+              },
+              "example": {
+                "email": "newuser@example.com",
+                "password": "securepassword",
+                "username": "NewUser123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "_id": "69348446b4d83ba7597b11c3",
+                    "created_at": "2025-12-07T01:15:00.000Z",
+                    "email": "newuser@example.com",
+                    "username": "NewUser123",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields or user already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "missingFields": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide email, password, and username"
+                    }
+                  },
+                  "userExists": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "User with this email already exists"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Searches across all entities (recipes, users, posts) with a single query.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Search query string (case-insensitive)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "rice"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns search results from all entities.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recipes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "description": "See recipe endpoint schemas."
+                          }
+                        },
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "description": "See user endpoint schemas."
+                          }
+                        },
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "description": "See post endpoint schemas."
+                          }
+                        },
+                        "totalResults": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "query": "pasta",
+                  "data": {
+                    "recipes": [
+                      {
+                        "_id": "692ff193a5480ded0a6fc658",
+                        "created_at": "2025-11-01T18:20:00.000Z",
+                        "user_id": "693278ef0ce44526e02f9290",
+                        "username": "grace",
+                        "title": "Butter Pasta",
+                        "tags": ["Lunch", "Dinner"],
+                        "ingredients": [
+                          "1 cup noodles",
+                          "2 cups water",
+                          "1 tbsp butter"
+                        ],
+                        "instructions": [
+                          "Boil water.",
+                          "Add noodles and butter.",
+                          "Simmer until done."
+                        ],
+                        "image_urls": [
+                          "https://andianne.com/wp-content/uploads/2023/05/garlic-butter-noodles-02.jpg"
+                        ],
+                        "cooking_time": "25mins",
+                        "reviews": [
+                          {
+                            "_id": "6934dff0cda8a8bfe83f88b8",
+                            "user_id": "690f704d3fe0dd94aba6c975",
+                            "username": "dave",
+                            "rating": 4,
+                            "comment": "Simple and satisfying!",
+                            "created_at": "2025-11-01T18:45:00.000Z"
+                          }
+                        ]
+                      }
+                    ],
+                    "users": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10c9",
+                        "created_at": "2025-10-28T16:20:00.000Z",
+                        "username": "PastaLover",
+                        "email": "pasta@example.com"
+                      }
+                    ],
+                    "posts": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10e5",
+                        "created_at": "2025-11-04T17:30:00.000Z",
+                        "user_id": "693479a6b4d83ba7597b10c9",
+                        "username": "ivan",
+                        "body": "Just made the best pasta dish!",
+                        "image_urls": [
+                          "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_1:1/k%2Farchive%2F2ba8aab83d28bb172962e3064b9da28047d8f49b",
+                          "https://themenumaid.com/wp-content/uploads/2021/08/IMG_E1797-blog-photo.jpg"
+                        ],
+                        "likes": [],
+                        "comments": [],
+                        "__v": 2
+                      }
+                    ],
+                    "totalResults": 3
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing search query parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 400,
+                  "message": "Please provide a search query"
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/search/recipes": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Searches recipes by query, tags, and/or cooking time. All parameters optional.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Search query string for title, tags, or ingredients (case-insensitive)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "toast"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated list of tags to filter by",
+            "schema": {
+              "type": "string"
+            },
+            "example": "breakfast"
+          },
+          {
+            "name": "cookingTime",
+            "in": "query",
+            "required": false,
+            "description": "Cooking time range filter",
+            "schema": {
+              "type": "string",
+              "enum": ["0-15", "15-30", "30-45", "45-60", "60+"]
+            },
+            "example": "0-15"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns filtered recipe results (up to 50).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "filters": {
+                      "type": "object",
+                      "properties": {
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "cookingTime": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recipes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "totalResults": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "query": "toast",
+                  "filters": {
+                    "tags": ["breakfast"],
+                    "cookingTime": "0-15"
+                  },
+                  "data": {
+                    "recipes": [
+                      {
+                        "_id": "692ff193a5480ded0a6fc65b",
+                        "created_at": "2025-10-29T20:25:00.000Z",
+                        "user_id": "693278ef0ce44526e02f9293",
+                        "username": "judy",
+                        "title": "Avocado Toast",
+                        "tags": ["Breakfast", "Vegan", "Snack"],
+                        "ingredients": [
+                          "1 avocado",
+                          "2 slices bread",
+                          "Salt and pepper"
+                        ],
+                        "instructions": [
+                          "Mash avocado with seasoning.",
+                          "Spread on toasted bread."
+                        ],
+                        "image_urls": [
+                          "https://thesaltypot.com/wp-content/uploads/2019/02/Avocado-Toast09.jpg"
+                        ],
+                        "cooking_time": "10mins",
+                        "reviews": [
+                          {
+                            "_id": "6934e2aecda8a8bfe83f88c7",
+                            "user_id": "690f704d3fe0dd94aba6c973",
+                            "username": "bob",
+                            "rating": 5,
+                            "comment": "Simple and delicious!",
+                            "created_at": "2025-10-29T21:30:00.000Z"
+                          },
+                          {
+                            "_id": "6934e2aecda8a8bfe83f88c8",
+                            "user_id": "690f704d3fe0dd94aba6c973",
+                            "username": "bob",
+                            "rating": 5,
+                            "comment": "Again, great recipe!",
+                            "created_at": "2025-10-29T21:40:00.000Z"
+                          }
+                        ]
+                      }
+                    ],
+                    "totalResults": 1
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/search/users": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Searches users by username or email.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Search query string for username or email (case-insensitive)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "john"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns matching users (up to 50, sans passwords).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "email": {
+                                "type": "string"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "__v": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        },
+                        "totalResults": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "query": "john",
+                  "data": {
+                    "users": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10c9",
+                        "created_at": "2025-12-06T18:44:54.591Z",
+                        "email": "john@gmail.com",
+                        "username": "JohnDoe",
+                        "__v": 0
+                      }
+                    ],
+                    "totalResults": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing search query parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 400,
+                  "message": "Please provide a search query"
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/search/posts": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Searches posts by body content.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Search query string for post body content (case-insensitive)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "love"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns matching posts (up to 50).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "totalResults": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "query": "love",
+                  "data": {
+                    "posts": [
+                      {
+                        "_id": "6931165a0b0c94bc3f834190",
+                        "created_at": "2025-11-07T14:00:00.000Z",
+                        "user_id": "693278ef0ce44526e02f9290",
+                        "username": "grace",
+                        "recipe_id": "692ff193a5480ded0a6fc654",
+                        "body": "Fresh Greek salad for lunch. Loved it!",
+                        "image_urls": [
+                          "https://www.themediterraneandish.com/wp-content/uploads/2023/08/traditional-greek-salad-recipe-6.jpg"
+                        ],
+                        "likes": [
+                          {
+                            "user_id": "69346b5fb4d83ba7597b0e06",
+                            "username": "CelestineTheTester",
+                            "created_at": "2025-12-06T18:41:17.758Z",
+                            "_id": "693478cdb4d83ba7597b0ffc"
+                          }
+                        ],
+                        "comments": [
+                          {
+                            "_id": "000000000000000000000001",
+                            "user_id": "690f704d3fe0dd94aba6c972",
+                            "username": "alice",
+                            "created_at": "2025-11-07T14:30:00.000Z",
+                            "text": "Interesting!"
+                          },
+                          {
+                            "user_id": "692f846fb6adf6ddd514d509",
+                            "username": "Nithh",
+                            "created_at": "2025-12-04T09:40:19.429Z",
+                            "text": "Very Healthy",
+                            "_id": "69315703ca5ae5a52a37a142"
+                          }
+                        ],
+                        "__v": 4
+                      }
+                    ],
+                    "totalResults": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing search query parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 400,
+                  "message": "Please provide a search query"
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/recipes": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Returns a paginated list of all recipes with sorting options.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of recipes per page (default: 20)",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "description": "Field to sort by (default: created_at)",
+            "schema": {
+              "type": "string",
+              "default": "created_at"
+            },
+            "example": "title"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "Sort order: 'asc' or 'desc' (default: desc)",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns paginated recipe list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recipes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "type": "string"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "cooking_time": {
+                                "type": "string"
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "ingredients": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "instructions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "image_urls": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "reviews": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object"
+                                }
+                              },
+                              "created_at": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "number"
+                            },
+                            "totalPages": {
+                              "type": "number"
+                            },
+                            "totalRecipes": {
+                              "type": "number"
+                            },
+                            "hasMore": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "recipes": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10d1",
+                        "user_id": "693479a6b4d83ba7597b10c9",
+                        "username": "JohnDoe",
+                        "title": "Classic Pasta Carbonara",
+                        "cooking_time": "30 minutes",
+                        "tags": ["italian", "pasta"],
+                        "ingredients": ["pasta", "eggs", "bacon", "parmesan"],
+                        "instructions": [
+                          "Boil pasta",
+                          "Cook bacon",
+                          "Mix with eggs"
+                        ],
+                        "image_urls": ["https://example.com/image1.jpg"],
+                        "reviews": [],
+                        "created_at": "2025-12-06T20:00:00.000Z"
+                      }
+                    ],
+                    "pagination": {
+                      "currentPage": 1,
+                      "totalPages": 5,
+                      "totalRecipes": 87,
+                      "hasMore": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error, no valid bearer token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recipes/:id/reviews/:reviewId": {
+      "delete": {
+        "tags": ["Monolith"],
+        "summary": "Deletes a review from a recipe and recalculates average rating.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Recipe ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "description": "Review ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review successfully deleted with updated stats.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "reviewId": {
+                          "type": "string"
+                        },
+                        "totalReviews": {
+                          "type": "number"
+                        },
+                        "averageRating": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Review successfully deleted",
+                  "data": {
+                    "reviewId": "693479a6b4d83ba7597b10d8",
+                    "totalReviews": 2,
+                    "averageRating": 4.5
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "Recipe or review not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "recipeNotFound": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 404,
+                      "message": "Recipe not found"
+                    }
+                  },
+                  "reviewNotFound": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 404,
+                      "message": "Review not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/recipes/filter/options": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Returns all available filter options (unique tags and cooking times from all recipes).",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Returns unique tags and cooking times.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Sorted array of unique tags"
+                        },
+                        "cookingTimes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Sorted array of unique cooking times"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "tags": [
+                      "asian",
+                      "baking",
+                      "dessert",
+                      "italian",
+                      "pasta",
+                      "quick",
+                      "vegetarian"
+                    ],
+                    "cookingTimes": [
+                      "15 minutes",
+                      "20 minutes",
+                      "30 minutes",
+                      "45 minutes",
+                      "1 hour"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/recipes/filter": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Filters recipes by tags and/or exact cooking time.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated list of tags to filter by (matches any)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "italian,pasta"
+          },
+          {
+            "name": "cooking_time",
+            "in": "query",
+            "required": false,
+            "description": "Exact cooking time string to filter by",
+            "schema": {
+              "type": "string"
+            },
+            "example": "30 minutes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns filtered recipes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recipes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "recipes": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10d1",
+                        "user_id": "693479a6b4d83ba7597b10c9",
+                        "username": "JohnDoe",
+                        "title": "Classic Pasta Carbonara",
+                        "cooking_time": "30 minutes",
+                        "tags": ["italian", "pasta"],
+                        "ingredients": ["pasta", "eggs", "bacon", "parmesan"],
+                        "instructions": [
+                          "Boil pasta",
+                          "Cook bacon",
+                          "Mix with eggs"
+                        ],
+                        "image_urls": ["https://example.com/image1.jpg"],
+                        "reviews": [],
+                        "created_at": "2025-12-06T20:00:00.000Z"
+                      }
+                    ],
+                    "total": 1
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/recipes/:id": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Returns a single recipe by ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Recipe ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns recipe data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "_id": "693479a6b4d83ba7597b10d1",
+                    "user_id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "title": "Classic Pasta Carbonara",
+                    "cooking_time": "30 minutes",
+                    "tags": ["italian", "pasta"],
+                    "ingredients": ["pasta", "eggs", "bacon", "parmesan"],
+                    "instructions": [
+                      "Boil pasta",
+                      "Cook bacon",
+                      "Mix with eggs"
+                    ],
+                    "image_urls": ["https://example.com/image1.jpg"],
+                    "reviews": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10d2",
+                        "user_id": "693479a6b4d83ba7597b10c8",
+                        "username": "FoodCritic",
+                        "rating": 5,
+                        "comment": "Amazing recipe!",
+                        "created_at": "2025-12-06T21:00:00.000Z"
+                      }
+                    ],
+                    "created_at": "2025-12-06T20:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "Recipe not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      },
+      "put": {
+        "tags": ["Recipes"],
+        "summary": "Updates a recipe by ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Recipe ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Recipe title"
+                  },
+                  "cooking_time": {
+                    "type": "string",
+                    "description": "Cooking time"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Recipe tags"
+                  },
+                  "ingredients": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of ingredients"
+                  },
+                  "instructions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Step-by-step instructions"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of image URLs"
+                  }
+                }
+              },
+              "example": {
+                "title": "Updated Recipe Title",
+                "cooking_time": "45 minutes",
+                "tags": ["italian", "dinner"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recipe updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Recipe updated successfully",
+                  "data": {
+                    "_id": "693479a6b4d83ba7597b10d1",
+                    "user_id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "title": "Updated Recipe Title",
+                    "cooking_time": "45 minutes",
+                    "tags": ["italian", "dinner"],
+                    "ingredients": ["pasta", "eggs", "bacon", "parmesan"],
+                    "instructions": [
+                      "Boil pasta",
+                      "Cook bacon",
+                      "Mix with eggs"
+                    ],
+                    "image_urls": ["https://example.com/image1.jpg"],
+                    "reviews": [],
+                    "created_at": "2025-12-06T20:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "Recipe not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      },
+      "delete": {
+        "tags": ["Recipes"],
+        "summary": "Deletes a recipe by ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Recipe ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipe successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recipeId": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Recipe successfully deleted",
+                  "data": {
+                    "recipeId": "693479a6b4d83ba7597b10d1"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "Recipe not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/recipes/:id/reviews/:reviewId": {
+      "delete": {
+        "tags": ["Recipes"],
+        "summary": "Deletes a review from a recipe and recalculates average rating.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Recipe ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "description": "Review ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review successfully deleted with updated stats.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "reviewId": {
+                          "type": "string"
+                        },
+                        "totalReviews": {
+                          "type": "number"
+                        },
+                        "averageRating": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Review successfully deleted",
+                  "data": {
+                    "reviewId": "693479a6b4d83ba7597b10d8",
+                    "totalReviews": 2,
+                    "averageRating": 4.5
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/401TokenError" },
+          "404": {
+            "description": "Recipe or review not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "recipeNotFound": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 404,
+                      "message": "Recipe not found"
+                    }
+                  },
+                  "reviewNotFound": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 404,
+                      "message": "Review not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/posts/feed": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Returns a paginated feed of all posts with sorting options. Automatically updates usernames from current user data.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of posts per page (default: 20)",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "description": "Field to sort by (default: created_at)",
+            "schema": {
+              "type": "string",
+              "default": "created_at"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "Sort order: 'asc' or 'desc' (default: desc)",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns paginated post feed with updated usernames.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/Post" }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "number"
+                            },
+                            "totalPages": {
+                              "type": "number"
+                            },
+                            "totalPosts": {
+                              "type": "number"
+                            },
+                            "hasMore": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "posts": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10e5",
+                        "user_id": "693479a6b4d83ba7597b10c9",
+                        "username": "JohnDoe",
+                        "body": "Just made an amazing pasta dish!",
+                        "image_urls": ["https://example.com/pasta.jpg"],
+                        "recipe_id": "693479a6b4d83ba7597b10d1",
+                        "likes": [
+                          {
+                            "user_id": "693479a6b4d83ba7597b10c8",
+                            "username": "FoodLover",
+                            "created_at": "2025-12-07T01:00:00.000Z"
+                          }
+                        ],
+                        "comments": [
+                          {
+                            "_id": "693479a6b4d83ba7597b10e6",
+                            "user_id": "693479a6b4d83ba7597b10c8",
+                            "username": "FoodLover",
+                            "text": "Looks delicious!",
+                            "created_at": "2025-12-07T01:05:00.000Z"
+                          }
+                        ],
+                        "created_at": "2025-12-07T00:30:00.000Z"
+                      }
+                    ],
+                    "pagination": {
+                      "currentPage": 1,
+                      "totalPages": 3,
+                      "totalPosts": 52,
+                      "hasMore": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/posts/user/:userId": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Returns all posts by a specific user, paginated.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of posts per page (default: 20)",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns paginated posts by user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "number"
+                            },
+                            "totalPages": {
+                              "type": "number"
+                            },
+                            "totalPosts": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "posts": [
+                      {
+                        "_id": "693479a6b4d83ba7597b10e5",
+                        "user_id": "693479a6b4d83ba7597b10c9",
+                        "username": "JohnDoe",
+                        "body": "Just made an amazing pasta dish!",
+                        "image_urls": ["https://example.com/pasta.jpg"],
+                        "recipe_id": "693479a6b4d83ba7597b10d1",
+                        "likes": [],
+                        "comments": [],
+                        "created_at": "2025-12-07T00:30:00.000Z"
+                      }
+                    ],
+                    "pagination": {
+                      "currentPage": 1,
+                      "totalPages": 2,
+                      "totalPosts": 24
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/posts/:id": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Returns a single post by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Post ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns post data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "_id": "693479a6b4d83ba7597b10e5",
+                    "user_id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "body": "Just made an amazing pasta dish!",
+                    "image_urls": ["https://example.com/pasta.jpg"],
+                    "recipe_id": "693479a6b4d83ba7597b10d1",
+                    "likes": [],
+                    "comments": [],
+                    "created_at": "2025-12-07T00:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Post not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      },
+      "put": {
+        "tags": ["Posts"],
+        "summary": "Updates a post by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Post ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Post body content"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of image URLs"
+                  }
+                }
+              },
+              "example": {
+                "content": "Updated post content",
+                "images": ["https://example.com/new-image.jpg"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Post successfully updated",
+                  "data": {
+                    "_id": "693479a6b4d83ba7597b10e5",
+                    "user_id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "body": "Updated post content",
+                    "image_urls": ["https://example.com/new-image.jpg"],
+                    "recipe_id": "693479a6b4d83ba7597b10d1",
+                    "likes": [],
+                    "comments": [],
+                    "created_at": "2025-12-07T00:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Post not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Deletes a post by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Post ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "postId": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Post successfully deleted",
+                  "data": {
+                    "postId": "693479a6b4d83ba7597b10e5"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Post not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/posts": {
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Creates a new post.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content", "userId"],
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Post body content"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "User ID of post creator"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username (defaults to 'Anonymous' if not provided)"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of image URLs"
+                  },
+                  "recipe_id": {
+                    "type": "string",
+                    "description": "Associated recipe ID (optional)"
+                  }
+                }
+              },
+              "example": {
+                "content": "Just made this amazing recipe!",
+                "userId": "693479a6b4d83ba7597b10c9",
+                "username": "JohnDoe",
+                "images": ["https://example.com/dish.jpg"],
+                "recipe_id": "693479a6b4d83ba7597b10d1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Post created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "_id": "693479a6b4d83ba7597b10e5",
+                    "user_id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "body": "Just made this amazing recipe!",
+                    "image_urls": ["https://example.com/dish.jpg"],
+                    "recipe_id": "693479a6b4d83ba7597b10d1",
+                    "likes": [],
+                    "comments": [],
+                    "created_at": "2025-12-07T02:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "missingContent": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide post content"
+                    }
+                  },
+                  "missingUserId": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide userId"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      }
+    },
+    "/api/posts/:id/likes": {
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Adds a like to a post. Users cannot like the same post twice.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Post ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId"],
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "User ID of person liking the post"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username (defaults to 'Anonymous' if not provided)"
+                  }
+                }
+              },
+              "example": {
+                "userId": "693479a6b4d83ba7597b10c9",
+                "username": "JohnDoe"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post liked successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "postId": {
+                          "type": "string"
+                        },
+                        "totalLikes": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Post liked successfully",
+                  "data": {
+                    "postId": "693479a6b4d83ba7597b10e5",
+                    "totalLikes": 5
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or post already liked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "missingUserId": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide userId"
+                    }
+                  },
+                  "alreadyLiked": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Post already liked"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Post not found"
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/schemas/500Error" }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Removes a like from a post.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Post ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId"],
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "User ID of person unliking the post"
+                  }
+                }
+              },
+              "example": {
+                "userId": "693479a6b4d83ba7597b10c9"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post unliked successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "postId": {
+                          "type": "string"
+                        },
+                        "totalLikes": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Post unliked successfully",
+                  "data": {
+                    "postId": "693479a6b4d83ba7597b10e5",
+                    "totalLikes": 4
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or post was not liked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "missingUserId": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide userId"
+                    }
+                  },
+                  "notLiked": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Post was not liked by this user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": ""
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "__v": {
+            "type": "number"
+          }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recipe_id": {
+            "type": "string"
+          },
+          "likes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string"
+                },
+                "user_id": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchTerm": {
+        "type": "object",
+        "properties": {
+          "term": { "type": "string" },
+          "count": { "type": "integer" }
+        }
+      },
+      "500Error": {
+        "description": "Internal error, returns appropriate error response.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "statusCode": {
+                  "type": "number"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "example": {
+              "status": "error",
+              "statusCode": 500,
+              "message": "Internal server error"
+            }
+          }
+        }
+      },
+      "401TokenError": {
+        "description": "Authentication error, no valid bearer token.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "statusCode": {
+                  "type": "number"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "example": {
+              "status": "error",
+              "statusCode": 500,
+              "message": "Internal server error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Required for most all endpoints in this API (sans login, user create, user validate, checks). Received from a valid ```/login``` response."
+      }
+    }
+  }
+}
