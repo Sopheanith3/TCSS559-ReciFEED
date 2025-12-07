@@ -3223,13 +3223,6 @@
           }
         }
       },
-      "SearchTerm": {
-        "type": "object",
-        "properties": {
-          "term": { "type": "string" },
-          "count": { "type": "integer" }
-        }
-      },
       "500Error": {
         "description": "Internal error, returns appropriate error response.",
         "content": {
