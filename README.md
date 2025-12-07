@@ -237,13 +237,31 @@ kubectl get ingress
 
 The project connects to the following external services.
 
-### Mistral
-
-### Twitter/X
-
-### Bluesky
+- [Mistral AI:](https://mistral.ai/): small LLMs called via HTTP, view linked documentation to setup account and receive above API keys.
+- [Twitter/X](https://developer.x.com/en/docs/x-api): authenticate with a Twitter user and gain control over actions, view linked documentation to gain both above developer keys.
+- [Bluesky](https://docs.bsky.app/): authenticate with a Bsky user and gain control over actions, view linked documentation to view API usage tutorials.
 
 ## 4. API Documentation
+
+To run documentation for this API, run the following commands:
+
+```bash
+cd ./api-docs/monolith
+npm install
+npm start
+```
+
+The monolith documentation will run on http://localhost:2020.
+
+In another terminal:
+
+```bash
+cd ./api-docs/monolith
+npm install
+npm start
+```
+
+The microservice documentation will run on http://localhost:2021.
 
 ## 5. Operations
 
@@ -258,7 +276,9 @@ The analytics dashboard is available on the frontend at the route http://localho
 - Most Popular Search Terms (within the last 1d, 1w, 1m)
 
 ### Troubleshooting
-
+Common Errors
+- **Kubernetes Deployment**: Ensure kubetcl environment is set to build in Docker. If they appear locally, they are wrong.
+- **Minikube Memory Error**: Current fix, create a new profile in Minikube and start commands there.
 
 ## Project Structure
 ```
