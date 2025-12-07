@@ -1808,6 +1808,378 @@
         }
       }
     },
+     "/api/recipes": {
+      "post": {
+        "tags": ["Recipes"],
+        "summary": "Creates a new recipe.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "userId", "username"],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Recipe title"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "User ID of recipe creator"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username of recipe creator"
+                  },
+                  "cooking_time": {
+                    "type": "string",
+                    "description": "Cooking time (e.g., '30 minutes')"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Recipe tags"
+                  },
+                  "ingredients": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of ingredients"
+                  },
+                  "instructions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Step-by-step instructions"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of image URLs"
+                  }
+                }
+              },
+              "example": {
+                "title": "Chocolate Chip Cookies",
+                "userId": "693479a6b4d83ba7597b10c9",
+                "username": "JohnDoe",
+                "cooking_time": "25 minutes",
+                "tags": ["dessert", "baking", "cookies"],
+                "ingredients": [
+                  "2 cups all-purpose flour",
+                  "1 cup butter, softened",
+                  "3/4 cup granulated sugar"
+                ],
+                "instructions": [
+                  "Preheat oven to 350°F (175°C)",
+                  "Mix dry ingredients in a bowl",
+                  "Cream butter and sugars together",
+                  "Add eggs and vanilla to butter mixture"
+                ],
+                "images": ["https://example.com/cookies.jpg"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recipe created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Recipe"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "_id": "693479a6b4d83ba7597b10d5",
+                    "user_id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "title": "Chocolate Chip Cookies",
+                    "cooking_time": "25 minutes",
+                    "tags": ["dessert", "baking", "cookies"],
+                    "ingredients": [
+                      "2 cups all-purpose flour",
+                      "1 cup butter, softened",
+                      "3/4 cup granulated sugar"
+                    ],
+                    "instructions": [
+                      "Preheat oven to 350°F (175°C)",
+                      "Mix dry ingredients in a bowl",
+                      "Cream butter and sugars together",
+                      "Add eggs and vanilla to butter mixture"
+                    ],
+                    "image_urls": ["https://example.com/cookies.jpg"],
+                    "reviews": [],
+                    "created_at": "2025-12-07T02:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "missingTitleOrUserId": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide title and userId"
+                    }
+                  },
+                  "missingUsername": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide username"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error, no valid bearer token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Unauthorized: Missing or invalid token."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recipes/:id/reviews": {
+      "post": {
+        "tags": ["Recipes"],
+        "summary": "Adds a review to a recipe. Users can only review once per recipe. Returns review with updated statistics.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Recipe ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["rating", "comment", "userId"],
+                "properties": {
+                  "rating": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "description": "Rating between 1 and 5"
+                  },
+                  "comment": {
+                    "type": "string",
+                    "description": "Review comment"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "User ID of reviewer"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username (defaults to 'Anonymous' if not provided)"
+                  }
+                }
+              },
+              "example": {
+                "rating": 5,
+                "comment": "This recipe was absolutely delicious! The cookies came out perfectly crispy on the outside and chewy on the inside. My family loved them!",
+                "userId": "693479a6b4d83ba7597b10c8",
+                "username": "FoodCritic"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review added successfully with updated stats.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "review": {
+                          "$ref": "#/components/schemas/Review"
+                        },
+                        "totalReviews": {
+                          "type": "number",
+                          "description": "Total number of reviews for this recipe"
+                        },
+                        "averageRating": {
+                          "type": "number",
+                          "description": "Average rating rounded to 1 decimal place"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "review": {
+                      "_id": "693479a6b4d83ba7597b10d8",
+                      "user_id": "693479a6b4d83ba7597b10c8",
+                      "username": "FoodCritic",
+                      "rating": 5,
+                      "comment": "This recipe was absolutely delicious! The cookies came out perfectly crispy on the outside and chewy on the inside. My family loved them!",
+                      "created_at": "2025-12-07T02:30:00.000Z"
+                    },
+                    "totalReviews": 3,
+                    "averageRating": 4.7
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or user already reviewed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "missingRatingOrComment": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide rating and comment"
+                    }
+                  },
+                  "invalidRating": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Rating must be between 1 and 5"
+                    }
+                  },
+                  "missingUserId": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide userId"
+                    }
+                  },
+                  "alreadyReviewed": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "You have already reviewed this recipe"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error, no valid bearer token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Unauthorized: Missing or invalid token."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipe not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/recipes/:id": {
       "get": {
         "tags": ["Recipes"],
@@ -2235,6 +2607,7 @@
     "/api/posts/feed": {
       "get": {
         "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Returns a paginated feed of all posts with sorting options. Automatically updates usernames from current user data.",
         "parameters": [
           {
@@ -2366,6 +2739,7 @@
     "/api/posts/user/:userId": {
       "get": {
         "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Returns all posts by a specific user, paginated.",
         "parameters": [
           {
@@ -2470,6 +2844,7 @@
       "get": {
         "tags": ["Posts"],
         "summary": "Returns a single post by ID.",
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "name": "id",
@@ -2545,6 +2920,7 @@
       },
       "put": {
         "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Updates a post by ID.",
         "parameters": [
           {
@@ -2652,6 +3028,7 @@
       },
       "delete": {
         "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Deletes a post by ID.",
         "parameters": [
           {
@@ -2731,6 +3108,7 @@
     "/api/posts": {
       "post": {
         "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Creates a new post.",
         "requestBody": {
           "required": true,
@@ -2852,6 +3230,7 @@
     "/api/posts/:id/likes": {
       "post": {
         "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Adds a like to a post. Users cannot like the same post twice.",
         "parameters": [
           {
@@ -2995,6 +3374,7 @@
       },
       "delete": {
         "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Removes a like from a post.",
         "parameters": [
           {
@@ -3130,29 +3510,449 @@
           }
         }
       }
+    },
+    "/api/posts/:id/comments": {
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Adds a comment to a post.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Post ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content", "userId"],
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Comment text content"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "User ID of commenter"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username (defaults to 'Anonymous' if not provided)"
+                  }
+                }
+              },
+              "example": {
+                "content": "This looks amazing! Can't wait to try it.",
+                "userId": "693479a6b4d83ba7597b10c9",
+                "username": "JohnDoe"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comment added successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Comment"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "_id": "693479a6b4d83ba7597b10e7",
+                    "user_id": "693479a6b4d83ba7597b10c9",
+                    "username": "JohnDoe",
+                    "text": "This looks amazing! Can't wait to try it.",
+                    "created_at": "2025-12-07T03:15:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "missingContent": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide comment content"
+                    }
+                  },
+                  "missingUserId": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 400,
+                      "message": "Please provide userId"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error, no valid bearer token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Unauthorized: Missing or invalid token."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Post not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/posts/:id/comments/:commentId": {
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Deletes a comment from a post.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Post ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "description": "Comment ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "commentId": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Comment successfully deleted",
+                  "data": {
+                    "commentId": "693479a6b4d83ba7597b10e7"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error, no valid bearer token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 401,
+                  "message": "Unauthorized: Missing or invalid token."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post or comment not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "postNotFound": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 404,
+                      "message": "Post not found"
+                    }
+                  },
+                  "commentNotFound": {
+                    "value": {
+                      "status": "error",
+                      "statusCode": 404,
+                      "message": "Comment not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Review": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Review ID"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "ID of user who created the review"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username of reviewer"
+          },
+          "rating": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Rating between 1 and 5"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review comment"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when review was created"
+          }
+        },
+        "required": ["_id", "user_id", "username", "rating", "comment", "created_at"]
+      },
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Recipe ID"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "ID of user who created the recipe"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username of recipe creator"
+          },
+          "title": {
+            "type": "string",
+            "description": "Recipe title"
+          },
+          "cooking_time": {
+            "type": "string",
+            "description": "Cooking time (e.g., '30 minutes')"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Recipe tags"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of ingredients"
+          },
+          "instructions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Step-by-step instructions"
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of image URLs"
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Review"
+            },
+            "description": "Array of reviews"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when recipe was created"
+          }
+        },
+        "required": ["_id", "user_id", "username", "title", "created_at"]
+      },
       "User": {
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "User ID"
           },
           "created_at": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time",
+            "description": "Account creation timestamp"
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
           },
           "username": {
-            "type": "string"
+            "type": "string",
+            "description": "Username"
           },
           "__v": {
-            "type": "number"
+            "type": "number",
+            "description": "MongoDB version key"
           }
-        }
+        },
+        "required": ["_id", "created_at", "email", "username"]
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Comment ID"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "ID of user who created the comment"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username of commenter"
+          },
+          "text": {
+            "type": "string",
+            "description": "Comment text content"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when comment was created"
+          }
+        },
+        "required": ["_id", "user_id", "username", "text", "created_at"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status indicator"
+          },
+          "statusCode": {
+            "type": "number",
+            "description": "HTTP status code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          }
+        },
+        "required": ["status", "statusCode", "message"]
       },
       "Post": {
         "type": "object",
